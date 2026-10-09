@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){try{document.documentElement.setAttribute('data-theme', localStorage.getItem('smd_theme') || 'dark');}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Cart — SM Mobile Deals</title>
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#050812">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dark-mode.css">
+<link rel="stylesheet" href="../css/animations.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<style>
+  .cart-layout{ display:grid; grid-template-columns:1fr 340px; gap:28px; align-items:flex-start; }
+  .cart-item{ display:grid; grid-template-columns:70px 1fr auto auto; gap:16px; align-items:center; padding:16px 0; border-bottom:1px solid var(--border-soft); }
+  .cart-item img{ width:70px; height:70px; object-fit:contain; background:var(--surface-2); border-radius:12px; padding:6px; }
+  .summary-card{ position:sticky; top:calc(var(--header-h) + 16px); background:var(--surface); border:1px solid var(--border-soft); border-radius:var(--radius-lg); padding:22px; }
+  .summary-row{ display:flex; justify-content:space-between; padding:8px 0; font-size:14px; color:var(--text-dim); }
+  .summary-row.total{ border-top:1px solid var(--border-soft); margin-top:8px; padding-top:14px; font-weight:700; font-size:17px; color:var(--text); }
+  @media(max-width:860px){ .cart-layout{ grid-template-columns:1fr; } .summary-card{ position:static; } .cart-item{ grid-template-columns:56px 1fr; } .cart-item .qty-box, .cart-item .ci-price{ grid-column:2; } }
+</style>
+</head>
+<body>
+<div id="page-loader">
+  <div class="pl-inner">
+    <div class="pl-mark"><span>S</span><span>M</span></div>
+    <div class="pl-title" id="pl-title" data-text="SM Mobile Deals"></div>
+    <div class="pl-sub">Genuine tech, honest prices.</div>
+    <div class="pl-bar"><div class="pl-bar-fill"></div></div>
+  </div>
+</div>
+<div id="site-header"></div>
+
+<main>
+  <section class="page-hero container">
+    <div class="breadcrumb"><a href="../index.html">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i> <span>Cart</span></div>
+    <h1 class="page-title">Your Cart</h1>
+  </section>
+
+  <section class="section container" style="padding-top:10px;">
+    <div id="cart-empty" class="empty-state" style="display:none;">
+      <i class="fa-solid fa-cart-shopping"></i><h3>Your cart is empty</h3><p>Looks like you haven't added anything yet.</p>
+      <a href="products.html" class="btn btn-primary" style="margin-top:14px;">Start Shopping</a>
+    </div>
+    <div id="cart-full" class="cart-layout" style="display:none;">
+      <div class="card" style="padding:20px;" id="cart-items"></div>
+      <div class="summary-card">
+        <h3 style="font-family:var(--font-display);margin:0 0 14px;">Order Summary</h3>
+        <div class="summary-row"><span>Subtotal</span><span id="sum-subtotal" style="font-family:var(--font-mono);"></span></div>
+        <div class="summary-row"><span>Delivery</span><span id="sum-delivery" style="font-family:var(--font-mono);"></span></div>
+        <div class="summary-row total"><span>Total</span><span id="sum-total" style="font-family:var(--font-mono);"></span></div>
+        <a href="checkout.html" class="btn btn-primary btn-block" style="margin-top:14px;"><i class="fa-solid fa-lock"></i> Proceed to Checkout</a>
+        <p class="text-faint" style="font-size:12px;margin-top:10px;">Prices include GST. Free delivery over ₹999.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+
+<script>const ROOT_PREFIX = '../';</script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script defer src="../js/supabase-client.js"></script>
+<script defer src="../js/config.js"></script>
+<script defer src="../js/utils.js"></script>
+<script defer src="../js/specs.js"></script>
+<script defer src="../js/data.js"></script>
+<script defer src="../js/auth.js"></script>
+<script defer src="../js/cart.js"></script>
+<script defer src="../js/notifications.js"></script>
+<script defer src="../js/theme.js"></script>
+<script defer src="../js/cursor.js"></script>
+<script defer src="../js/loader.js"></script>
+<script defer src="../js/search.js"></script>
+<script defer src="../js/orders.js"></script>
+<script defer src="../js/payment.js"></script>
+<script defer src="../js/pincode.js"></script>
+<script defer src="../js/checkout.js"></script>
+<script defer src="../js/profile.js"></script>
+<script defer src="../js/analytics.js"></script>
+<script defer src="../js/admin.js"></script>
+<script defer src="../js/chatbot.js"></script>
+<script defer src="../js/reminders.js"></script>
+<script defer src="../js/inbox.js"></script>
+<script defer src="../js/branding.js"></script>
+
+<script defer src="../js/celebrate.js"></script>
+<script defer src="../js/ui.js"></script>
+<script defer src="../js/app.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+function render(){
+    const items = Cart.detailed();
+    document.getElementById('cart-empty').style.display = items.length ? 'none' : 'block';
+    document.getElementById('cart-full').style.display = items.length ? 'grid' : 'none';
+    if (!items.length) return;
+
+    document.getElementById('cart-items').innerHTML = items.map(i => `
+      <div class="cart-item" data-id="${i.id}">
+        <img src="${Utils.deviceImage(i.type,i.color)}" alt="${Utils.escapeHtml(i.name)}">
+        <div><div style="font-weight:600;font-size:14.5px;">${Utils.escapeHtml(i.name)}</div><div class="text-faint" style="font-size:12.5px;">${Utils.formatINR(i.price)} each</div>
+          <button class="text-danger" style="background:none;border:none;font-size:12px;color:var(--danger);cursor:pointer;padding:4px 0;" onclick="Cart.remove('${i.id}'); render();"><i class="fa-solid fa-trash"></i> Remove</button>
+        </div>
+        <div class="qty-box"><button onclick="Cart.setQty('${i.id}', ${i.qty-1}); render();">−</button><span>${i.qty}</span><button onclick="Cart.setQty('${i.id}', ${i.qty+1}); render();">+</button></div>
+        <div class="ci-price" style="font-family:var(--font-mono);font-weight:700;">${Utils.formatINR(i.lineTotal)}</div>
+      </div>`).join('');
+
+    const subtotal = Cart.subtotal();
+    const delivery = subtotal >= SITE_CONFIG.freeDeliveryOver || subtotal === 0 ? 0 : 79;
+    document.getElementById('sum-subtotal').textContent = Utils.formatINR(subtotal);
+    document.getElementById('sum-delivery').textContent = delivery === 0 ? 'FREE' : Utils.formatINR(delivery);
+    document.getElementById('sum-total').textContent = Utils.formatINR(subtotal + delivery);
+  }
+  App.boot('shop').then(render);
+});
+</script>
+</body>
+</html>

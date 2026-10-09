@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){try{document.documentElement.setAttribute('data-theme', localStorage.getItem('smd_theme') || 'dark');}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout — SM Mobile Deals</title>
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#050812">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dark-mode.css">
+<link rel="stylesheet" href="../css/animations.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<style>
+  .checkout-layout{ display:grid; grid-template-columns:1fr 340px; gap:28px; align-items:flex-start; }
+  .pay-opt{ display:flex; align-items:center; gap:12px; padding:14px 16px; border:1px solid var(--border); border-radius:var(--radius-sm); cursor:pointer; margin-bottom:10px; transition:all var(--fast); }
+  .pay-opt.selected{ border-color:var(--accent); background:var(--accent-soft); }
+  .pay-opt input{ accent-color:var(--accent); }
+  .pay-opt.disabled{ opacity:.45; cursor:not-allowed; }
+  .row2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media(max-width:860px){ .checkout-layout{ grid-template-columns:1fr; } .row2{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div id="page-loader">
+  <div class="pl-inner">
+    <div class="pl-mark"><span>S</span><span>M</span></div>
+    <div class="pl-title" id="pl-title" data-text="SM Mobile Deals"></div>
+    <div class="pl-sub">Genuine tech, honest prices.</div>
+    <div class="pl-bar"><div class="pl-bar-fill"></div></div>
+  </div>
+</div>
+<div id="site-header"></div>
+
+<main>
+  <section class="page-hero container">
+    <div class="breadcrumb"><a href="../index.html">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i> <a href="cart.html">Cart</a> <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i> <span>Checkout</span></div>
+    <h1 class="page-title">Checkout</h1>
+    <div class="steps" style="margin-top:16px;">
+      <div class="step done"><span class="num">1</span><span class="label">Cart</span></div><div class="step-line"></div>
+      <div class="step active"><span class="num">2</span><span class="label">Address & Payment</span></div><div class="step-line"></div>
+      <div class="step"><span class="num">3</span><span class="label">Pay</span></div><div class="step-line"></div>
+      <div class="step"><span class="num">4</span><span class="label">Confirmed</span></div>
+    </div>
+  </section>
+
+  <section class="section container" style="padding-top:10px;" id="checkout-root">
+    <div class="checkout-layout">
+      <form class="card" style="padding:24px;" id="checkout-form">
+        <h3 style="font-family:var(--font-display);margin:0 0 16px;">Delivery Address</h3>
+        <div class="field"><label>Full Name</label><input class="input" name="name" required></div>
+        <div class="row2">
+          <div class="field"><label>Phone Number</label><input class="input" name="phone" type="tel" pattern="[0-9+ ]{10,15}" required></div>
+          <div class="field"><label>Pincode</label>
+            <input class="input" name="pincode" id="pincode-input" pattern="[0-9]{6}" maxlength="6" placeholder="6-digit PIN code" required>
+            <span id="pincode-status" class="text-faint" style="font-size:11.5px;"></span>
+          </div>
+        </div>
+        <div class="field"><label>Address Line</label><input class="input" name="line1" placeholder="Door No, Street, Area" required></div>
+        <div class="row2">
+          <div class="field"><label>City</label><input class="input" name="city" id="city-input" required></div>
+          <div class="field"><label>State</label>
+            <select class="input" name="state" id="state-select" required>
+              <option value="">Select state / PIN code fills this automatically</option>
+              <option value="Andhra Pradesh">Andhra Pradesh</option>
+              <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+              <option value="Assam">Assam</option>
+              <option value="Bihar">Bihar</option>
+              <option value="Chhattisgarh">Chhattisgarh</option>
+              <option value="Goa">Goa</option>
+              <option value="Gujarat">Gujarat</option>
+              <option value="Haryana">Haryana</option>
+              <option value="Himachal Pradesh">Himachal Pradesh</option>
+              <option value="Jharkhand">Jharkhand</option>
+              <option value="Karnataka">Karnataka</option>
+              <option value="Kerala">Kerala</option>
+              <option value="Madhya Pradesh">Madhya Pradesh</option>
+              <option value="Maharashtra">Maharashtra</option>
+              <option value="Manipur">Manipur</option>
+              <option value="Meghalaya">Meghalaya</option>
+              <option value="Mizoram">Mizoram</option>
+              <option value="Nagaland">Nagaland</option>
+              <option value="Odisha">Odisha</option>
+              <option value="Punjab">Punjab</option>
+              <option value="Rajasthan">Rajasthan</option>
+              <option value="Sikkim">Sikkim</option>
+              <option value="Tamil Nadu">Tamil Nadu</option>
+              <option value="Telangana">Telangana</option>
+              <option value="Tripura">Tripura</option>
+              <option value="Uttar Pradesh">Uttar Pradesh</option>
+              <option value="Uttarakhand">Uttarakhand</option>
+              <option value="West Bengal">West Bengal</option>
+              <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+              <option value="Chandigarh">Chandigarh</option>
+              <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option>
+              <option value="Delhi">Delhi</option>
+              <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+              <option value="Ladakh">Ladakh</option>
+              <option value="Lakshadweep">Lakshadweep</option>
+              <option value="Puducherry">Puducherry</option>
+            </select>
+          </div>
+        </div>
+        <p class="text-dim" id="delivery-note" style="font-size:13px;background:var(--surface-2);padding:10px 14px;border-radius:10px;"></p>
+
+        <h3 style="font-family:var(--font-display);margin:20px 0 14px;">Payment Method</h3>
+        <label class="pay-opt selected" id="opt-upi">
+          <input type="radio" name="pay" value="upi" checked> <i class="fa-solid fa-qrcode"></i>
+          <div><strong>UPI (GPay / PhonePe / Paytm) / PayPal</strong><div class="text-faint" style="font-size:12px;">Scan QR & pay — admin confirms your screenshot</div></div>
+        </label>
+        <label class="pay-opt" id="opt-card">
+          <input type="radio" name="pay" value="card"> <i class="fa-solid fa-credit-card"></i>
+          <div><strong>Credit / Debit Card</strong><div class="text-faint" style="font-size:12px;">Card payments include a 2% processing surcharge</div></div>
+        </label>
+        <label class="pay-opt" id="opt-cod">
+          <input type="radio" name="pay" value="cod"> <i class="fa-solid fa-money-bill-wave"></i>
+          <div><strong>Cash on Delivery</strong><div class="text-faint" style="font-size:12px;" id="cod-note">Available only within Coimbatore district — 20% advance paid online, rest on delivery</div></div>
+        </label>
+        <label class="pay-opt" id="opt-advance">
+          <input type="radio" name="pay" value="advance"> <i class="fa-solid fa-hand-holding-dollar"></i>
+          <div><strong>Advance Payment (₹<span id="advance-amount-label"></span> booking)</strong><div class="text-faint" style="font-size:12px;">Pay a small amount now to reserve your order, rest as a separate balance payment</div></div>
+        </label>
+        <div id="advance-disclaimer-box" style="display:none;background:var(--danger-soft,#fef2f2);border:1px solid var(--danger,#dc2626);border-radius:10px;padding:12px 14px;margin:10px 0 0;font-size:12.5px;line-height:1.6;">
+          <i class="fa-solid fa-triangle-exclamation" style="color:var(--danger,#dc2626);"></i> <span id="advance-disclaimer-text"></span>
+          <label class="flex items-center gap-8" style="margin-top:10px;cursor:pointer;">
+            <input type="checkbox" id="advance-ack-checkbox"> <span>I understand the ₹<span id="advance-amount-label-2"></span> advance is non-refundable, and the 6 PM balance-payment cutoff for same-day dispatch.</span>
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top:20px;" id="checkout-continue-btn"><i class="fa-solid fa-lock"></i> Continue</button>
+      </form>
+
+      <div class="summary-card card" style="position:sticky;top:calc(var(--header-h) + 16px);padding:22px;">
+        <h3 style="font-family:var(--font-display);margin:0 0 14px;">Order Summary</h3>
+        <div id="co-items" style="max-height:220px;overflow-y:auto;margin-bottom:12px;"></div>
+        <div class="summary-row" style="display:flex;justify-content:space-between;padding:6px 0;font-size:14px;color:var(--text-dim);"><span>Subtotal</span><span id="co-subtotal" style="font-family:var(--font-mono);"></span></div>
+        <div class="summary-row" style="display:flex;justify-content:space-between;padding:6px 0;font-size:14px;color:var(--success);" id="co-discount-row"><span><i class="fa-solid fa-tag"></i> Bulk order discount</span><span id="co-discount" style="font-family:var(--font-mono);"></span></div>
+        <div class="summary-row" style="display:flex;justify-content:space-between;padding:6px 0;font-size:14px;color:var(--text-dim);"><span>Delivery</span><span id="co-delivery" style="font-family:var(--font-mono);"></span></div>
+        <div class="summary-row" style="display:flex;justify-content:space-between;padding:6px 0;font-size:14px;color:var(--text-dim);" id="co-surcharge-row"><span>Card surcharge (2%)</span><span id="co-surcharge" style="font-family:var(--font-mono);"></span></div>
+        <div class="summary-row" style="display:flex;justify-content:space-between;padding-top:12px;margin-top:6px;border-top:1px solid var(--border-soft);font-weight:700;font-size:17px;"><span>Total</span><span id="co-total" style="font-family:var(--font-mono);"></span></div>
+        <div id="co-cod-split-row" style="display:none;background:var(--surface-2);border-radius:10px;padding:10px 12px;margin-top:10px;font-size:13px;">
+          <div class="flex justify-between"><span>Pay online now (advance)</span><span id="co-advance" style="font-family:var(--font-mono);font-weight:700;"></span></div>
+          <div class="flex justify-between text-faint" style="margin-top:4px;"><span>Cash on delivery (remaining)</span><span id="co-cod-remaining" style="font-family:var(--font-mono);"></span></div>
+        </div>
+        <div id="co-advance-split-row" style="display:none;background:var(--surface-2);border-radius:10px;padding:10px 12px;margin-top:10px;font-size:13px;">
+          <div class="flex justify-between"><span>Pay now (booking, non-refundable)</span><span id="co-advance-now" style="font-family:var(--font-mono);font-weight:700;"></span></div>
+          <div class="flex justify-between text-faint" style="margin-top:4px;"><span>Balance (pay before 6 PM)</span><span id="co-advance-balance" style="font-family:var(--font-mono);"></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+
+<script>const ROOT_PREFIX = '../';</script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script defer src="../js/supabase-client.js"></script>
+<script defer src="../js/config.js"></script>
+<script defer src="../js/utils.js"></script>
+<script defer src="../js/specs.js"></script>
+<script defer src="../js/data.js"></script>
+<script defer src="../js/auth.js"></script>
+<script defer src="../js/cart.js"></script>
+<script defer src="../js/notifications.js"></script>
+<script defer src="../js/theme.js"></script>
+<script defer src="../js/cursor.js"></script>
+<script defer src="../js/loader.js"></script>
+<script defer src="../js/search.js"></script>
+<script defer src="../js/orders.js"></script>
+<script defer src="../js/payment.js"></script>
+<script defer src="../js/pincode.js"></script>
+<script defer src="../js/checkout.js"></script>
+<script defer src="../js/profile.js"></script>
+<script defer src="../js/analytics.js"></script>
+<script defer src="../js/admin.js"></script>
+<script defer src="../js/chatbot.js"></script>
+<script defer src="../js/reminders.js"></script>
+<script defer src="../js/inbox.js"></script>
+<script defer src="../js/branding.js"></script>
+
+<script defer src="../js/celebrate.js"></script>
+<script defer src="../js/ui.js"></script>
+<script defer src="../js/app.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+App.boot('shop').then(() => {
+  if (!Auth.requireLogin('login.html')) return;
+  if (!Cart.detailed().length){
+    window.location.href = 'cart.html';
+    return;
+  }
+
+  // Pre-fill from saved profile address, if the customer has one
+  const savedUser = Auth.currentUser();
+  if (savedUser){
+    if (savedUser.name) document.querySelector('input[name="name"]').value = savedUser.name;
+    if (savedUser.phone) document.querySelector('input[name="phone"]').value = savedUser.phone;
+    if (savedUser.pincode) document.getElementById('pincode-input').value = savedUser.pincode;
+    if (savedUser.address) document.querySelector('input[name="line1"]').value = savedUser.address;
+    if (savedUser.city) document.getElementById('city-input').value = savedUser.city;
+    if (savedUser.state){
+      const opt = [...document.getElementById('state-select').options].find(o => o.value.toLowerCase() === savedUser.state.toLowerCase());
+      if (opt) document.getElementById('state-select').value = opt.value;
+    }
+  }
+
+  function currentAddressDraft(){
+    return { city: document.querySelector('input[name="city"]').value, state: document.getElementById('state-select').value };
+  }
+
+  function refreshSummary(){
+    const items = Cart.detailed();
+    document.getElementById('co-items').innerHTML = items.map(i => `
+      <div class="flex justify-between" style="font-size:13px;padding:5px 0;"><span>${Utils.escapeHtml(i.name)} × ${i.qty}</span><span style="font-family:var(--font-mono);">${Utils.formatINR(i.lineTotal)}</span></div>
+    `).join('');
+    const payMethod = document.querySelector('input[name="pay"]:checked').value;
+    const totals = Checkout.computeTotals(items, currentAddressDraft(), payMethod);
+    document.getElementById('co-subtotal').textContent = Utils.formatINR(totals.subtotal);
+    document.getElementById('co-discount-row').style.display = totals.discount ? 'flex' : 'none';
+    document.getElementById('co-discount').textContent = '− ' + Utils.formatINR(totals.discount);
+    document.getElementById('co-delivery').textContent = totals.deliveryFee === 0 ? 'FREE' : Utils.formatINR(totals.deliveryFee);
+    document.getElementById('co-surcharge-row').style.display = totals.cardSurcharge ? 'flex' : 'none';
+    document.getElementById('co-surcharge').textContent = Utils.formatINR(totals.cardSurcharge);
+    document.getElementById('co-total').textContent = Utils.formatINR(totals.total);
+    document.getElementById('co-cod-split-row').style.display = payMethod === 'cod' ? 'block' : 'none';
+    if (payMethod === 'cod'){
+      document.getElementById('co-advance').textContent = Utils.formatINR(totals.advanceAmount);
+      document.getElementById('co-cod-remaining').textContent = Utils.formatINR(totals.codAmount);
+    }
+    document.getElementById('co-advance-split-row').style.display = payMethod === 'advance' ? 'block' : 'none';
+    if (payMethod === 'advance'){
+      document.getElementById('co-advance-now').textContent = Utils.formatINR(totals.advanceAmount);
+      document.getElementById('co-advance-balance').textContent = Utils.formatINR(totals.balanceAmount);
+    }
+  }
+
+  function refreshDeliveryNote(){
+    const address = currentAddressDraft();
+    const note = document.getElementById('delivery-note');
+    const codRadio = document.querySelector('input[name="pay"][value="cod"]');
+    const codOpt = document.getElementById('opt-cod');
+    if (!address.state){ note.textContent = 'Select your state to see delivery estimate.'; refreshSummary(); return; }
+    const est = Checkout.deliveryEstimate(address);
+    note.innerHTML = `<i class="fa-solid fa-truck"></i> Estimated delivery: <strong>${est.days}</strong> ${est.codAllowed ? '· Cash on Delivery available (20% advance online)' : '· Online payment required (COD is only available within Coimbatore district)'}`;
+    codRadio.disabled = !est.codAllowed;
+    codOpt.classList.toggle('disabled', !est.codAllowed);
+    if (!est.codAllowed && codRadio.checked){ document.querySelector('input[name="pay"][value="upi"]').checked = true; selectPayOpt('upi'); }
+    refreshSummary();
+  }
+
+  function selectPayOpt(val){
+    document.querySelectorAll('.pay-opt').forEach(el => el.classList.remove('selected'));
+    document.getElementById('opt-'+val).classList.add('selected');
+    const box = document.getElementById('advance-disclaimer-box');
+    box.style.display = val === 'advance' ? 'block' : 'none';
+    updateContinueBtnState();
+    refreshSummary();
+  }
+  function updateContinueBtnState(){
+    const val = document.querySelector('input[name="pay"]:checked').value;
+    const ack = document.getElementById('advance-ack-checkbox');
+    const btn = document.getElementById('checkout-continue-btn');
+    btn.disabled = (val === 'advance' && !ack.checked);
+  }
+  document.getElementById('advance-ack-checkbox').addEventListener('change', updateContinueBtnState);
+  document.getElementById('advance-amount-label').textContent = SITE_CONFIG.advanceHoldingAmount;
+  document.getElementById('advance-amount-label-2').textContent = SITE_CONFIG.advanceHoldingAmount;
+  document.getElementById('advance-disclaimer-text').textContent = SITE_CONFIG.advanceDisclaimer;
+  document.querySelectorAll('input[name="pay"]').forEach(r => r.addEventListener('change', e => selectPayOpt(e.target.value)));
+  document.getElementById('state-select').addEventListener('change', refreshDeliveryNote);
+  document.querySelector('input[name="city"]').addEventListener('input', Utils.debounce(refreshDeliveryNote, 300));
+
+  document.getElementById('pincode-input').addEventListener('input', Utils.debounce(async (e) => {
+    const pin = e.target.value.trim();
+    const statusEl = document.getElementById('pincode-status');
+    if (pin.length !== 6){ statusEl.textContent = ''; return; }
+    statusEl.textContent = 'Looking up…';
+    statusEl.style.color = 'var(--text-faint)';
+    const result = await Pincode.lookup(pin);
+    if (!result.ok){
+      statusEl.textContent = result.error;
+      statusEl.style.color = 'var(--danger)';
+      return;
+    }
+    document.getElementById('city-input').value = result.district;
+    const stateSelect = document.getElementById('state-select');
+    const match = [...stateSelect.options].find(o => o.value.toLowerCase() === result.state.toLowerCase());
+    if (match) stateSelect.value = match.value;
+    statusEl.textContent = `✓ ${result.area}, ${result.district}, ${result.state}`;
+    statusEl.style.color = 'var(--success)';
+    refreshDeliveryNote();
+  }, 500));
+
+  document.getElementById('checkout-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Placing order…';
+    const fd = new FormData(e.target);
+    const address = Object.fromEntries(fd.entries());
+    const paymentMethod = address.pay; delete address.pay;
+    const result = await Checkout.createOrder({ address, paymentMethod });
+    if (!result.ok){
+      Notify.toast(result.error, 'error');
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<i class="fa-solid fa-lock"></i> Continue';
+      return;
+    }
+    window.location.href = 'payment.html?order=' + result.order.id;
+  });
+
+  refreshDeliveryNote();
+});
+});
+</script>
+</body>
+</html>

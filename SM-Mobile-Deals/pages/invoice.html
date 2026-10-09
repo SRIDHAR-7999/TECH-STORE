@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){try{document.documentElement.setAttribute('data-theme', localStorage.getItem('smd_theme') || 'dark');}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invoice — SM Mobile Deals</title>
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#050812">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dark-mode.css">
+<link rel="stylesheet" href="../css/animations.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<style>
+  .inv-wrap{ max-width:820px; margin:0 auto; padding:30px 0 60px; }
+  .inv-sheet{ background:#fff; color:#1a1a1a; border-radius:14px; padding:40px; box-shadow:var(--shadow-lg); }
+  .inv-sheet *{ color:#1a1a1a; }
+  .inv-head{ display:flex; justify-content:space-between; align-items:flex-start; border-bottom:2px solid #1a1a1a; padding-bottom:18px; margin-bottom:22px; }
+  .inv-brand{ font-family:var(--font-display); font-size:22px; font-weight:800; }
+  .inv-brand small{ display:block; font-family:var(--font-sans); font-size:12px; font-weight:500; color:#555; margin-top:4px; }
+  .inv-meta{ text-align:right; font-size:12.5px; line-height:1.6; }
+  .inv-meta b{ font-family:var(--font-mono); }
+  .inv-section-title{ font-size:11px; text-transform:uppercase; letter-spacing:.06em; font-weight:700; color:#666; margin-bottom:6px; }
+  .inv-grid{ display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:24px; }
+  .inv-table{ width:100%; border-collapse:collapse; font-size:12.5px; margin-bottom:22px; }
+  .inv-table th{ text-align:left; border-bottom:2px solid #1a1a1a; padding:8px 6px; font-size:11px; text-transform:uppercase; letter-spacing:.04em; }
+  .inv-table td{ border-bottom:1px solid #ddd; padding:9px 6px; vertical-align:top; }
+  .inv-table .spec-line{ font-size:11px; color:#666; margin-top:2px; }
+  .inv-totals{ margin-left:auto; width:260px; font-size:13px; }
+  .inv-totals .row{ display:flex; justify-content:space-between; padding:5px 0; }
+  .inv-totals .grand{ border-top:2px solid #1a1a1a; margin-top:6px; padding-top:8px; font-weight:800; font-size:15px; }
+  .inv-status{ display:inline-block; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; background:#16a34a1a; color:#16a34a; }
+  .inv-footer{ display:flex; justify-content:space-between; align-items:flex-end; margin-top:44px; padding-top:20px; border-top:1px dashed #bbb; }
+  .inv-sign-box{ text-align:center; }
+  .inv-sign-box img{ max-height:56px; max-width:180px; display:block; margin:0 auto 4px; }
+  .inv-sign-line{ border-top:1px solid #333; width:180px; margin:0 auto; padding-top:6px; font-size:11px; color:#555; }
+  .inv-seal{ width:104px; height:104px; border-radius:50%; border:3px double #b91c1c; color:#b91c1c; display:flex; align-items:center; justify-content:center; text-align:center; font-family:var(--font-display); font-weight:800; font-size:11.5px; line-height:1.25; transform:rotate(-8deg); opacity:.85; letter-spacing:.02em; }
+  .inv-actions{ display:flex; gap:10px; justify-content:center; margin:22px 0; }
+  .inv-table-wrap{ width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+
+  @media (max-width:680px){
+    .inv-wrap{ padding:14px 0 40px; }
+    .inv-sheet{ padding:18px; border-radius:10px; }
+    .inv-head{ flex-direction:column; gap:10px; align-items:flex-start; }
+    .inv-meta{ text-align:left; }
+    .inv-brand{ font-size:19px; }
+    .inv-grid{ grid-template-columns:1fr; gap:16px; margin-bottom:18px; }
+    .inv-table{ min-width:480px; font-size:11.5px; }
+    .inv-totals{ width:100%; max-width:260px; }
+    .inv-footer{ flex-direction:column; align-items:flex-start; gap:18px; }
+    .inv-footer > div:last-child{ align-self:center; }
+    .inv-sign-box{ align-self:center; }
+    .inv-actions{ flex-direction:column; }
+    .inv-actions .btn{ width:100%; justify-content:center; }
+  }
+
+  @media print{
+    .site-header, .site-footer, .announce-bar, .inv-actions, #page-loader{ display:none !important; }
+    body{ background:#fff !important; }
+    .inv-sheet{ box-shadow:none; border-radius:0; padding:0; }
+    .inv-wrap{ max-width:100%; padding:0; }
+  }
+</style>
+</head>
+<body>
+<div id="page-loader">
+  <div class="pl-inner">
+    <div class="pl-mark"><span>S</span><span>M</span></div>
+    <div class="pl-title" id="pl-title" data-text="SM Mobile Deals"></div>
+    <div class="pl-sub">Genuine tech, honest prices.</div>
+    <div class="pl-bar"><div class="pl-bar-fill"></div></div>
+  </div>
+</div>
+<div id="site-header"></div>
+
+<main>
+  <section class="container inv-wrap">
+    <div class="inv-actions">
+      <button class="btn btn-primary" id="inv-print-btn"><i class="fa-solid fa-print"></i> Print / Save as PDF</button>
+      <a href="orders.html" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Back to Orders</a>
+    </div>
+    <div id="inv-root" class="inv-sheet"></div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+
+<script>const ROOT_PREFIX = '../';</script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script defer src="../js/supabase-client.js"></script>
+<script defer src="../js/config.js"></script>
+<script defer src="../js/utils.js"></script>
+<script defer src="../js/specs.js"></script>
+<script defer src="../js/data.js"></script>
+<script defer src="../js/auth.js"></script>
+<script defer src="../js/cart.js"></script>
+<script defer src="../js/notifications.js"></script>
+<script defer src="../js/theme.js"></script>
+<script defer src="../js/cursor.js"></script>
+<script defer src="../js/loader.js"></script>
+<script defer src="../js/search.js"></script>
+<script defer src="../js/orders.js"></script>
+<script defer src="../js/payment.js"></script>
+<script defer src="../js/pincode.js"></script>
+<script defer src="../js/checkout.js"></script>
+<script defer src="../js/profile.js"></script>
+<script defer src="../js/analytics.js"></script>
+<script defer src="../js/admin.js"></script>
+<script defer src="../js/chatbot.js"></script>
+<script defer src="../js/reminders.js"></script>
+<script defer src="../js/inbox.js"></script>
+<script defer src="../js/branding.js"></script>
+
+<script defer src="../js/celebrate.js"></script>
+<script defer src="../js/ui.js"></script>
+<script defer src="../js/app.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+App.boot('shop').then(async () => {
+  if (!Auth.isLoggedIn()){ window.location.href = 'login.html'; return; }
+  await Orders.refresh();
+  const orderId = Utils.qs('order');
+  const order = Orders.byId(orderId);
+  const root = document.getElementById('inv-root');
+  if (!order){
+    root.innerHTML = `<div class="empty-state" style="color:#1a1a1a;"><i class="fa-solid fa-circle-exclamation"></i><h3>Order not found</h3></div>`;
+    return;
+  }
+  const me = Auth.currentUser();
+  const isAdmin = me && me.role === 'admin';
+  if (!isAdmin && order.userId !== me.id){
+    root.innerHTML = `<div class="empty-state" style="color:#1a1a1a;"><i class="fa-solid fa-lock"></i><h3>This bill isn't yours to view</h3></div>`;
+    return;
+  }
+
+  const products = DB.getProducts();
+  const signatureUrl = await Inbox.getSetting('admin_signature_url');
+
+  const rows = (order.items || []).map(item => {
+    const p = products.find(pp => pp.id === item.id);
+    const specBits = [];
+    if (p){
+      [['Model', p.modelName], ['Storage', p.storage], ['RAM', p.ram], ['Color', p.colorName], ['Variant', p.variant]]
+        .filter(([,v]) => v).forEach(([k,v]) => specBits.push(`${k}: ${v}`));
+      if (p.condition && p.condition !== 'new') specBits.push((DB.CONDITION_META[p.condition]||{}).label || p.condition);
+    }
+    const lineTotal = (item.price || 0) * (item.qty || 1);
+    return `<tr>
+      <td>${Utils.escapeHtml(item.name)}${specBits.length ? `<div class="spec-line">${Utils.escapeHtml(specBits.join(' · '))}</div>` : ''}</td>
+      <td style="text-align:center;">${item.qty}</td>
+      <td style="text-align:right;font-family:var(--font-mono);">${Utils.formatINR(item.price)}</td>
+      <td style="text-align:right;font-family:var(--font-mono);font-weight:700;">${Utils.formatINR(lineTotal)}</td>
+    </tr>`;
+  }).join('');
+
+  const t = order.totals || {};
+  const isAdvanceOrder = order.paymentMethod === 'advance';
+  const balancePaid = order.balanceStatus === 'paid';
+  const fullyPaid = order.paymentStatus === 'confirmed' && (!isAdvanceOrder || balancePaid);
+  const statusLabel = fullyPaid ? 'Payment Received' : (isAdvanceOrder && order.paymentStatus === 'confirmed') ? 'Advance Paid — Balance Due' : (order.paymentStatus||'').replace(/_/g,' ');
+
+  root.innerHTML = `
+    <div class="inv-head">
+      <div>
+        <div class="inv-brand">${SITE_CONFIG.shopName}<small>${SITE_CONFIG.legalName} · ${SITE_CONFIG.address}</small></div>
+      </div>
+      <div class="inv-meta">
+        <div><b>Invoice for Order ${Utils.escapeHtml(order.id)}</b></div>
+        <div>Date: ${Utils.formatDate(order.createdAt)}</div>
+        <div style="margin-top:6px;"><span class="inv-status" style="background:${fullyPaid?'#16a34a1a':'#f59e0b1a'};color:${fullyPaid?'#16a34a':'#b45309'};">${statusLabel}</span></div>
+      </div>
+    </div>
+
+    <div class="inv-grid">
+      <div>
+        <div class="inv-section-title">Billed To</div>
+        <div style="font-size:13.5px;line-height:1.6;">
+          ${Utils.escapeHtml(order.address?.name || '')}<br>
+          ${Utils.escapeHtml(order.address?.line1 || '')}<br>
+          ${Utils.escapeHtml(order.address?.city || '')}, ${Utils.escapeHtml(order.address?.state || '')} ${Utils.escapeHtml(order.address?.pincode || '')}<br>
+          ${Utils.escapeHtml(order.address?.phone || '')}
+        </div>
+      </div>
+      <div>
+        <div class="inv-section-title">Payment</div>
+        <div style="font-size:13.5px;line-height:1.6;">
+          Method: ${(order.paymentMethod||'').toUpperCase()}<br>
+          Delivery estimate: ${Utils.escapeHtml(order.deliveryEstimate || '—')}
+        </div>
+      </div>
+    </div>
+
+    <table class="inv-table">
+      <thead><tr><th>Item</th><th style="text-align:center;">Qty</th><th style="text-align:right;">Price</th><th style="text-align:right;">Amount</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+  const tableWrap = document.createElement('div');
+  tableWrap.className = 'inv-table-wrap';
+  const tableEl = root.querySelector('.inv-table');
+  tableEl.parentNode.insertBefore(tableWrap, tableEl);
+  tableWrap.appendChild(tableEl);
+  root.insertAdjacentHTML('beforeend', `
+    <div class="inv-totals">
+      <div class="row"><span>Subtotal</span><span style="font-family:var(--font-mono);">${Utils.formatINR(t.subtotal ?? t.total)}</span></div>
+      ${t.deliveryFee ? `<div class="row"><span>Delivery</span><span style="font-family:var(--font-mono);">${Utils.formatINR(t.deliveryFee)}</span></div>` : ''}
+      ${t.cardSurcharge ? `<div class="row"><span>Card surcharge</span><span style="font-family:var(--font-mono);">${Utils.formatINR(t.cardSurcharge)}</span></div>` : ''}
+      <div class="row grand"><span>Total</span><span style="font-family:var(--font-mono);">${Utils.formatINR(t.total)}</span></div>
+      ${isAdvanceOrder ? `
+      <div class="row" style="color:#16a34a;"><span>Advance paid (non-refundable)</span><span style="font-family:var(--font-mono);">${Utils.formatINR(t.advanceAmount)}</span></div>
+      <div class="row" style="color:${balancePaid?'#16a34a':'#b45309'};"><span>Balance ${balancePaid?'paid':'due'}</span><span style="font-family:var(--font-mono);">${Utils.formatINR(t.balanceAmount)}</span></div>` : ''}
+      <div class="row" style="font-size:11px;color:#777;">Inclusive of ${Math.round((SITE_CONFIG.gstRate||0)*100)}% GST</div>
+    </div>
+
+    <div class="inv-footer">
+      <div style="font-size:11px;color:#777;max-width:280px;">
+        This is a system-generated bill from ${SITE_CONFIG.shopName}.<br>
+        Contact: ${SITE_CONFIG.phones?.[0] || ''} · ${SITE_CONFIG.email || ''}
+      </div>
+      <div class="inv-sign-box">
+        ${signatureUrl ? `<img src="${signatureUrl}" alt="Authorised signature">` : ''}
+        <div class="inv-sign-line">Authorised Signatory</div>
+      </div>
+      <div class="inv-seal">${SITE_CONFIG.shopName.toUpperCase()}<br>★ VERIFIED ★<br>DIGITAL SEAL</div>
+    </div>`);
+
+  document.getElementById('inv-print-btn').addEventListener('click', () => window.print());
+});
+});
+</script>
+</body>
+</html>

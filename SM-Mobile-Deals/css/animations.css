@@ -1,0 +1,46 @@
+/* ==========================================================================
+   ANIMATIONS — page transitions, reveal-on-scroll, misc keyframes
+   ========================================================================== */
+
+@keyframes fadeUp{ from{ opacity:0; transform:translateY(18px);} to{ opacity:1; transform:translateY(0);} }
+@keyframes fadeIn{ from{ opacity:0;} to{ opacity:1;} }
+@keyframes scaleIn{ from{ opacity:0; transform:scale(.92);} to{ opacity:1; transform:scale(1);} }
+@keyframes spin{ to{ transform:rotate(360deg); } }
+
+.reveal{ opacity:0; transform:translateY(24px); transition:opacity .7s var(--ease), transform .7s var(--ease); }
+.reveal.in{ opacity:1; transform:translateY(0); }
+
+.page-enter{ animation:fadeUp .5s var(--ease) both; }
+
+.spin{ animation:spin 1s linear infinite; }
+
+/* stagger helper via inline --d */
+.reveal{ transition-delay:var(--d,0s); }
+
+/* success check draw */
+.check-circle{ width:80px; height:80px; border-radius:50%; background:var(--success-soft); display:flex; align-items:center; justify-content:center; margin:0 auto 18px; animation:scaleIn .5s var(--ease) both; }
+.check-circle i{ color:var(--success); font-size:38px; }
+
+/* pending pulse ring */
+.pending-ring{ width:80px; height:80px; border-radius:50%; background:var(--pending-soft); display:flex; align-items:center; justify-content:center; margin:0 auto 18px; position:relative; }
+.pending-ring::before{ content:''; position:absolute; inset:-6px; border-radius:50%; border:2px solid var(--pending); opacity:.5; animation:ringPulse 1.6s ease-out infinite; }
+@keyframes ringPulse{ 0%{ transform:scale(.9); opacity:.6;} 100%{ transform:scale(1.25); opacity:0;} }
+.pending-ring i{ color:var(--pending); font-size:34px; }
+
+/* ---------------- Celebration effect (confetti + balloons) ----------------
+   Triggered once by js/celebrate.js whenever an order goes through as
+   successfully paid. Pure CSS/DOM, no external library. */
+.celebrate-layer{ position:fixed; inset:0; pointer-events:none; z-index:9999; overflow:hidden; }
+.confetti-piece{ position:absolute; top:-24px; opacity:.95; will-change:transform,opacity; animation-name:confettiFall; animation-timing-function:cubic-bezier(.35,0,.65,1); animation-fill-mode:forwards; }
+@keyframes confettiFall{
+  0%   { transform:translate3d(0,0,0) rotate(0deg); opacity:1; }
+  85%  { opacity:1; }
+  100% { transform:translate3d(var(--drift,0px), 108vh, 0) rotate(var(--spin,540deg)); opacity:0; }
+}
+.balloon-piece{ position:absolute; bottom:-140px; will-change:transform,opacity; animation-name:balloonRise; animation-timing-function:ease-out; animation-fill-mode:forwards; }
+.balloon-piece::after{ content:''; position:absolute; left:50%; top:100%; width:2px; height:26px; background:rgba(255,255,255,.35); transform:translateX(-50%); }
+@keyframes balloonRise{
+  0%   { transform:translate3d(0,0,0) rotate(0deg); opacity:0; }
+  8%   { opacity:1; }
+  100% { transform:translate3d(var(--drift,0px), -118vh, 0) rotate(var(--sway,10deg)); opacity:0; }
+}

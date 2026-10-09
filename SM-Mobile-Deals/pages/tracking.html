@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){try{document.documentElement.setAttribute('data-theme', localStorage.getItem('smd_theme') || 'dark');}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Track Order — SM Mobile Deals</title>
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#050812">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dark-mode.css">
+<link rel="stylesheet" href="../css/animations.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<style>
+  .track-timeline{ position:relative; padding-left:30px; margin:30px 0; }
+  .track-timeline::before{ content:''; position:absolute; left:10px; top:6px; bottom:6px; width:2px; background:var(--border); }
+  .track-step{ position:relative; padding-bottom:28px; }
+  .track-step .dot{ position:absolute; left:-30px; top:0; width:22px; height:22px; border-radius:50%; background:var(--surface-2); border:2px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:11px; }
+  .track-step.done .dot{ background:var(--success); border-color:var(--success); color:#fff; }
+  .track-step.current .dot{ background:var(--accent); border-color:var(--accent); color:#fff; animation:fabPulse 2s infinite; }
+  .track-step h5{ margin:0 0 3px; font-family:var(--font-display); font-size:14.5px; }
+</style>
+</head>
+<body>
+<div id="page-loader">
+  <div class="pl-inner">
+    <div class="pl-mark"><span>S</span><span>M</span></div>
+    <div class="pl-title" id="pl-title" data-text="SM Mobile Deals"></div>
+    <div class="pl-sub">Genuine tech, honest prices.</div>
+    <div class="pl-bar"><div class="pl-bar-fill"></div></div>
+  </div>
+</div>
+<div id="site-header"></div>
+
+<main>
+  <section class="page-hero container">
+    <div class="breadcrumb"><a href="../index.html">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i> <span>Track Order</span></div>
+    <h1 class="page-title">Track Your Order</h1>
+  </section>
+
+  <section class="section container" style="padding-top:10px;max-width:640px;">
+    <div class="card" style="padding:20px;margin-bottom:20px;">
+      <div class="flex gap-12" style="flex-wrap:wrap;">
+        <input class="input" id="track-input" placeholder="Enter Order ID e.g. SMD2607123456" style="flex:1;min-width:220px;">
+        <button class="btn btn-primary" onclick="doTrack()"><i class="fa-solid fa-magnifying-glass"></i> Track</button>
+      </div>
+    </div>
+    <div id="track-result"></div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+
+<script>const ROOT_PREFIX = '../';</script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script defer src="../js/supabase-client.js"></script>
+<script defer src="../js/config.js"></script>
+<script defer src="../js/utils.js"></script>
+<script defer src="../js/specs.js"></script>
+<script defer src="../js/data.js"></script>
+<script defer src="../js/auth.js"></script>
+<script defer src="../js/cart.js"></script>
+<script defer src="../js/notifications.js"></script>
+<script defer src="../js/theme.js"></script>
+<script defer src="../js/cursor.js"></script>
+<script defer src="../js/loader.js"></script>
+<script defer src="../js/search.js"></script>
+<script defer src="../js/orders.js"></script>
+<script defer src="../js/payment.js"></script>
+<script defer src="../js/pincode.js"></script>
+<script defer src="../js/checkout.js"></script>
+<script defer src="../js/profile.js"></script>
+<script defer src="../js/analytics.js"></script>
+<script defer src="../js/admin.js"></script>
+<script defer src="../js/chatbot.js"></script>
+<script defer src="../js/reminders.js"></script>
+<script defer src="../js/inbox.js"></script>
+<script defer src="../js/branding.js"></script>
+
+<script defer src="../js/celebrate.js"></script>
+<script defer src="../js/ui.js"></script>
+<script defer src="../js/app.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+async function doTrack(){
+    await Orders.refresh();
+    const id = document.getElementById('track-input').value.trim();
+    const order = Orders.byId(id);
+    const root = document.getElementById('track-result');
+    if (!order){
+      root.innerHTML = `<div class="empty-state"><i class="fa-solid fa-magnifying-glass"></i><h3>No order found</h3><p>Double check the Order ID and try again.</p></div>`;
+      return;
+    }
+    const status = Orders.displayStatus(order);
+    if (status === 'payment_pending' || status === 'pending_confirmation'){
+      root.innerHTML = `<div class="card" style="padding:22px;text-align:center;">
+        <div class="pending-ring" style="margin-bottom:14px;"><i class="fa-solid fa-hourglass-half"></i></div>
+        <h3 style="font-family:var(--font-display);margin:0 0 6px;">${Orders.STATUS_META[status].label}</h3>
+        <p class="text-dim">Order <strong style="font-family:var(--font-mono);color:var(--text);">${order.id}</strong> hasn't been confirmed yet. Tracking begins once payment is verified.</p>
+        <a href="order-success.html?order=${order.id}" class="btn btn-outline btn-sm">View Status</a>
+      </div>`;
+      return;
+    }
+    const steps = Orders.TRACK_STEPS;
+    const currentIdx = steps.indexOf(order.orderStatus);
+    root.innerHTML = `
+      <div class="card" style="padding:22px;">
+        <div class="flex justify-between items-center" style="margin-bottom:6px;">
+          <strong style="font-family:var(--font-mono);">${order.id}</strong>
+          <span class="text-faint" style="font-size:12.5px;">Est. delivery: ${order.deliveryEstimate}</span>
+        </div>
+        <p class="text-dim" style="font-size:13px;margin:0;">Deliver to ${Utils.escapeHtml(order.address.city)}, ${Utils.escapeHtml(order.address.state)}</p>
+        ${order.trackingUrl ? `
+        <div style="margin-top:14px;padding:12px;background:var(--surface-2);border:1px solid var(--border-soft);border-radius:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+          <div><i class="fa-solid fa-truck-fast" style="color:var(--accent-2);"></i> ${Utils.escapeHtml((SITE_CONFIG.couriers[order.courier] && SITE_CONFIG.couriers[order.courier].name) || order.courier || 'Courier')} · <span style="font-family:var(--font-mono);font-size:12.5px;">${Utils.escapeHtml(order.trackingNumber || '')}</span></div>
+          <a href="${order.trackingUrl}" target="_blank" rel="noopener" class="btn btn-primary btn-sm">Track Live on Courier Site</a>
+        </div>` : ''}
+        <div class="track-timeline">
+          ${steps.map((s,i) => `
+            <div class="track-step ${i < currentIdx ? 'done' : i === currentIdx ? 'current' : ''}">
+              <div class="dot">${i<currentIdx?'<i class=\"fa-solid fa-check\"></i>':''}</div>
+              <h5>${Orders.STATUS_META[s].label}</h5>
+              <span class="text-faint" style="font-size:12px;">${order.timeline.find(t=>t.status===s) ? Utils.formatDate(order.timeline.find(t=>t.status===s).at) : (i<=currentIdx?'':'Pending')}</span>
+            </div>`).join('')}
+        </div>
+      </div>`;
+  }
+
+  App.boot('shop').then(() => {
+    const qOrder = Utils.qs('order');
+    if (qOrder){ document.getElementById('track-input').value = qOrder; doTrack(); }
+  });
+});
+</script>
+</body>
+</html>

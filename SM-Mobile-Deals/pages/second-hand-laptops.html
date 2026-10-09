@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){try{document.documentElement.setAttribute('data-theme', localStorage.getItem('smd_theme') || 'dark');}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Second Hand Laptops — SM Mobile Deals</title>
+<meta name="description" content="Sealed, Seal Cut, Demo and Second Hand laptops at SM Mobile Deals — inspected, graded and priced transparently.">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#050812">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dark-mode.css">
+<link rel="stylesheet" href="../css/animations.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<style>
+  .grade-legend{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin:26px 0; }
+  .grade-card{ padding:16px; text-align:center; }
+  .grade-card i{ font-size:20px; margin-bottom:8px; }
+  @media(max-width:680px){ .grade-legend{ grid-template-columns:repeat(2,1fr); } }
+</style>
+</head>
+<body>
+<div id="page-loader">
+  <div class="pl-inner">
+    <div class="pl-mark"><span>S</span><span>M</span></div>
+    <div class="pl-title" id="pl-title" data-text="SM Mobile Deals"></div>
+    <div class="pl-sub">Genuine tech, honest prices.</div>
+    <div class="pl-bar"><div class="pl-bar-fill"></div></div>
+  </div>
+</div>
+<div id="site-header"></div>
+
+<main>
+  <section class="page-hero container">
+    <div class="breadcrumb"><a href="../index.html">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i> <span>Second Hand Laptops</span></div>
+    <h1 class="page-title">Second Hand Laptops</h1>
+    <p class="text-dim" style="max-width:640px;margin-top:10px;">Every phone here is inspected in-store before listing and graded honestly — Sealed, Seal Cut, Demo Piece, or Second Hand. Prices reflect the actual condition, not just the model.</p>
+  </section>
+
+  <section class="container">
+    <div class="grade-legend">
+      <div class="card grade-card"><i class="fa-solid fa-box-open badge-success" style="color:var(--success);"></i><h5 style="font-family:var(--font-display);margin:0 0 4px;">Sealed</h5><p class="text-faint" style="font-size:12px;margin:0;">Factory sealed box, unopened</p></div>
+      <div class="card grade-card"><i class="fa-solid fa-tape" style="color:var(--deal);"></i><h5 style="font-family:var(--font-display);margin:0 0 4px;">Seal Cut</h5><p class="text-faint" style="font-size:12px;margin:0;">Box opened for inspection only</p></div>
+      <div class="card grade-card"><i class="fa-solid fa-hourglass-half" style="color:var(--pending);"></i><h5 style="font-family:var(--font-display);margin:0 0 4px;">Demo Piece</h5><p class="text-faint" style="font-size:12px;margin:0;">Used briefly as a store display unit</p></div>
+      <div class="card grade-card"><i class="fa-solid fa-rotate" style="color:var(--danger);"></i><h5 style="font-family:var(--font-display);margin:0 0 4px;">Second Hand</h5><p class="text-faint" style="font-size:12px;margin:0;">Pre-owned, fully inspected & tested</p></div>
+    </div>
+  </section>
+
+  <section class="section container" style="padding-top:6px;">
+    <div class="flex justify-between items-center" style="margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+      <div class="flex gap-8" id="grade-filter" style="flex-wrap:wrap;"></div>
+      <span class="text-faint" id="result-count" style="font-size:13px;"></span>
+    </div>
+    <div class="grid grid-products" id="product-grid"></div>
+    <div style="text-align:center;margin-top:24px;">
+      <button class="btn btn-outline" id="load-more-btn" style="display:none;" onclick="loadMoreShl()">Load More</button>
+    </div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+
+<script>const ROOT_PREFIX = '../';</script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script defer src="../js/supabase-client.js"></script>
+<script defer src="../js/config.js"></script>
+<script defer src="../js/utils.js"></script>
+<script defer src="../js/specs.js"></script>
+<script defer src="../js/data.js"></script>
+<script defer src="../js/auth.js"></script>
+<script defer src="../js/cart.js"></script>
+<script defer src="../js/notifications.js"></script>
+<script defer src="../js/theme.js"></script>
+<script defer src="../js/cursor.js"></script>
+<script defer src="../js/loader.js"></script>
+<script defer src="../js/search.js"></script>
+<script defer src="../js/orders.js"></script>
+<script defer src="../js/payment.js"></script>
+<script defer src="../js/pincode.js"></script>
+<script defer src="../js/checkout.js"></script>
+<script defer src="../js/profile.js"></script>
+<script defer src="../js/analytics.js"></script>
+<script defer src="../js/admin.js"></script>
+<script defer src="../js/chatbot.js"></script>
+<script defer src="../js/reminders.js"></script>
+<script defer src="../js/inbox.js"></script>
+<script defer src="../js/branding.js"></script>
+
+<script defer src="../js/celebrate.js"></script>
+<script defer src="../js/ui.js"></script>
+<script defer src="../js/app.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+const GRADES = { '':'All Grades', sealed:'Sealed', seal_cut:'Seal Cut', demo:'Demo Piece', used:'Second Hand' };
+  let activeGrade = '';
+
+  const PAGE_SIZE = 24;
+  let visibleCount = PAGE_SIZE;
+
+  function render(){
+    document.getElementById('grade-filter').innerHTML = Object.entries(GRADES).map(([val,label]) => `
+      <button class="chip ${activeGrade===val?'active':''}" onclick="setGrade('${val}')">${label}</button>
+    `).join('');
+    let list = DB.getProducts().filter(p => p.category === 'second-hand-laptops');
+    if (activeGrade) list = list.filter(p => p.condition === activeGrade);
+    document.getElementById('result-count').textContent = `${list.length} laptop${list.length===1?'':'s'}`;
+    const shown = list.slice(0, visibleCount);
+    document.getElementById('product-grid').innerHTML = list.length
+      ? shown.map(UI.productCardHTML).join('')
+      : `<div class="empty-state" style="grid-column:1/-1;"><i class="fa-solid fa-box-open"></i><h3>No listings in this grade right now</h3></div>`;
+    document.getElementById('load-more-btn').style.display = list.length > visibleCount ? 'block' : 'none';
+    Loader.initReveal();
+  }
+  window.setGrade = (g) => { activeGrade = g; visibleCount = PAGE_SIZE; render(); };
+  window.loadMoreShl = () => { visibleCount += PAGE_SIZE; render(); };
+
+  App.boot('shop').then(render);
+});
+</script>
+</body>
+</html>

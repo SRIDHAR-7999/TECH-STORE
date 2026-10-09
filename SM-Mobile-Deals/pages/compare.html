@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){try{document.documentElement.setAttribute('data-theme', localStorage.getItem('smd_theme') || 'dark');}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compare Products — SM Mobile Deals</title>
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#050812">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dark-mode.css">
+<link rel="stylesheet" href="../css/animations.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<style>
+  .cmp-table-wrap{ overflow-x:auto; }
+  .cmp-table{ width:100%; border-collapse:separate; border-spacing:0; min-width:600px; }
+  .cmp-table th, .cmp-table td{ padding:14px 16px; border-bottom:1px solid var(--border-soft); vertical-align:top; }
+  .cmp-table th{ text-align:left; width:140px; color:var(--text-faint); font-size:12px; text-transform:uppercase; letter-spacing:.04em; }
+  .cmp-col img{ width:70px; height:70px; object-fit:contain; background:var(--surface-2); border-radius:12px; padding:6px; margin-bottom:8px; }
+  .cmp-remove{ background:none; border:none; color:var(--text-faint); cursor:pointer; float:right; }
+</style>
+</head>
+<body>
+<div id="page-loader">
+  <div class="pl-inner">
+    <div class="pl-mark"><span>S</span><span>M</span></div>
+    <div class="pl-title" id="pl-title" data-text="SM Mobile Deals"></div>
+    <div class="pl-sub">Genuine tech, honest prices.</div>
+    <div class="pl-bar"><div class="pl-bar-fill"></div></div>
+  </div>
+</div>
+<div id="site-header"></div>
+
+<main>
+  <section class="page-hero container">
+    <div class="breadcrumb"><a href="../index.html">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i> <span>Compare</span></div>
+    <h1 class="page-title">Compare Products</h1>
+  </section>
+  <section class="section container" style="padding-top:10px;">
+    <div id="cmp-empty" class="empty-state" style="display:none;">
+      <i class="fa-solid fa-scale-balanced"></i><h3>Nothing to compare yet</h3><p>Add up to 4 products from the shop page to compare specs side by side.</p>
+      <a href="products.html" class="btn btn-primary" style="margin-top:14px;">Browse Products</a>
+    </div>
+    <div class="card cmp-table-wrap" id="cmp-wrap" style="display:none;padding:6px;"></div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+
+<script>const ROOT_PREFIX = '../';</script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script defer src="../js/supabase-client.js"></script>
+<script defer src="../js/config.js"></script>
+<script defer src="../js/utils.js"></script>
+<script defer src="../js/specs.js"></script>
+<script defer src="../js/data.js"></script>
+<script defer src="../js/auth.js"></script>
+<script defer src="../js/cart.js"></script>
+<script defer src="../js/notifications.js"></script>
+<script defer src="../js/theme.js"></script>
+<script defer src="../js/cursor.js"></script>
+<script defer src="../js/loader.js"></script>
+<script defer src="../js/search.js"></script>
+<script defer src="../js/orders.js"></script>
+<script defer src="../js/payment.js"></script>
+<script defer src="../js/pincode.js"></script>
+<script defer src="../js/checkout.js"></script>
+<script defer src="../js/profile.js"></script>
+<script defer src="../js/analytics.js"></script>
+<script defer src="../js/admin.js"></script>
+<script defer src="../js/chatbot.js"></script>
+<script defer src="../js/reminders.js"></script>
+<script defer src="../js/inbox.js"></script>
+<script defer src="../js/branding.js"></script>
+
+<script defer src="../js/celebrate.js"></script>
+<script defer src="../js/ui.js"></script>
+<script defer src="../js/app.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+const SPEC_LABELS = {
+    phone: ['Storage', 'Display', 'Processor', 'Camera'],
+    laptop: ['Processor', 'RAM', 'Storage', 'Graphics'],
+    watch: ['Case Size', 'Health Sensor', 'Connectivity', 'Water Resistance'],
+    earbuds: ['Feature', 'Controls', 'Water Resistance', 'Battery Life']
+  };
+
+  function render(){
+    const items = Compare.detailed();
+    document.getElementById('cmp-empty').style.display = items.length ? 'none' : 'block';
+    document.getElementById('cmp-wrap').style.display = items.length ? 'block' : 'none';
+    if (!items.length) return;
+
+    const maxSpecs = Math.max(...items.map(i => i.specs.length));
+    // Use the labels of whichever item's type appears most, so mixed comparisons still get sensible headers
+    const typeCounts = {};
+    items.forEach(i => { typeCounts[i.type] = (typeCounts[i.type]||0) + 1; });
+    const dominantType = Object.entries(typeCounts).sort((a,b) => b[1]-a[1])[0][0];
+    const labels = SPEC_LABELS[dominantType] || [];
+
+    let rows = `<tr><th>Product</th>${items.map(i => `
+      <td class="cmp-col"><button class="cmp-remove" onclick="Compare.remove('${i.id}'); render();"><i class="fa-solid fa-xmark"></i></button>
+        <img src="${i.imageUrl || Utils.deviceImage(i.type,i.color)}" style="${i.imageUrl?'object-fit:cover;':''}"><div style="font-weight:700;font-size:13.5px;">${Utils.escapeHtml(i.name)}</div>
+        <div class="text-faint" style="font-size:11.5px;">${i.brand}</div></td>`).join('')}</tr>`;
+    rows += `<tr><th>Price</th>${items.map(i => `<td style="font-family:var(--font-mono);font-weight:700;">${Utils.formatINR(i.price)}</td>`).join('')}</tr>`;
+    rows += `<tr><th>Rating</th>${items.map(i => `<td>${i.reviews ? UI.stars(i.rating) + ` <span class="text-faint" style="font-size:12px;">(${i.reviews})</span>` : '<span class="text-faint">Not yet released</span>'}</td>`).join('')}</tr>`;
+    for (let s=0; s<maxSpecs; s++){
+      const label = labels[s] || `Spec ${s+1}`;
+      rows += `<tr><th>${label}</th>${items.map(i => `<td>${i.specs[s] ? Utils.escapeHtml(i.specs[s]) : '—'}</td>`).join('')}</tr>`;
+    }
+    rows += `<tr><th>Availability</th>${items.map(i => `<td>${UI.stockBadge(i)}</td>`).join('')}</tr>`;
+    rows += `<tr><th></th>${items.map(i => `<td><a href="product-details.html?id=${i.id}" class="btn btn-outline btn-sm">View</a> ${i.isPreOrder ? '' : `<button class="btn btn-primary btn-sm" onclick="Cart.add('${i.id}',1); Notify.toast('Added to cart','success');" ${i.stock<=0?'disabled':''}>Add</button>`}</td>`).join('')}</tr>`;
+
+    document.getElementById('cmp-wrap').innerHTML = `<table class="cmp-table">${rows}</table>`;
+  }
+  document.addEventListener('compare:change', render);
+  App.boot('compare').then(render);
+});
+</script>
+</body>
+</html>

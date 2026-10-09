@@ -1,0 +1,102 @@
+/* ==========================================================================
+   RESPONSIVE — breakpoints for tablet & mobile
+   ========================================================================== */
+
+@media (max-width: 1080px){
+  .footer-grid{ grid-template-columns:1fr 1fr; }
+  .hero-grid{ grid-template-columns:1fr; }
+  .hero-visual{ order:-1; max-width:340px; margin:0 auto; }
+  .grid-4{ grid-template-columns:repeat(3,1fr); }
+}
+
+@media (max-width: 860px){
+  .header-search{ display:none; }
+  nav.main-nav{ display:none; }
+  .mobile-menu-btn{ display:flex; }
+  .grid-3, .grid-4{ grid-template-columns:repeat(2,1fr); }
+  .offer-banner{ grid-template-columns:1fr; text-align:center; }
+  .offer-banner img{ margin:0 auto; max-width:160px; }
+}
+
+@media (max-width: 680px){
+  :root{ --header-h:64px; }
+  .container{ padding:0 16px; }
+  .footer-grid{ grid-template-columns:1fr 1fr; gap:26px; }
+  .footer-about{ grid-column:1/-1; }
+  .hero{ padding:36px 0 40px; text-align:left; }
+  .hero-stats{ gap:20px; }
+  .grid-products{ grid-template-columns:repeat(2,1fr); gap:12px; }
+  .grid-2{ grid-template-columns:1fr; }
+  .section{ padding:36px 0; }
+  .chat-panel{ left:12px; right:12px; width:auto; bottom:88px; }
+  .ai-fab{ left:16px; width:52px; height:52px; font-size:20px; }
+  .pc-name{ font-size:14px !important; }
+  .pc-price{ font-size:16px !important; }
+  .hero-badge-float{ display:none; }
+}
+
+@media (max-width: 460px){
+  .grid-3, .grid-4{ grid-template-columns:repeat(2,1fr); }
+  .hero-cta{ flex-direction:column; }
+  .hero-cta .btn{ width:100%; }
+  .steps{ font-size:11px; }
+  .step span.label{ display:none; }
+}
+
+/* ==========================================================================
+   BACKGROUND / PHOTO IMAGES — sized correctly for both mobile and desktop.
+   Each rule below targets an image that previously only had one fixed size,
+   which either cropped badly or ran too tall/short at the other end of the
+   viewport range.
+   ========================================================================== */
+
+/* Body background gradient (page-wide, from the uploaded reference image):
+   on very narrow screens the radial glows over-power the page since they
+   were sized for a desktop-width canvas — shrink them so mobile doesn't
+   look like a solid glow blob. */
+@media (max-width: 680px){
+  body{
+    background-image:
+      radial-gradient(560px 380px at 20% -6%, rgba(59,134,180,.14), transparent 60%),
+      radial-gradient(420px 300px at 95% 2%, rgba(85,166,200,.10), transparent 62%),
+      linear-gradient(180deg, #121733 0%, #1a2f5c 22%, #22588c 45%, #5fa8c8 72%, #95d2e4 100%);
+  }
+}
+
+/* Store-moment banner photo (homepage): full-bleed on desktop's split
+   layout, shorter fixed height on mobile once it stacks above the caption
+   so it doesn't eat the whole screen before any text is visible. */
+@media (max-width: 760px){
+  .store-moment img{ min-height:200px; max-height:260px; }
+  .store-moment-caption{ padding:22px; }
+  .store-moment-caption h3{ font-size:21px; }
+}
+
+/* About page photo: cap height further on phones so one photo doesn't push
+   all the page content below the fold. */
+@media (max-width: 680px){
+  .about-photo{ max-height:260px; margin:20px 0; }
+}
+
+/* Admin profile photo: slightly smaller on phones to match the tighter
+   sidebar-becomes-a-bar layout at that width. */
+@media (max-width: 900px){
+  .admin-avatar{ width:40px; height:40px; }
+  .admin-profile-card{ padding:11px; gap:10px; }
+}
+
+/* Category tile backdrop images: now that the photo uses object-fit:cover it
+   already fills the tile, so no extra zoom is needed on small screens — keep
+   it at 1:1 and let hover give only a very small nudge. */
+@media (max-width: 680px){
+  .ct-bg-img{ transform:scale(1.02); }
+  .cat-tile:hover .ct-bg-img{ transform:scale(1.06); }
+}
+
+/* Hero background glow + phone visual: the glow radii were tuned for a
+   1200px+ hero column; scale them down under the hero's mobile breakpoint
+   (where .hero-visual drops to max-width:340px) so the glow doesn't blow
+   out past the phone graphic. */
+@media (max-width: 1080px){
+  .glow-orb{ width:220px !important; height:220px !important; }
+}

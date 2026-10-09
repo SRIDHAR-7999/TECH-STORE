@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){try{document.documentElement.setAttribute('data-theme', localStorage.getItem('smd_theme') || 'dark');}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SM Mobile Deals | Tech Store AI — Intelligent E-Commerce Platform for Mobile and Laptop Accessories Shopping</title>
+<meta name="description" content="SM Mobile Deals, Coimbatore — genuine mobiles, laptops, smart watches & accessories. UPI/GPay/PhonePe/Paytm payment, 1-day delivery in Coimbatore district, AI shopping assistant.">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#050812">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/variables.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/dark-mode.css">
+<link rel="stylesheet" href="css/animations.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="page-home">
+<div id="page-loader">
+  <div class="pl-inner">
+    <div class="pl-mark"><span>S</span><span>M</span></div>
+    <div class="pl-title" id="pl-title" data-text="SM Mobile Deals"></div>
+    <div class="pl-sub">Genuine tech, honest prices.</div>
+    <div class="pl-bar"><div class="pl-bar-fill"></div></div>
+  </div>
+</div>
+
+<div id="site-header"></div>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <div class="hero-eyebrow"><span class="live-dot"></span> Live in Coimbatore · 1-day delivery in Coimbatore district</div>
+        <h1>Where technology<br><span class="accent-word">meets trust.</span></h1>
+        <p class="lead">Every mobile, laptop, smart watch and accessory we sell is chosen by hand, checked in person, and priced without games. A real store in Gandhipuram stands behind each one — pay simply with UPI, GPay, PhonePe, Paytm or card.</p>
+        <p class="hero-quote">"Good technology should feel effortless — and buying it should feel just as easy."</p>
+        <div class="hero-cta">
+          <a href="pages/products.html" class="btn btn-primary btn-lg"><i class="fa-solid fa-bag-shopping"></i> Shop Now</a>
+          <a href="pages/compare.html" class="btn btn-outline btn-lg"><i class="fa-solid fa-scale-balanced"></i> Compare Products</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat"><b>10K+</b><span>Happy customers</span></div>
+          <div class="stat"><b id="stat-product-count">—</b><span>Products in catalog</span></div>
+          <div class="stat"><b id="stat-avg-rating">4.9★</b><span>Average rating</span></div>
+          <div class="stat"><b>100%</b><span>Genuine products</span></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="glow-orb"></div>
+        <img src="assets/images/qr-upi-payment.jpg" style="display:none;">
+        <img id="hero-phone-img" alt="Featured phone" style="max-width:60%;">
+        <!-- Both badges are filled in by JS from the model currently on show,
+             so the charging figure always matches that specific phone. -->
+        <div class="hero-badge-float hero-badge-1" id="hero-badge-charge"></div>
+        <div class="hero-badge-float hero-badge-2"><i class="fa-solid fa-shield-halved" style="color:var(--success);"></i> 1 Year Warranty</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BRAND STRIP -->
+  <section class="brand-strip">
+    <div class="container" style="overflow:hidden;">
+      <div class="brand-track" id="brand-track"></div>
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section class="section container">
+    <div class="section-head">
+      <div><p class="eyebrow">Browse</p><h2 class="section-title">Shop by category</h2></div>
+    </div>
+    <div class="grid grid-4" id="category-grid"></div>
+  </section>
+
+  <!-- FLAGSHIP SPOTLIGHT -->
+  <section class="section container">
+    <div class="section-head reveal">
+      <div><p class="eyebrow">Just Launched</p><h2 class="section-title">2025–26 Flagship Spotlight</h2></div>
+    </div>
+    <div class="grid grid-4" id="spotlight-grid"></div>
+  </section>
+
+  <!-- BRAND STRIP (part 2 — remaining brands) -->
+  <section class="brand-strip">
+    <div class="container" style="overflow:hidden;">
+      <div class="brand-track" id="brand-track-2"></div>
+    </div>
+  </section>
+
+  <!-- TRENDING MODELS + CHARGING -->
+  <section class="section container">
+    <div class="section-head reveal">
+      <div><p class="eyebrow">Trending now</p><h2 class="section-title">Popular models &amp; the charger each one needs</h2></div>
+    </div>
+    <div class="grid grid-4" id="trending-charge-grid"></div>
+    <p class="text-dim" style="font-size:13px;margin-top:14px;">
+      Figures are peak wired charging for the Indian retail variant. Apple, Samsung, Google and Nothing ship without a charger in the box — pick the matching adapter above.
+    </p>
+  </section>
+
+  <!-- FEATURED PRODUCTS -->
+  <section class="section container">
+    <div class="section-head reveal">
+      <div><p class="eyebrow">Handpicked</p><h2 class="section-title">Featured products</h2></div>
+      <a href="pages/products.html" class="see-all">View all <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+    <div class="grid grid-products" id="featured-grid"></div>
+  </section>
+
+  <!-- OFFER BANNER -->
+  <section class="section container">
+    <div class="offer-banner reveal">
+      <div>
+        <span class="badge badge-deal" style="margin-bottom:10px;">Limited time</span>
+        <h3>Flat ₹5,000 off on iPhone 15 with exchange</h3>
+        <p>Trade in your old phone and pay online via UPI — instant order confirmation once we verify your payment.</p>
+        <a href="pages/products.html?q=iphone" class="btn btn-deal">Grab the deal</a>
+      </div>
+      <img src="assets/images/qr-upi-payment.jpg" style="width:110px;border-radius:14px;border:3px solid var(--surface-3);" alt="Scan to pay">
+    </div>
+  </section>
+
+  <!-- STORE MOMENT — a personal photo from the store owner, celebrating the
+       people behind the storefront rather than just the products. -->
+  <section class="section container">
+    <div class="store-moment reveal">
+      <div class="portrait-frame">
+        <div class="portrait-blur-bg" style="background-image:url('assets/personal/homepage-banner.jpg');"></div>
+        <img src="assets/personal/homepage-banner.jpg" alt="A moment from SM Mobile Deals" loading="lazy">
+      </div>
+      <div class="store-moment-caption">
+        <p class="eyebrow" style="margin-bottom:6px;">From our store</p>
+        <h3>Real people, real service.</h3>
+        <p class="text-dim">Every order is packed and checked by the same small team you'd meet if you walked into our Gandhipuram showroom.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY US -->
+  <section class="section container">
+    <div class="grid grid-4" id="why-grid">
+      <a href="pages/about.html" class="card reveal why-card why-card-link" style="padding:22px;display:block;"><div class="why-icon"><i class="fa-solid fa-shield-halved"></i></div><h4 style="font-family:var(--font-display);margin:14px 0 6px;">100% Genuine</h4><p class="text-dim" style="font-size:13.5px;margin:0;">Authorized products with full manufacturer warranty.</p></a>
+      <a href="#" id="fast-delivery-track" target="_blank" rel="noopener" class="card reveal why-card why-card-link" style="padding:22px;display:block;">
+        <div class="why-icon"><i class="fa-solid fa-truck-fast"></i></div>
+        <h4 style="font-family:var(--font-display);margin:14px 0 6px;">Fast Delivery</h4>
+        <p class="text-dim" style="font-size:13.5px;margin:0;">1-day delivery in Coimbatore district, 2-3 days elsewhere.</p>
+        <span class="why-track-cta"><i class="fa-solid fa-location-arrow"></i> Track your shipment on ST Courier</span>
+      </a>
+      <a href="pages/contact.html#pay-directly" class="card reveal why-card why-card-link" style="padding:22px;display:block;"><div class="why-icon"><i class="fa-solid fa-qrcode"></i></div><h4 style="font-family:var(--font-display);margin:14px 0 6px;">Easy UPI Payment</h4><p class="text-dim" style="font-size:13.5px;margin:0;">Scan & pay with GPay, PhonePe or Paytm — admin-verified.</p></a>
+      <a href="javascript:void(0)" onclick="Chatbot.toggle()" class="card reveal why-card why-card-link" style="padding:22px;display:block;"><div class="why-icon"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><rect x="2.5" y="12" width="4" height="6" rx="1.5"/><rect x="17.5" y="12" width="4" height="6" rx="1.5"/><path d="M19.5 18.5v.5a3 3 0 0 1-3 3h-3.5"/></svg></div><h4 style="font-family:var(--font-display);margin:14px 0 6px;">AI Support</h4><p class="text-dim" style="font-size:13.5px;margin:0;">Instant answers in English, Tamil & Hindi — 24x7.</p></a>
+    </div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section class="section container">
+    <div class="section-head reveal"><div><p class="eyebrow">Testimonials</p><h2 class="section-title">What customers say</h2></div></div>
+    <div class="grid grid-3" id="reviews-grid"></div>
+    <div id="reels-wrap"></div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section container" style="max-width:760px;">
+    <div class="section-head reveal"><div><p class="eyebrow">Need help?</p><h2 class="section-title">Frequently asked questions</h2></div></div>
+    <div id="faq-list"></div>
+    <p class="text-dim" style="margin-top:16px;font-size:13.5px;">Didn't find your answer? Tap the assistant bubble in the corner — it replies in English, Tamil or Hindi instantly.</p>
+  </section>
+
+</main>
+
+<div id="site-footer"></div>
+
+<script>const ROOT_PREFIX = '';</script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script defer src="js/supabase-client.js"></script>
+<script defer src="js/config.js"></script>
+<script defer src="js/utils.js"></script>
+<script defer src="js/specs.js"></script>
+<script defer src="js/data.js"></script>
+<script defer src="js/auth.js"></script>
+<script defer src="js/cart.js"></script>
+<script defer src="js/notifications.js"></script>
+<script defer src="js/theme.js"></script>
+<script defer src="js/cursor.js"></script>
+<script defer src="js/loader.js"></script>
+<script defer src="js/search.js"></script>
+<script defer src="js/orders.js"></script>
+<script defer src="js/payment.js"></script>
+<script defer src="js/pincode.js"></script>
+<script defer src="js/checkout.js"></script>
+<script defer src="js/profile.js"></script>
+<script defer src="js/analytics.js"></script>
+<script defer src="js/admin.js"></script>
+<script defer src="js/chatbot.js"></script>
+<script defer src="js/reminders.js"></script>
+<script defer src="js/charging.js"></script>
+<script defer src="js/inbox.js"></script>
+<script defer src="js/branding.js"></script>
+
+<script defer src="js/celebrate.js"></script>
+<script defer src="js/ui.js"></script>
+<script defer src="js/app.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+App.boot('home').then(async () => {
+  // Hero stats — real numbers from the live catalog, never stale
+  const allProductsForStats = DB.getProducts();
+  document.getElementById('stat-product-count').textContent = allProductsForStats.length + '+';
+  document.getElementById('stat-avg-rating').textContent = '4.9★';
+
+  // Brand strip — every brand actually in the catalog, not a hardcoded list
+  /* Three tiers, checked in order:
+       1. A real logo file the store owner uploaded (SITE_CONFIG.brandLogos)
+          — the actual Samsung/Vivo/etc. mark, shown as an image.
+       2. A Font Awesome brand glyph FA is licensed to ship, for the handful
+          of brands (Apple, Google, Microsoft, Huawei) that have no uploaded
+          file yet.
+       3. A plain text wordmark chip for everything else — never a
+          fabricated "logo" guessed from memory. */
+  const officialBrandIcon = {
+    Apple: 'fa-apple', Google: 'fa-google', Microsoft: 'fa-microsoft', Huawei: 'fa-huawei'
+  };
+  const brandLogos = SITE_CONFIG.brandLogos || {};
+
+  // Brands with a real logo or an official icon glyph lead the strip;
+  // anything left on a plain text wordmark (no logo file uploaded yet)
+  // is pushed to the end, so each strip opens with recognizable marks.
+  const brands = [...new Set(allProductsForStats.map(p => p.brand))].sort((a, b) => {
+    const aHas = !!(brandLogos[a] || officialBrandIcon[a]);
+    const bHas = !!(brandLogos[b] || officialBrandIcon[b]);
+    if (aHas !== bHas) return aHas ? -1 : 1;
+    return a.localeCompare(b);
+  });
+
+  function brandChipHTML(b){
+    const logoFile = brandLogos[b];
+    const icon = officialBrandIcon[b];
+    let inner, chipClass;
+    if (logoFile){
+      // No loading="lazy" here: these sit in a horizontally scrolling
+      // marquee, so most start off-screen by layout position even though
+      // the animation will bring them into view — lazy-loading heuristics
+      // judge by that starting position and can leave items stuck unloaded.
+      // The logos are tiny (a few KB each) so eager loading costs nothing.
+      inner = `<img src="${UI.link(logoFile)}" alt="${Utils.escapeHtml(b)}">`;
+      chipClass = ' has-logo';
+    } else if (icon){
+      inner = `<i class="fa-brands ${icon}"></i>`;
+      chipClass = ' has-icon';
+    } else {
+      // No uploaded logo and no official icon glyph available — show the
+      // brand's name as plain text instead of leaving an empty chip.
+      inner = `<span class="brand-word">${Utils.escapeHtml(b)}</span>`;
+      chipClass = '';
+    }
+    return `<a href="pages/products.html?q=${encodeURIComponent(b)}" class="brand-chip${chipClass}" title="${Utils.escapeHtml(b)}">${inner}</a>`;
+  }
+
+  // Split the full brand list into two halves — one strip runs above
+  // "Shop by category" (before the Flagship Spotlight), the other runs
+  // just below the Flagship Spotlight — instead of one long strip with
+  // every brand. Each half is duplicated once so its own marquee loops
+  // seamlessly; the CSS pauses the animation while the cursor is over it.
+  const midpoint = Math.ceil(brands.length / 2);
+  const brandsTop = brands.slice(0, midpoint);
+  const brandsBottom = brands.slice(midpoint);
+  document.getElementById('brand-track').innerHTML = [...brandsTop, ...brandsTop].map(brandChipHTML).join('');
+  const track2 = document.getElementById('brand-track-2');
+  if (track2) track2.innerHTML = [...brandsBottom, ...brandsBottom].map(brandChipHTML).join('');
+
+  // Categories
+  // Category badge icons — inline SVG (see js/ui.js ICONS), not Font Awesome,
+  // so they render with no CDN/network dependency.
+  const catIcons = { mobiles:'catMobile', laptops:'catLaptop', watches:'catWatch', earbuds:'catAudio', accessories:'catAccessory', 'second-hand-mobiles':'catMobileRetro', 'second-hand-laptops':'catLaptopCode', 'mobile-spare-parts':'catSparePart', 'laptop-spare-parts':'catSparePart' };
+
+  // Category tiles — each card shows a faded trending-model image behind
+  // the name, like a poster (image opacity dropped so the category label
+  // and product count stay easy to read on top). The picture is the
+  // highest-rated in-stock product for that category, using its uploaded
+  // photo when the admin has attached one, or falling back to a generated
+  // device silhouette matched to that category's device type.
+  const catTypeMap = { mobiles:'phone', laptops:'laptop', watches:'watch', earbuds:'earbuds',
+    accessories:'accessory', 'second-hand-mobiles':'phone', 'second-hand-laptops':'laptop',
+    'mobile-spare-parts':'phone', 'laptop-spare-parts':'laptop' };
+  const catColorMap = { mobiles:'#e0a458', laptops:'#3b86b4', watches:'#e0a458', earbuds:'#3b86b4',
+    accessories:'#e0a458', 'second-hand-mobiles':'#3b86b4', 'second-hand-laptops':'#e0a458',
+    'mobile-spare-parts':'#e0a458', 'laptop-spare-parts':'#3b86b4' };
+
+  /* Real product photos supplied by the store owner, cropped so only the
+     product itself remains (surrounding ad copy, prices and watermarks were
+     trimmed off). These take priority over the generated silhouette for the
+     categories they belong to; every other category still falls back to the
+     drawn placeholder until a real photo is supplied for it. */
+  const defaultCatPhoto = {
+    mobiles: 'assets/category/cat-mobiles.jpg',
+    laptops: 'assets/category/cat-appliance.jpg',
+    earbuds: 'assets/category/cat-audio.jpg',
+    watches: 'assets/category/cat-watches.jpg',
+    accessories: 'assets/category/cat-accessories.jpg',
+    'second-hand-mobiles': 'assets/category/cat-second-hand-mobiles.jpg',
+    'second-hand-laptops': 'assets/category/cat-second-hand-laptops.jpg'
+  };
+  // Admin-uploaded overrides (Admin Panel → Categories → Category Images).
+  // Falls back to the defaults above — and those in turn fall back to the
+  // drawn silhouette — until the admin actually uploads something, so the
+  // grid looks exactly as it does today until a photo is changed.
+  const allCatIds = DB.getCategories().map(c => c.id);
+  const customPhotoPairs = await Promise.all(
+    allCatIds.map(async id => [id, await Inbox.getSetting('cat_photo_' + id)])
+  );
+  const catPhoto = { ...defaultCatPhoto };
+  customPhotoPairs.forEach(([id, url]) => { if (url) catPhoto[id] = url; });
+
+  document.getElementById('category-grid').innerHTML = DB.getCategories().map(c => {
+    const items = DB.getProducts().filter(p => p.category === c.id && p.stock > 0);
+    const hero = [...items].sort((a,b) => b.rating - a.rating || b.price - a.price)[0];
+    const bgImg = catPhoto[c.id]
+      ? catPhoto[c.id]
+      : (hero
+          ? (hero.imageUrl || Utils.deviceImage(catTypeMap[c.id] || hero.type, catColorMap[c.id]))
+          : Utils.deviceImage(catTypeMap[c.id] || 'phone', catColorMap[c.id]));
+
+    return `
+    <a href="pages/products.html?cat=${c.id}" class="cat-tile reveal">
+      <img class="ct-bg-img" src="${bgImg}" alt="" loading="lazy">
+      <div class="ct-scrim"></div>
+      <div class="ct-content">
+        <span class="ct-icon">${UI.ICONS[catIcons[c.id]]('')}</span>
+        <h4>${c.name}</h4>
+        <span class="ct-count">${items.length} products</span>
+      </div>
+    </a>`;
+  }).join('');
+
+  // Featured products (top rated)
+  // Flagship Spotlight — 2025-26 premium launches. Photo shown first；
+  // if the admin has uploaded a working video for that unit, a "Watch" badge
+  // appears and the video plays on hover/tap, replacing the photo.
+  const spotlightNames = ['Apple iPhone 18 Pro', 'Apple iPhone 17 Pro Max', 'Samsung Galaxy S26 Ultra', 'Vivo X300 Pro'];
+  const spotlightProducts = spotlightNames.map(n => DB.getProducts().find(p => p.name === n)).filter(Boolean);
+  document.getElementById('spotlight-grid').innerHTML = spotlightProducts.map(p => `
+    <a href="pages/product-details.html?id=${p.id}" class="product-card reveal spotlight-card" data-id="${p.id}">
+      <div class="pc-media spotlight-media">
+        <img class="spotlight-img" src="${p.imageUrl || Utils.deviceImage(p.type,p.color)}" alt="${Utils.escapeHtml(p.name)}" loading="lazy" style="${p.imageUrl?'width:100%;height:100%;object-fit:cover;':''}">
+        ${p.videoUrl ? `<video class="spotlight-video" src="${p.videoUrl}" muted loop playsinline style="display:none;width:100%;height:100%;object-fit:cover;position:absolute;inset:0;"></video>` : ''}
+      </div>
+      <div class="pc-body pc-minimal">
+        <div class="pc-name">${Utils.escapeHtml(p.name)}</div>
+      </div>
+    </a>`).join('');
+
+  // Hover/tap-to-play for spotlight videos
+  document.querySelectorAll('.spotlight-card').forEach(card => {
+    const video = card.querySelector('.spotlight-video');
+    const img = card.querySelector('.spotlight-img');
+    if (!video) return;
+    card.addEventListener('mouseenter', () => { img.style.display='none'; video.style.display='block'; video.play().catch(()=>{}); });
+    card.addEventListener('mouseleave', () => { video.pause(); video.currentTime=0; video.style.display='none'; img.style.display='block'; });
+  });
+
+  /* ---- Hero: rotating trending models ------------------------------------
+     The hero used to show a generic phone with a hardcoded "100W Fast
+     Charging" badge, which was wrong for most models (an iPhone tops out
+     near 20-27W). Now a short list of trending models is cycled through,
+     and BOTH the image and the charging badge are taken from whichever
+     model is currently showing, so the wattage is always that phone's real
+     figure. Charging.forProduct() resolves the spec — see js/charging.js. */
+  const TRENDING_NAMES = [
+    'Apple iPhone 17 Pro Max', 'Samsung Galaxy S26 Ultra', 'Vivo X300 Pro',
+    'Apple iPhone 15 Pro Max', 'OnePlus 12', 'Samsung Galaxy S24 Ultra',
+    'Xiaomi 13 Pro', 'Apple iPhone 15'
+  ];
+  const allProds = DB.getProducts();
+  const trending = TRENDING_NAMES
+    .map(n => allProds.find(p => p.name === n) || allProds.find(p => p.name.startsWith(n)))
+    .filter(Boolean);
+
+  const heroImg    = document.getElementById('hero-phone-img');
+  // Fast Delivery card -> ST Courier direct tracking (courierTrackingUrl lives
+  // in js/config.js, one place to update if the courier or URL changes).
+  const trackLink = document.getElementById('fast-delivery-track');
+  if (trackLink) trackLink.href = SITE_CONFIG.courierTrackingUrl;
+
+  const heroCharge = document.getElementById('hero-badge-charge');
+
+  function showHeroModel(p){
+    if (!p){
+      heroImg.src = Utils.deviceImage('phone', '#e0a458');
+      heroCharge.style.display = 'none';
+      return;
+    }
+    heroImg.src = p.imageUrl || Utils.deviceImage(p.type, p.color);
+    heroImg.alt = p.name;
+
+    const c = Charging.forProduct(p);
+    if (c){
+      heroCharge.style.display = '';
+      heroCharge.innerHTML =
+        `<i class="fa-solid fa-bolt" style="color:var(--deal);"></i> ${c.label}`;
+      heroCharge.title = `${p.name} — charge with a ${c.charger}. ${c.note}`;
+    } else {
+      heroCharge.style.display = 'none';
+    }
+
+  }
+
+  if (trending.length){
+    let heroIdx = 0;
+    showHeroModel(trending[0]);
+    setInterval(() => {
+      heroIdx = (heroIdx + 1) % trending.length;
+      heroImg.classList.add('hero-swap');
+      setTimeout(() => {
+        showHeroModel(trending[heroIdx]);
+        heroImg.classList.remove('hero-swap');
+      }, 260);
+    }, 4200);
+  } else {
+    showHeroModel(null);
+  }
+
+  /* ---- Trending models: model name + its real charging spec ------------ */
+  document.getElementById('trending-charge-grid').innerHTML = trending.slice(0,8).map(p => {
+    const c = Charging.forProduct(p);
+    if (!c) return '';
+    return `
+      <a href="pages/product-details.html?id=${p.id}" class="charge-card reveal">
+        <div class="cc-name">${Utils.escapeHtml(p.name)}</div>
+        <div class="cc-watts"><i class="fa-solid fa-bolt"></i> ${c.label}</div>
+        <div class="cc-row"><span>Port</span><b>${c.port}</b></div>
+        <div class="cc-row"><span>In box</span><b>${c.inBox ? 'Charger included' : 'No charger'}</b></div>
+        <div class="cc-charger">Use: ${Utils.escapeHtml(c.charger)}</div>
+        ${c.note ? `<div class="cc-note">${Utils.escapeHtml(c.note)}</div>` : ''}
+      </a>`;
+  }).join('');
+
+  const featured = [...DB.getProducts()].sort((a,b)=>b.rating-a.rating).slice(0,8);
+  document.getElementById('featured-grid').innerHTML = featured.map(UI.productCardHTML).join('');
+  // Reviews
+  document.getElementById('reviews-grid').innerHTML = DB.getReviews().map(r => `
+    <div class="review-card reveal">
+      <div class="rc-head"><div class="rc-avatar">${Utils.initials(r.name)}</div>
+      <div><strong style="font-size:13.5px;">${r.name}</strong><br>${UI.stars(r.rating)}</div></div>
+      <p>"${Utils.escapeHtml(r.text)}"</p>
+    </div>`).join('');
+
+  // Customer reels — real Instagram Reel links from SITE_CONFIG.instagramReels.
+  // Renders nothing if the list is empty (default), so this stays invisible
+  // until real links are pasted into js/config.js. Shows 5 slots side by
+  // side — each slot cycles through its own set of up to 9 reels, auto-
+  // advancing every 5 seconds with a staggered start so the slots don't
+  // all flip at once. Hovering a slot pauses just that slot's cycling.
+  (function renderReels(){
+    const reelUrls = (SITE_CONFIG.instagramReels || []).map(Utils.instagramEmbedUrl).filter(Boolean);
+    const wrap = document.getElementById('reels-wrap');
+    if (!reelUrls.length){ wrap.innerHTML = ''; return; }
+
+    const SLOT_COUNT = 5;
+    const REELS_PER_SLOT = Math.min(9, reelUrls.length);
+    const offsetStep = Math.max(1, Math.floor(reelUrls.length / SLOT_COUNT));
+    const slotReelSets = Array.from({ length: SLOT_COUNT }, (_, s) => {
+      const start = (s * offsetStep) % reelUrls.length;
+      return Array.from({ length: REELS_PER_SLOT }, (_, j) => reelUrls[(start + j) % reelUrls.length]);
+    });
+
+    const slotHtml = slotReels => `
+      <div class="reel-slot">
+        <div class="reel-frame">
+          ${slotReels.map((src, i) => `<iframe class="reel-iframe${i === 0 ? ' active' : ''}" ${i === 0 ? `src="${src}"` : ''} data-src="${src}" loading="${i === 0 ? 'eager' : 'lazy'}" allowtransparency="true" frameborder="0" scrolling="no"></iframe>`).join('')}
+        </div>
+      </div>`;
+
+    wrap.innerHTML = `
+      <p class="eyebrow" style="margin:34px 0 14px;">From Instagram</p>
+      <div class="reels-row">${slotReelSets.map(slotHtml).join('')}</div>`;
+
+    wrap.querySelectorAll('.reel-slot').forEach((slotEl, s) => {
+      const frames = slotEl.querySelectorAll('.reel-iframe');
+      if (frames.length < 2) return;
+      let active = 0, timer = null;
+      function show(i){
+        frames[active].classList.remove('active');
+        active = (i + frames.length) % frames.length;
+        const f = frames[active];
+        if (!f.src) f.src = f.dataset.src;
+        f.classList.add('active');
+      }
+      function start(){ timer = setInterval(() => show(active + 1), 5000); }
+      function stop(){ clearInterval(timer); }
+      slotEl.addEventListener('mouseenter', stop);
+      slotEl.addEventListener('mouseleave', start);
+      setTimeout(start, s * 600);
+    });
+  })();
+
+  // FAQ
+  const faqs = [
+    { q:'Which payment methods do you accept?', a:'We accept UPI (GPay, PhonePe, Paytm) via QR code and credit/debit cards. After paying, upload your payment screenshot — our team verifies it and confirms your order. Card payments carry a small processing surcharge shown at checkout.' },
+    { q:'How fast is delivery?', a:'Customers within Coimbatore district get 1-day delivery with Cash on Delivery available (20% advance paid online, rest on delivery). Outside Coimbatore district, delivery takes 2-3 days and requires full online payment before we ship.' },
+    { q:'How do I track my order?', a:'Once your order is confirmed, visit the Order Tracking page and enter your Order ID to see live status — Confirmed, Packed, Shipped, Out for Delivery, Delivered.' },
+    { q:'Is Cash on Delivery available everywhere?', a:'COD is available only for addresses within Coimbatore district, and requires a 20% advance paid online upfront. Outside Coimbatore district, please pay the full amount online before we dispatch your order.' },
+    { q:'Do products come with warranty?', a:'Yes — all products carry standard manufacturer warranty (typically 1 year on phones/laptops, 6 months on accessories).' }
+  ];
+  document.getElementById('faq-list').innerHTML = faqs.map(f => `
+    <div class="faq-item">
+      <div class="faq-q">${f.q} <i class="fa-solid fa-plus"></i></div>
+      <div class="faq-a"><div class="faq-a-inner">${f.a}</div></div>
+    </div>`).join('');
+  UI.initFAQ(document.getElementById('faq-list'));
+
+  // Re-run scroll-reveal AFTER the sections above inject their own
+  // ".reveal" elements (category tiles, spotlight cards, charging cards,
+  // reviews). App.boot() already called Loader.initReveal() once, but that
+  // ran before this .then() callback populated #category-grid etc., so
+  // those cards were never observed by the IntersectionObserver and stayed
+  // stuck at opacity:0 (the "hidden category images" bug). Calling it again
+  // here picks up every element that still needs observing.
+  Loader.initReveal();
+});
+});
+</script>
+</body>
+</html>

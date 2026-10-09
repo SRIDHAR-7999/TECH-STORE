@@ -1,0 +1,17 @@
+/* ==========================================================================
+   DARK / LIGHT MODE — toggle switch + theme-specific tweaks
+   ========================================================================== */
+
+.theme-toggle{ width:42px; height:42px; border-radius:50%; background:var(--surface-2); border:1px solid var(--border-soft); display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text); position:relative; overflow:hidden; }
+.theme-toggle i,
+.theme-toggle .ui-icon{ position:absolute; transition:transform var(--med) var(--ease), opacity var(--med) var(--ease); }
+.theme-toggle .icon-sun{ opacity:0; transform:translateY(14px) rotate(90deg); }
+.theme-toggle .icon-moon{ opacity:1; transform:translateY(0) rotate(0); }
+[data-theme="light"] .theme-toggle .icon-sun{ opacity:1; transform:translateY(0) rotate(0); }
+[data-theme="light"] .theme-toggle .icon-moon{ opacity:0; transform:translateY(-14px) rotate(-90deg); }
+
+[data-theme="light"] .hero-visual .glow-orb{ background:radial-gradient(circle,rgba(var(--accent-rgb),.18),transparent 65%); }
+[data-theme="light"] #cursor-glow{ background:radial-gradient(circle,rgba(var(--accent-rgb),.05),transparent 70%); }
+[data-theme="light"] .product-card .pc-media img{ filter:drop-shadow(0 14px 20px rgba(20,30,60,.15)); }
+[data-theme="light"] .loader-logo{ color:var(--text); }
+[data-theme="light"] .badge-accent, [data-theme="light"] .badge-deal, [data-theme="light"] .badge-success, [data-theme="light"] .badge-danger, [data-theme="light"] .badge-pending{ box-shadow:inset 0 0 0 1px currentColor; }

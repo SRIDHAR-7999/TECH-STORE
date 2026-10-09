@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){try{document.documentElement.setAttribute('data-theme', localStorage.getItem('smd_theme') || 'dark');}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop All Products — SM Mobile Deals</title>
+<meta name="description" content="Browse mobiles, laptops, smart watches, audio and accessories at SM Mobile Deals, Coimbatore.">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#050812">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dark-mode.css">
+<link rel="stylesheet" href="../css/animations.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<style>
+  .shop-layout{ display:grid; grid-template-columns:250px 1fr; gap:28px; align-items:flex-start; }
+  .filter-panel{ position:sticky; top:calc(var(--header-h) + 16px); background:var(--surface); border:1px solid var(--border-soft); border-radius:var(--radius-lg); padding:20px; }
+  .filter-group{ margin-bottom:20px; }
+  .filter-group h5{ font-family:var(--font-display); font-size:13.5px; margin:0 0 10px; }
+  .filter-opt{ display:flex; align-items:center; gap:8px; padding:6px 0; font-size:13.5px; color:var(--text-dim); cursor:pointer; }
+  .filter-opt input{ accent-color:var(--accent); }
+  @media(max-width:860px){ .shop-layout{ grid-template-columns:1fr; } .filter-panel{ position:static; } }
+</style>
+</head>
+<body>
+<div id="page-loader">
+  <div class="pl-inner">
+    <div class="pl-mark"><span>S</span><span>M</span></div>
+    <div class="pl-title" id="pl-title" data-text="SM Mobile Deals"></div>
+    <div class="pl-sub">Genuine tech, honest prices.</div>
+    <div class="pl-bar"><div class="pl-bar-fill"></div></div>
+  </div>
+</div>
+<div id="site-header"></div>
+
+<main>
+  <section class="page-hero container">
+    <div class="breadcrumb"><a href="../index.html">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i> <span>Shop</span></div>
+    <h1 class="page-title" id="page-title">All Products</h1>
+  </section>
+
+  <section class="section container" style="padding-top:20px;">
+    <div class="shop-layout">
+      <aside class="filter-panel">
+        <div class="filter-group">
+          <h5>Search</h5>
+          <div class="input-group"><i class="fa-solid fa-magnifying-glass"></i><input type="text" class="input" id="f-keyword" placeholder="Search…"></div>
+        </div>
+        <div class="filter-group">
+          <h5>Category</h5>
+          <div id="f-category"></div>
+        </div>
+        <div class="filter-group">
+          <h5>Brand</h5>
+          <div id="f-brand"></div>
+        </div>
+        <div class="filter-group" id="f-condition-group" style="display:none;">
+          <h5>Condition</h5>
+          <div id="f-condition"></div>
+        </div>
+        <div class="filter-group" id="f-cputier-group" style="display:none;">
+          <h5>Processor Type</h5>
+          <div id="f-cputier"></div>
+        </div>
+        <div class="filter-group">
+          <h5>Max Price: <span id="price-val" class="text-accent"></span></h5>
+          <input type="range" id="f-price" min="299" max="500000" step="1000" style="width:100%;accent-color:var(--accent);">
+        </div>
+        <button class="btn btn-outline btn-block btn-sm" id="f-reset">Reset filters</button>
+      </aside>
+
+      <div>
+        <div class="flex justify-between items-center" style="margin-bottom:16px;">
+          <span class="text-faint" id="result-count" style="font-size:13.5px;"></span>
+          <select class="input" id="f-sort" style="width:auto;padding:9px 14px;">
+            <option value="">Sort: Featured</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="rating">Top Rated</option>
+            <option value="newest">Newest</option>
+          </select>
+        </div>
+        <div class="grid grid-products" id="product-grid"></div>
+        <div style="text-align:center;margin-top:24px;">
+          <button class="btn btn-outline" id="load-more-btn" style="display:none;" onclick="loadMore()">Load More Products</button>
+        </div>
+        <div class="empty-state" id="empty-state" style="display:none;">
+          <i class="fa-solid fa-box-open"></i>
+          <h3>No products found</h3>
+          <p>Try adjusting your filters or search a different keyword.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+
+<script>const ROOT_PREFIX = '../';</script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script defer src="../js/supabase-client.js"></script>
+<script defer src="../js/config.js"></script>
+<script defer src="../js/utils.js"></script>
+<script defer src="../js/specs.js"></script>
+<script defer src="../js/data.js"></script>
+<script defer src="../js/auth.js"></script>
+<script defer src="../js/cart.js"></script>
+<script defer src="../js/notifications.js"></script>
+<script defer src="../js/theme.js"></script>
+<script defer src="../js/cursor.js"></script>
+<script defer src="../js/loader.js"></script>
+<script defer src="../js/search.js"></script>
+<script defer src="../js/orders.js"></script>
+<script defer src="../js/payment.js"></script>
+<script defer src="../js/pincode.js"></script>
+<script defer src="../js/checkout.js"></script>
+<script defer src="../js/profile.js"></script>
+<script defer src="../js/analytics.js"></script>
+<script defer src="../js/admin.js"></script>
+<script defer src="../js/chatbot.js"></script>
+<script defer src="../js/reminders.js"></script>
+<script defer src="../js/inbox.js"></script>
+<script defer src="../js/branding.js"></script>
+
+<script defer src="../js/celebrate.js"></script>
+<script defer src="../js/ui.js"></script>
+<script defer src="../js/app.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+const state = {
+    keyword: Utils.qs('q','') || '',
+    category: Utils.qs('cat','') || '',
+    brand: '',
+    condition: '',
+    cpuTier: '',
+    maxPrice: Number(Utils.qs('maxPrice','')) || 500000,
+    sort: ''
+  };
+
+  const CONDITION_LABELS = { sealed:'Sealed', seal_cut:'Seal Cut', demo:'Demo Piece', used:'Second Hand' };
+  const CPU_TIER_LABELS = { h:'H-Series', hx:'HX-Series (Extreme)', u:'U-Series (Thin & Light)' };
+
+  function renderFilters(){
+    const cats = DB.getCategories();
+    document.getElementById('f-category').innerHTML = cats.map(c => `
+      <label class="filter-opt"><input type="radio" name="cat" value="${c.id}" ${state.category===c.id?'checked':''}> ${c.name}</label>
+    `).join('') + `<label class="filter-opt"><input type="radio" name="cat" value="" ${!state.category?'checked':''}> All Categories</label>`;
+
+    const brandSource = state.category ? DB.getProducts().filter(p => p.category === state.category) : DB.getProducts();
+    const brands = [...new Set(brandSource.map(p=>p.brand))].sort();
+    if (state.brand && !brands.includes(state.brand)) state.brand = ''; // clear stale brand selection when category changes
+    document.getElementById('f-brand').innerHTML = brands.map(b => `
+      <label class="filter-opt"><input type="radio" name="brand" value="${b}" ${state.brand===b?'checked':''}> ${b}</label>
+    `).join('') + `<label class="filter-opt"><input type="radio" name="brand" value="" ${!state.brand?'checked':''}> All Brands</label>`;
+
+    /* Grade filter. This used to be shown ONLY inside the two second-hand
+       categories, and the else-branch also force-cleared state.condition —
+       so picking "Sealed" and then browsing Mobiles/Laptops/Accessories
+       silently dropped the grade. It is now available everywhere, and the
+       options listed are just the grades that actually occur in the current
+       category, so you never get a filter that returns nothing. */
+    const condGroup = document.getElementById('f-condition-group');
+    const scope = state.category
+      ? DB.getProducts().filter(p => p.category === state.category)
+      : DB.getProducts();
+    const gradesPresent = Object.keys(CONDITION_LABELS)
+      .filter(val => scope.some(p => (p.condition || 'new') === val));
+
+    if (gradesPresent.length > 1){
+      condGroup.style.display = 'block';
+      document.getElementById('f-condition').innerHTML = gradesPresent.map(val => `
+        <label class="filter-opt"><input type="radio" name="condition" value="${val}" ${state.condition===val?'checked':''}> ${CONDITION_LABELS[val]}</label>
+      `).join('') + `<label class="filter-opt"><input type="radio" name="condition" value="" ${!state.condition?'checked':''}> All Grades</label>`;
+      document.querySelectorAll('input[name="condition"]').forEach(el => el.addEventListener('change', e => { state.condition = e.target.value; visibleCount = PAGE_SIZE; render(); }));
+    } else {
+      // only one grade exists here, so a filter would be pointless — but do
+      // NOT clear the user's chosen grade, they may switch category next
+      condGroup.style.display = 'none';
+    }
+
+    const cpuGroup = document.getElementById('f-cputier-group');
+    if (state.category === 'laptops'){
+      cpuGroup.style.display = 'block';
+      document.getElementById('f-cputier').innerHTML = Object.entries(CPU_TIER_LABELS).map(([val,label]) => `
+        <label class="filter-opt"><input type="radio" name="cputier" value="${val}" ${state.cpuTier===val?'checked':''}> ${label}</label>
+      `).join('') + `<label class="filter-opt"><input type="radio" name="cputier" value="" ${!state.cpuTier?'checked':''}> All Processors</label>`;
+      document.querySelectorAll('input[name="cputier"]').forEach(el => el.addEventListener('change', e => { state.cpuTier = e.target.value; visibleCount = PAGE_SIZE; render(); }));
+    } else {
+      cpuGroup.style.display = 'none';
+      state.cpuTier = '';
+    }
+
+    document.getElementById('f-keyword').value = state.keyword;
+    document.getElementById('f-price').value = state.maxPrice;
+    document.getElementById('price-val').textContent = Utils.formatINR(state.maxPrice);
+
+    document.querySelectorAll('input[name="cat"]').forEach(el => el.addEventListener('change', e => { state.category = e.target.value; visibleCount = PAGE_SIZE; render(); }));
+    document.querySelectorAll('input[name="brand"]').forEach(el => el.addEventListener('change', e => { state.brand = e.target.value; visibleCount = PAGE_SIZE; render(); }));
+  }
+
+  const PAGE_SIZE = 24;
+  let visibleCount = PAGE_SIZE;
+
+  function render(){
+    const title = state.category ? (DB.getCategories().find(c=>c.id===state.category)?.name || 'Products') : 'All Products';
+    document.getElementById('page-title').textContent = title;
+    let results = Search.filter(DB.getProducts(), {
+      keyword: state.keyword, category: state.category, brand: state.brand,
+      maxPrice: state.maxPrice, sort: state.sort
+    });
+    if (state.condition) results = results.filter(p => p.condition === state.condition);
+    if (state.cpuTier) results = results.filter(p => p.cpuTier === state.cpuTier);
+    document.getElementById('result-count').textContent = `${results.length} product${results.length===1?'':'s'} found`;
+    const shown = results.slice(0, visibleCount);
+    document.getElementById('product-grid').innerHTML = shown.map(UI.productCardHTML).join('');
+    document.getElementById('empty-state').style.display = results.length ? 'none' : 'block';
+    const moreBtn = document.getElementById('load-more-btn');
+    if (moreBtn) moreBtn.style.display = results.length > visibleCount ? 'block' : 'none';
+    Loader.initReveal();
+    renderFilters();
+  }
+
+  function loadMore(){ visibleCount += PAGE_SIZE; render(); }
+
+  document.getElementById('f-keyword').addEventListener('input', Utils.debounce(e => { state.keyword = e.target.value; visibleCount = PAGE_SIZE; render(); }, 250));
+  document.getElementById('f-price').addEventListener('input', e => { state.maxPrice = Number(e.target.value); visibleCount = PAGE_SIZE; render(); });
+  document.getElementById('f-sort').addEventListener('change', e => { state.sort = e.target.value; visibleCount = PAGE_SIZE; render(); });
+  document.getElementById('f-reset').addEventListener('click', () => { state.keyword=''; state.category=''; state.brand=''; state.condition=''; state.cpuTier=''; state.maxPrice=500000; state.sort=''; visibleCount=PAGE_SIZE; render(); });
+
+  App.boot('shop').then(render);
+});
+</script>
+</body>
+</html>

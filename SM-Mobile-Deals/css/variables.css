@@ -1,0 +1,205 @@
+/* ==========================================================================
+   SM MOBILE DEALS — DESIGN TOKENS
+   Palette: EXACT colours from the uploaded reference image, left unaltered
+            — background is the image's own dark-navy-to-cyan gradient;
+            accent/deal are the image's mid-tone blues (#3b86b4 / #22588c)
+   Type: Outfit (headings) / Sora (body)
+         Inter (UI controls, nav, data) / JetBrains Mono (specs, price)
+   ========================================================================== */
+
+:root{
+  /* ---- Brand ---- */
+  --brand-name: "SM Mobile Deals";
+  /* Site-wide background photo — overridden at runtime (js/branding.js)
+     when the admin has uploaded a custom one from the admin panel. */
+  --site-bg-url: url('../assets/personal/bike-bg.jpg');
+
+  /* ---- Core palette (dark, default) ---- */
+  /* Soft blue + white — the SAME palette used for both light and dark
+     mode now, per the user's request. The toggle still switches a data
+     attribute (so it keeps working / stays available), but both states
+     render this one mellow look rather than two different moods. */
+  --bg: #eef5fc;
+  --bg-elevated: #ffffffee;
+  --surface: #ffffff;
+  --surface-2: #f2f8fd;
+  --surface-3: #e3eefb;
+  --border: #cfe2f5;
+  --border-soft: #e6f1fb;
+
+  --text: #1b2b45;
+  --text-dim: #55688a;
+  --text-faint: #64748b;
+
+  /* Dark mode gets its OWN accent — warm amber/gold — kept deliberately
+     different from light mode's blue per explicit request ("soft blue ok,
+     dark mode change it to something else"). Only the accent/deal colours
+     differ; the background gradient is untouched. */
+  --accent: #e0a458;
+  --accent-2: #f0c385;
+  --accent-soft: #e0a45822;
+  --accent-rgb: 224,164,88;
+  --deal: #c47f2e;
+  --deal-2: #d99b52;
+  --deal-soft: #c47f2e26;
+  --deal-rgb: 196,127,46;
+
+  --success: #22c55e;
+  --success-soft: #22c55e22;
+  --danger: #ef4444;
+  --danger-soft: #ef444422;
+  --pending: #f59e0b;
+  --pending-soft: #f59e0b22;
+
+  --glow: radial-gradient(600px circle at var(--mx,50%) var(--my,50%), rgba(var(--accent-rgb),.16), transparent 40%);
+
+  /* ---- Typography ---- */
+  --font-display: 'Fraunces', Georgia, serif;    /* elegant editorial serif, matching the reference site */
+  --font-body: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+  --font-ui: 'Inter', 'Segoe UI', sans-serif;
+
+  /* ---- Radius / shadow ---- */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+  --shadow-sm: 0 2px 8px rgba(20,40,70,.06);
+  --shadow-md: 0 8px 30px rgba(20,40,70,.09);
+  --shadow-lg: 0 20px 60px rgba(20,40,70,.13);
+  --shadow-glow: 0 0 0 1px var(--accent-soft), 0 8px 30px rgba(var(--accent-rgb),.20);
+
+  /* ---- Glass surfaces ---- */
+  /* The site already sits over a full-bleed background photo, so glass
+     panels (translucent + blurred) let that photo read through cards,
+     modals, header and the chat panel instead of hiding it behind a flat
+     white sheet — a real glassmorphism treatment, not just a filter
+     slapped on top. Buttons/inputs stay solid on purpose for legibility. */
+  --glass-bg: rgba(255,255,255,.52);
+  --glass-bg-strong: rgba(255,255,255,.66);
+  --glass-border: rgba(255,255,255,.55);
+  --glass-blur: 20px;
+  --glass-shadow: 0 8px 32px rgba(20,40,70,.16), inset 0 1px 0 rgba(255,255,255,.4);
+
+  /* ---- Layout ---- */
+  --header-h: 72px;
+  --container: 1240px;
+  --gap: 20px;
+
+  /* ---- Motion ---- */
+  --ease: cubic-bezier(.22,1,.36,1);
+  --fast: 160ms;
+  --med: 320ms;
+  --slow: 560ms;
+}
+
+/* ---- "Light" mode toggle — kept functional, but now renders the SAME
+   soft blue + white palette as the default state (per explicit request
+   that both modes share one look). Only the body glow gradients differ
+   very slightly to avoid a jarring flat repaint when switching. ---- */
+[data-theme="light"] body{
+  background-image:
+    linear-gradient(180deg, rgba(5,10,25,.55) 0%, rgba(8,16,36,.45) 40%, rgba(5,10,25,.62) 100%),
+    var(--site-bg-url);
+  /* layer order: [scrim gradient] , [photo].
+     The photo uses "cover" + "fixed" so it stays centered and in
+     proportion on every page, whether the page is short (Cart) or very
+     long (Home) — with 100% 100% sizing it used to stretch taller on
+     long pages and look off-center; cover+fixed pins it to the viewport
+     instead, matching how it already looked on shorter pages. */
+  background-size:100% 100%, cover;
+  background-position:center top, center center;
+  background-repeat:no-repeat, no-repeat;
+  background-attachment:scroll, fixed;
+}
+
+[data-theme="light"]{
+  --bg: #eef5fc;
+  --bg-elevated: #ffffffee;
+  --surface: #ffffff;
+  --surface-2: #f2f8fd;
+  --surface-3: #e3eefb;
+  --border: #cfe2f5;
+  --border-soft: #e6f1fb;
+
+  --text: #1b2b45;
+  --text-dim: #55688a;
+  --text-faint: #64748b;
+
+  --accent: #3b86b4;
+  --accent-2: #98d5e6;
+  --accent-soft: #3b86b422;
+  --accent-rgb: 59,134,180;
+  --deal: #22588c;
+  --deal-2: #5fa8c8;
+  --deal-soft: #22588c26;
+  --deal-rgb: 34,88,140;
+  --shadow-sm: 0 2px 8px rgba(20,40,70,.06);
+  --shadow-md: 0 8px 30px rgba(20,40,70,.09);
+  --shadow-lg: 0 20px 60px rgba(20,40,70,.13);
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; overflow-x:hidden; max-width:100%; }
+body{
+  margin:0;
+  overflow-x:hidden;
+  max-width:100%;
+  background:var(--bg);
+  /* Site-wide background photo (the user's own bike photo, table already
+     cropped out) — used on every page since this file is loaded everywhere.
+     A dark scrim sits between the photo and the page content so existing
+     light-coloured text (hero, nav, etc.) keeps enough contrast; without
+     it, a busy photo behind text is unreadable almost everywhere, not just
+     in one hero section.
+     IMPORTANT — path note: this file lives in css/, and a relative url()
+     inside a CSS file always resolves against THAT FILE's folder, not the
+     HTML page that links it in (unlike inline style="" attributes, which
+     resolve against the page). So the path here is '../assets/...',
+     one level up from css/, not 'assets/...'. */
+  background-image:
+    linear-gradient(180deg, rgba(5,10,25,.55) 0%, rgba(8,16,36,.45) 40%, rgba(5,10,25,.62) 100%),
+    var(--site-bg-url);
+  /* layer order: [scrim gradient] , [photo].
+     Photo layer: cover + fixed, so it stays centered/proportional on
+     every page instead of stretching taller on long pages (see the
+     matching note in the [data-theme="light"] block above). */
+  background-size:100% 100%, cover;
+  background-position:center top, center center;
+  background-repeat:no-repeat, no-repeat;
+  background-attachment:scroll, fixed;
+  font-size:17px;
+  line-height:1.65;
+  color:var(--text);
+  font-family:var(--font-body);
+  -webkit-font-smoothing:antialiased;
+  transition:background var(--med) var(--ease), color var(--med) var(--ease);
+}
+img{ max-width:100%; display:block; }
+a{ color:inherit; text-decoration:none; }
+button{ font-family:inherit; }
+::selection{ background:var(--accent); color:#fff; }
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; scroll-behavior:auto !important; }
+}
+
+/* ---- UI font for controls, nav & data (serif reserved for headings/body prose) ---- */
+button, input, select, textarea,
+.btn, .nav a, .main-nav a, .badge, .chip, .input,
+.pc-price, .pc-brand, table, th, td{
+  font-family: var(--font-ui);
+}
+h1,h2,h3,h4,h5{ font-family:var(--font-display); letter-spacing:-.01em; }
+
+/* ==========================================================================
+   PAGE-SPECIFIC BACKGROUND OVERRIDES
+   Homepage uses the exact same bike photo + dark scrim as every other page
+   (the body{} rule above) — no page-home-specific override. An earlier
+   attempt to fade the scrim lighter from "Shop by category" downward made
+   everything past "Just Launched" look washed out compared to the site's
+   reference look, so that override was removed; the uniform dark scrim is
+   what the reference screenshots show throughout the whole page. The
+   admin dashboard now uses the same full-page photo background as the
+   rest of the site (previously kept plain on request; changed back).
+   ========================================================================== */

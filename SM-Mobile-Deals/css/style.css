@@ -1,0 +1,1428 @@
+/* ==========================================================================
+   MAIN LAYOUT — header, footer, hero, home sections, page shells
+   ========================================================================== */
+
+/* ---- Page loader ---- */
+/* ==========================================================================
+   PAGE LOADER — full-screen splash shown while a page (or page navigation)
+   loads. "SM Mobile Deals" is set at a viewport-relative size (clamp based
+   on vw) so it genuinely fills the screen edge-to-edge rather than sitting
+   as a small logo lockup, with each letter staggering in and a progress
+   bar that fills while the page boots.
+   ========================================================================== */
+#page-loader{
+  position:fixed; inset:0; z-index:999;
+  background:var(--bg);
+  background-image:
+    radial-gradient(900px 600px at 50% 30%, var(--accent-soft), transparent 65%);
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden;
+  transition:opacity .5s var(--ease), visibility .5s;
+}
+#page-loader.hide{ opacity:0; visibility:hidden; }
+
+.pl-inner{ text-align:center; padding:0 24px; max-width:100%; }
+
+/* ---- SM crest mark: scales/rotates in first ---- */
+.pl-mark{
+  display:inline-flex; gap:2px; margin:0 auto 18px;
+  font-family:var(--font-display); font-weight:800; font-size:22px;
+  letter-spacing:-.02em;
+}
+.pl-mark span{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:40px; height:40px; border-radius:12px;
+  background:linear-gradient(135deg,var(--accent),var(--deal));
+  color:#fff;
+  opacity:0; transform:scale(.4) rotate(-12deg);
+  animation:plMarkIn .55s var(--ease) forwards;
+}
+.pl-mark span:nth-child(2){ animation-delay:.1s; margin-left:-6px; background:linear-gradient(135deg,var(--deal),var(--accent-2)); }
+@keyframes plMarkIn{ to{ opacity:1; transform:scale(1) rotate(0); } }
+
+/* ---- Full-screen title: each letter is injected as its own span by
+   loader.js and staggers in with a rise + fade. Sized with clamp() driven
+   by vw so it scales to fill the screen width on any device. ---- */
+.pl-title{
+  font-family:var(--font-display);
+  font-weight:800;
+  font-size:clamp(32px, 9.5vw, 132px);
+  line-height:1.02;
+  letter-spacing:-.02em;
+  white-space:normal;
+  word-break:break-word;
+  background:linear-gradient(120deg, var(--text) 30%, var(--accent) 60%, var(--deal) 90%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.pl-title .plc{
+  display:inline-block;
+  opacity:0;
+  transform:translateY(.4em);
+  animation:plLetterIn .6s var(--ease) forwards;
+}
+.pl-title .plc.plsp{ width:.28em; }
+@keyframes plLetterIn{ to{ opacity:1; transform:translateY(0); } }
+
+.pl-sub{
+  margin-top:14px;
+  font-family:var(--font-ui); font-size:clamp(12px,1.6vw,16px); font-weight:500;
+  color:var(--text-faint); letter-spacing:.02em;
+  opacity:0; animation:plFadeIn .6s var(--ease) .9s forwards;
+}
+@keyframes plFadeIn{ to{ opacity:1; } }
+
+/* ---- Progress bar: fills while the page is loading, then the whole
+   splash fades via #page-loader.hide once window 'load' fires. ---- */
+.pl-bar{
+  width:min(220px, 60vw); height:3px; margin:28px auto 0;
+  background:var(--border-soft); border-radius:2px; overflow:hidden;
+  opacity:0; animation:plFadeIn .4s var(--ease) 1s forwards;
+}
+.pl-bar-fill{
+  height:100%; width:0%;
+  background:linear-gradient(90deg,var(--accent),var(--deal));
+  border-radius:2px;
+  animation:plBarFill 1.6s var(--ease) 1s forwards;
+}
+@keyframes plBarFill{ to{ width:100%; } }
+
+@media (prefers-reduced-motion: reduce){
+  .pl-mark span, .pl-title .plc, .pl-sub, .pl-bar, .pl-bar-fill{ animation:none !important; opacity:1 !important; transform:none !important; width:100% !important; }
+}
+.loader-logo{ font-family:var(--font-display); font-weight:700; font-size:26px; display:flex; align-items:center; gap:10px; }
+.loader-logo .dot{ width:10px; height:10px; border-radius:50%; background:var(--accent); animation:pulseDot 1s ease-in-out infinite; }
+@keyframes pulseDot{ 0%,100%{transform:scale(1); opacity:1;} 50%{transform:scale(1.6); opacity:.4;} }
+
+/* ---- Cursor: removed entirely (2026-08) ----
+   Old dot/ring/glow/trail overlay + its CSS are gone for good — every page
+   only ever shows the plain default OS pointer. (js/cursor.js is already a
+   no-op stub; this was leftover CSS for markup nothing creates anymore.
+   Deleted so there's no dead code that could ever bring back the
+   "pointer looks hidden behind an animation" complaint.) */
+
+/* ---- Announcement bar ---- */
+.announce-bar{ background:var(--surface-2); border-top:1px solid var(--border-soft); color:#4a5568; font-size:12px; font-weight:500; padding:10px 0; position:relative; overflow:hidden; }
+.announce-bar .track{
+  display:flex; align-items:center; gap:36px; width:max-content; white-space:nowrap;
+  animation:marquee 26s linear infinite;
+}
+.announce-bar .track span{ white-space:nowrap; }
+.announce-bar:hover .track{ animation-play-state:paused; }
+@media (prefers-reduced-motion: reduce){ .announce-bar .track{ animation:none; } }
+
+@keyframes marquee{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
+
+/* ---- Header ---- */
+header.site-header{ position:sticky; top:0; z-index:100; background:rgba(255,255,255,.45); backdrop-filter:blur(20px) saturate(160%); -webkit-backdrop-filter:blur(20px) saturate(160%); border-bottom:1px solid var(--glass-border); }
+.header-inner{ display:flex; align-items:center; gap:20px; height:var(--header-h); }
+.logo{ font-family:var(--font-display); font-weight:700; font-size:20px; display:flex; align-items:center; gap:9px; white-space:nowrap; }
+.logo .logo-mark{ width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,var(--accent),var(--deal)); display:flex; align-items:center; justify-content:center; color:#fff; font-size:16px; }
+.logo span.sub{ display:block; font-family:var(--font-body); font-size:9.5px; font-weight:600; color:var(--text-faint); letter-spacing:.1em; }
+
+nav.main-nav{ display:flex; align-items:center; gap:4px; }
+nav.main-nav a{ padding:9px 14px; border-radius:var(--radius-pill); font-size:14px; font-weight:600; color:var(--text-dim); transition:all var(--fast); }
+nav.main-nav a:hover, nav.main-nav a.active{ background:var(--surface-2); color:var(--text); }
+
+.header-search{ flex:1; max-width:380px; }
+.header-actions{ display:flex; align-items:center; gap:10px; margin-left:auto; }
+/* ---- Header action icons: squircle + gradient sweep + lift on hover ---- */
+.icon-btn, .theme-toggle{
+  position:relative; width:42px; height:42px;
+  border-radius:13px;                    /* squircle instead of circle */
+  display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(150deg, var(--surface-2), var(--surface));
+  color:var(--text-dim);
+  border:1px solid var(--border-soft);
+  box-shadow:0 2px 6px rgba(0,0,0,.18);
+  transition:transform var(--fast) var(--ease), color var(--fast),
+             border-color var(--fast), box-shadow var(--fast), background var(--fast);
+  cursor:pointer; overflow:hidden; font-size:15px;
+}
+/* gradient sheen that sweeps in on hover */
+.icon-btn::before, .theme-toggle::before{
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg, var(--accent), var(--deal));
+  opacity:0; transition:opacity var(--fast);
+}
+.icon-btn > *, .theme-toggle > *{ position:relative; z-index:1; }
+.icon-btn:hover, .theme-toggle:hover{
+  color:#fff;
+  border-color:transparent;
+  transform:translateY(-3px);
+  box-shadow:0 10px 22px rgba(var(--accent-rgb),.30);
+}
+.icon-btn:hover::before, .theme-toggle:hover::before{ opacity:1; }
+.icon-btn:active, .theme-toggle:active{ transform:translateY(-1px) scale(.96); }
+
+.icon-btn .count{
+  position:absolute; top:-5px; right:-5px; z-index:2;
+  background:linear-gradient(135deg, var(--deal), var(--deal-2));
+  color:#f2f7ff; font-family:var(--font-ui); font-size:10px; font-weight:800;
+  min-width:19px; height:19px; border-radius:var(--radius-pill);
+  display:flex; align-items:center; justify-content:center; padding:0 5px;
+  border:2px solid var(--bg); box-shadow:0 2px 8px rgba(var(--deal-rgb),.4);
+}
+.mobile-menu-btn{ display:none; }
+
+/* ---- Mobile nav drawer ---- */
+.mobile-drawer{ position:fixed; inset:0; z-index:150; visibility:hidden; }
+.mobile-drawer.open{ visibility:visible; }
+.mobile-drawer .backdrop{ position:absolute; inset:0; background:rgba(3,6,16,.65); opacity:0; transition:opacity var(--med); }
+.mobile-drawer.open .backdrop{ opacity:1; }
+.mobile-drawer .panel{ position:absolute; top:0; right:0; height:100%; width:80%; max-width:320px; background:var(--surface); padding:24px; transform:translateX(100%); transition:transform var(--med) var(--ease); display:flex; flex-direction:column; gap:6px; overflow-y:auto; }
+.mobile-drawer.open .panel{ transform:translateX(0); }
+.mobile-drawer a{ padding:14px 10px; border-radius:var(--radius-sm); font-weight:600; border-bottom:1px solid var(--border-soft); }
+
+/* ---- Hero ---- */
+.hero{ position:relative; padding:64px 0 56px; overflow:hidden; }
+.hero-grid{ display:grid; grid-template-columns:1.1fr .9fr; gap:40px; align-items:center; }
+/* Graphite grey rather than the bright accent blue — a quiet status line, not a shout. */
+.hero-eyebrow{ font-family:var(--font-mono); color:#8a93a6; font-size:13px; letter-spacing:.1em; text-transform:uppercase; font-weight:700; display:flex; align-items:center; gap:8px; margin-bottom:16px; }
+[data-theme="light"] .hero-eyebrow{ color:#5c6474; }
+.hero-eyebrow .live-dot{ width:7px; height:7px; border-radius:50%; background:var(--success); box-shadow:0 0 0 0 var(--success-soft); animation:livePulse 2s infinite; }
+@keyframes livePulse{ 0%{box-shadow:0 0 0 0 rgba(34,197,94,.5);} 70%{box-shadow:0 0 0 10px rgba(34,197,94,0);} 100%{box-shadow:0 0 0 0 rgba(34,197,94,0);} }
+.hero h1{ font-family:var(--font-display); font-size:clamp(34px,5vw,58px); line-height:1.04; font-weight:700; margin:0 0 18px; letter-spacing:-.01em; }
+.hero h1 .accent-word{ background:linear-gradient(90deg,var(--accent),var(--deal)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.hero p.lead{ font-size:16.5px; color:var(--text-dim); max-width:480px; margin:0 0 28px; line-height:1.65; }
+.hero-cta{ display:flex; gap:14px; flex-wrap:wrap; margin-bottom:34px; }
+.hero-stats{ display:flex; gap:32px; flex-wrap:wrap; }
+.hero-stats .stat b{ font-family:var(--font-mono); font-size:22px; display:block; }
+.hero-stats .stat span{ font-size:12.5px; color:var(--text-faint); }
+
+.hero-visual{ position:relative; display:flex; align-items:center; justify-content:center; }
+.hero-visual .glow-orb{ position:absolute; width:420px; height:420px; border-radius:50%;
+  background:
+    radial-gradient(circle at 35% 35%, rgba(120,190,255,.55), transparent 45%),
+    radial-gradient(circle at 60% 60%, rgba(var(--accent-rgb),.35), transparent 55%),
+    conic-gradient(from 0deg, rgba(var(--accent-rgb),.15), rgba(var(--deal-rgb),.1), rgba(var(--accent-rgb),.15));
+  filter:blur(28px); animation:orbFloat 7s ease-in-out infinite, orbSpin 22s linear infinite; }
+.hero-visual .glow-orb::after{ content:''; position:absolute; inset:30%; border-radius:50%; background:radial-gradient(circle,rgba(255,255,255,.9),rgba(var(--accent-rgb),.4) 40%,transparent 70%); filter:blur(6px); animation:orbPulse 4s ease-in-out infinite; }
+@keyframes orbFloat{ 0%,100%{transform:translateY(0) scale(1);} 50%{transform:translateY(-16px) scale(1.04);} }
+@keyframes orbSpin{ to{ transform:rotate(360deg); } }
+@keyframes orbPulse{ 0%,100%{ opacity:.7; transform:scale(1); } 50%{ opacity:1; transform:scale(1.15); } }
+.hero-visual img{
+  position:relative; z-index:1; max-width:78%;
+  filter:drop-shadow(0 30px 50px rgba(0,0,0,.5));
+  transform:rotate(-7deg);
+  animation:heroFloat 5s ease-in-out infinite;
+  transform-origin:50% 85%;
+}
+@keyframes heroFloat{ 0%,100%{transform:rotate(-7deg) translateY(0);} 50%{transform:rotate(-5deg) translateY(-14px);} }
+/* Soft ground shadow beneath the tilted phone — reads like the device is
+   resting/held at an angle rather than floating flat, closer to the
+   photographic "phone in hand" feel of the reference. */
+.hero-visual::after{
+  content:''; position:absolute; z-index:0; bottom:6%; left:50%;
+  width:52%; height:22px; transform:translateX(-50%) rotate(-4deg);
+  background:radial-gradient(ellipse, rgba(0,0,0,.35), transparent 72%);
+  filter:blur(4px);
+}
+.hero-badge-float{ position:absolute; background:var(--bg-elevated); backdrop-filter:blur(10px); border:1px solid var(--accent-soft); box-shadow:0 8px 24px rgba(var(--accent-rgb),.2), var(--shadow-md); border-radius:var(--radius-md); padding:10px 14px; display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:700; z-index:2; animation:badgeFloat 4s ease-in-out infinite; }
+@keyframes badgeFloat{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+.hero-badge-1{ top:8%; left:0%; } .hero-badge-2{ bottom:12%; right:2%; animation-delay:1.5s; }
+
+/* ---- Marquee brand strip ---- */
+.brand-strip{ padding:26px 0; border-top:1px solid var(--border-soft); border-bottom:1px solid var(--border-soft); overflow:hidden; }
+
+/* Scrolling brand marquee. The animation PAUSES whenever the cursor is over
+   the strip, so a brand can be read and clicked without chasing it. Each
+   brand links to that brand's products. */
+.brand-track{
+  display:flex; gap:14px; align-items:center; width:max-content;
+  animation:marquee 30s linear infinite;
+}
+.brand-strip:hover .brand-track,
+.brand-track:focus-within{ animation-play-state:paused; }
+
+.brand-chip{
+  font-family:var(--font-ui); font-weight:600; font-size:13.5px; letter-spacing:.02em;
+  white-space:nowrap;
+  padding:9px 18px; border-radius:var(--radius-pill);
+  border:1px solid var(--border-soft); background:var(--surface);
+  color:var(--text-dim);
+  display:inline-flex; align-items:center; justify-content:center;
+  transition:color var(--fast), border-color var(--fast), background var(--fast), transform var(--fast) var(--ease), box-shadow var(--fast);
+}
+.brand-chip:hover{
+  color:var(--text); border-color:var(--accent); background:var(--accent-soft);
+  transform:translateY(-2px);
+  box-shadow:0 8px 20px rgba(var(--accent-rgb),.20);
+}
+/* Brands with a real, licensed Font Awesome brand glyph (Apple, Google,
+   Microsoft, Huawei) show that mark instead of a text wordmark — sized up
+   and centred in a slightly wider, square-ish chip since a glyph reads
+   smaller than text at the same font-size. */
+.brand-chip.has-icon{ width:52px; padding:9px 0; font-size:19px; }
+.brand-chip.has-icon:hover{ color:var(--accent-2); }
+.brand-word{ line-height:1; }
+
+/* ---- Admin sidebar profile card (photo + name) ---- */
+.admin-profile-card{
+  display:flex; align-items:center; gap:12px;
+  padding:14px; margin-bottom:14px;
+  background:var(--surface-2); border:1px solid var(--border-soft);
+  border-radius:var(--radius-md);
+}
+.admin-avatar{
+  width:46px; height:46px; border-radius:50%;
+  object-fit:cover; object-position:center 25%;
+  border:2px solid var(--accent-soft);
+  flex-shrink:0;
+}
+.admin-profile-card strong{
+  display:block; font-family:var(--font-display); font-size:14px; color:var(--text);
+}
+.admin-profile-card span{
+  display:block; font-family:var(--font-ui); font-size:11px; color:var(--text-faint);
+}
+
+
+/* Real uploaded brand logo files (SITE_CONFIG.brandLogos) — shown on a
+   constant white card so both light-on-dark and dark-on-light logo designs
+   read cleanly regardless of the site's own theme. */
+.brand-chip.has-logo{
+  width:84px; height:40px; padding:7px 12px;
+  background:#ffffff; border-color:#e4e8f0;
+}
+.brand-chip.has-logo img{
+  width:100%; height:100%; object-fit:contain; display:block;
+}
+.brand-chip.has-logo:hover{
+  transform:translateY(-2px) scale(1.04);
+  box-shadow:0 8px 20px rgba(var(--accent-rgb),.25);
+  border-color:var(--accent);
+}
+
+/* ---- Section ---- */
+.section{ padding:56px 0; }
+.section.tight{ padding:36px 0; }
+
+/* ---- Category tiles ---- */
+/* ==========================================================================
+   CATEGORY TILES — poster-style cards. A trending model for that category
+   sits as a faded backdrop image (low opacity, like the reference site) so
+   it reads as texture rather than competing with the bold category name on
+   top. Image + scrim + content are three stacked layers.
+   ========================================================================== */
+.cat-tile{
+  position:relative; border-radius:var(--radius-lg); overflow:hidden;
+  aspect-ratio:4/3; background:var(--surface); border:1px solid var(--border-soft);
+  display:block;
+  transition:transform var(--med) var(--ease), border-color var(--med), box-shadow var(--med);
+}
+.cat-tile:hover{ transform:translateY(-6px); border-color:var(--accent); box-shadow:0 16px 40px rgba(var(--accent-rgb),.18); }
+
+/* Trending-model backdrop — the photo now FILLS the tile (cover) at full
+   opacity instead of being contained + blown up to 1.7x, which pushed most
+   of the product outside the card and left the tile looking empty. A tiny
+   1.02x scale hides any sub-pixel edge; hover nudges it to 1.08x. */
+.ct-bg-img{
+  position:absolute; inset:0; width:100%; height:100%;
+  object-fit:cover; object-position:center center;
+  transform:scale(1.02);
+  opacity:1;
+  filter:saturate(1.15);
+  transition:opacity var(--med) var(--ease), transform var(--slow) var(--ease);
+}
+.cat-tile:hover .ct-bg-img{ opacity:1; transform:scale(1.08); }
+
+/* Scrim only shades the BOTTOM strip where the label and product count sit.
+   The old version washed the whole card with --surface (transparent -> solid
+   at 98%, plus a 65% veil over the top half), which is what made the photos
+   look invisible. It also left the light-coloured label text sitting on a
+   near-white strip (1.08:1). The strip is now DARK, so the white label and
+   count read clearly while the top two-thirds of the photo stay clear. */
+.ct-scrim{
+  position:absolute; inset:0;
+  background:linear-gradient(180deg,
+    transparent 0%,
+    transparent 38%,
+    rgba(8,12,24,.30) 60%,
+    rgba(8,12,24,.72) 82%,
+    rgba(6,10,20,.92) 100%);
+}
+
+.ct-content{
+  position:relative; z-index:1;
+  height:100%; display:flex; flex-direction:column; justify-content:flex-end;
+  padding:18px;
+}
+.cat-tile .ct-icon{
+  position:absolute; top:14px; right:14px; width:44px; height:44px; border-radius:12px;
+  display:flex; align-items:center; justify-content:center; font-size:19px;
+  background:var(--accent); color:#fff;
+  border:1px solid var(--accent-2);
+  transition:transform var(--med) var(--ease), background var(--med);
+  z-index:2;
+}
+/* Hover animation removed on request — the icon badge now stays static;
+   nothing changes color/size near the pointer on hover, anywhere. */
+.cat-tile h4{ font-family:var(--font-display); margin:0 0 3px; font-size:17px; position:relative; z-index:1;
+  color:#ffffff !important; text-shadow:0 2px 10px rgba(0,0,0,.9), 0 1px 3px rgba(0,0,0,.95); }
+.ct-count{ font-size:12px; position:relative; z-index:1;
+  color:rgba(255,255,255,.88); text-shadow:0 1px 6px rgba(0,0,0,.9); }
+
+/* ---- Premium icon badges (why-us section) ---- */
+.why-card{ transition:transform var(--med) var(--ease), border-color var(--med), box-shadow var(--med); }
+.why-card:hover{ transform:translateY(-5px); border-color:var(--accent); box-shadow:0 16px 36px rgba(var(--accent-rgb),.15); }
+.why-icon{ width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:21px; background:linear-gradient(135deg,var(--accent-soft),var(--deal-soft)); color:var(--accent-2); border:1px solid var(--border-soft); transition:transform var(--med) var(--ease), background var(--med), color var(--med); }
+.why-icon .ui-icon{ width:24px; height:24px; }
+.why-card:hover .why-icon{ transform:scale(1.1) rotate(-6deg); background:linear-gradient(135deg,var(--accent),var(--deal)); color:#fff; }
+
+/* ---- Flagship Spotlight cards (photo -> video on hover) ---- */
+.spotlight-card{ display:block; }
+.spotlight-media{ position:relative; overflow:hidden; }
+
+/* ---- Offer banner ---- */
+.offer-banner{ border-radius:var(--radius-lg); background:linear-gradient(120deg,#1a2340,#101830); border:1px solid var(--border-soft); padding:34px; display:grid; grid-template-columns:1fr auto; align-items:center; gap:20px; position:relative; overflow:hidden; }
+.offer-banner::after{ content:''; position:absolute; inset:0; background:radial-gradient(360px circle at 90% 20%,rgba(var(--deal-rgb),.15),transparent 60%); }
+.offer-banner h3{ font-family:var(--font-display); font-size:24px; margin:0 0 8px; position:relative; }
+.offer-banner p{ color:var(--text-dim); margin:0 0 16px; position:relative; }
+
+/* ---- Testimonials ---- */
+.review-card{ background:var(--surface); border:1px solid var(--border-soft); border-radius:var(--radius-lg); padding:22px; }
+.review-card .rc-head{ display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.rc-avatar{ width:38px; height:38px; border-radius:50%; background:var(--accent-soft); color:var(--accent-2); display:flex; align-items:center; justify-content:center; font-weight:700; font-family:var(--font-display); }
+.review-card p{ color:var(--text-dim); font-size:14px; line-height:1.6; margin:0; }
+
+/* ---- Customer reels (Instagram) — auto-advancing slideshow ---- */
+.reel-slideshow{ display:flex; flex-direction:column; align-items:center; gap:14px; }
+.reel-frame{
+  position:relative; width:100%; max-width:340px; aspect-ratio:9/16;
+  border-radius:var(--radius-lg); overflow:hidden; background:var(--surface-2);
+  border:1px solid var(--border-soft); box-shadow:var(--shadow-md);
+}
+.reel-iframe{
+  position:absolute; inset:0; width:100%; height:100%; border:0;
+  opacity:0; pointer-events:none; transition:opacity .5s var(--ease);
+}
+.reel-iframe.active{ opacity:1; pointer-events:auto; }
+.reel-dots{ display:flex; gap:8px; }
+.reel-dot{ width:8px; height:8px; border-radius:50%; border:none; background:var(--border); cursor:pointer; padding:0; transition:background var(--fast), transform var(--fast); }
+.reel-dot.active{ background:var(--accent); transform:scale(1.3); }
+
+/* ---- Reels row — 5 equal slots, always one row, evenly spaced ---- */
+.reels-row{
+  display:flex; gap:22px; width:100%; margin:0 auto; padding:4px 0 14px;
+}
+.reel-slot{ flex:1 1 0; min-width:0; }
+.reel-slot .reel-frame{ width:100%; max-width:none; }
+@media (max-width: 560px){
+  .reels-row{ overflow-x:auto; gap:14px; -webkit-overflow-scrolling:touch; }
+  .reel-slot{ flex:0 0 130px; width:130px; }
+  .reel-slot .reel-frame{ width:130px; max-width:130px; }
+}
+
+/* ---- FAQ accordion ---- */
+.faq-item{ border-bottom:1px solid var(--border-soft); }
+.faq-q{ display:flex; align-items:center; justify-content:space-between; padding:18px 4px; cursor:pointer; font-weight:600; font-family:var(--font-display); font-size:15.5px; }
+.faq-q i{ transition:transform var(--fast); color:var(--text-faint); }
+.faq-item.open .faq-q i{ transform:rotate(45deg); color:var(--accent); }
+.faq-a{ max-height:0; overflow:hidden; transition:max-height var(--med) var(--ease); color:var(--text-dim); font-size:14px; line-height:1.7; }
+.faq-a-inner{ padding:0 4px 18px; }
+
+/* ---- Footer ----
+   Store's own wholesale-business banner — shown at 50% visibility (white
+   wash reduced from .93 to .5) so it actually reads as a photo behind the
+   footer, not just a barely-there texture. */
+footer.site-footer{
+  position:relative;
+  background-color:#05070a;
+  background-image:
+    linear-gradient(180deg, rgba(5,10,25,.55) 0%, rgba(8,16,36,.45) 40%, rgba(5,10,25,.62) 100%),
+    var(--site-bg-url);
+  background-size:100% 100%, cover;
+  background-position:center, center;
+  background-repeat:no-repeat, no-repeat;
+  border-top:1px solid var(--border-soft);
+  padding:54px 0 0;
+  margin-top:60px;
+}
+.footer-grid{ display:grid; grid-template-columns:1.4fr 1fr 1fr 1.2fr; gap:36px; padding-bottom:40px; }
+.footer-grid h5{ font-family:var(--font-display); font-size:14.5px; margin:0 0 16px; }
+.footer-grid ul{ list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:11px; }
+.footer-grid a{ color:var(--text-dim); font-size:13.8px; transition:color var(--fast), text-decoration-color var(--fast); }
+.footer-grid a:hover{ color:var(--accent); text-decoration:underline; text-decoration-color:var(--accent); }
+.footer-about p{ color:var(--text-dim); font-size:13.8px; line-height:1.7; max-width:280px; }
+.social-row{ display:flex; gap:10px; margin-top:16px; }
+.social-row a{ width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:none; color:#fff; transition:all var(--fast); }
+.social-row a:hover{ transform:translateY(-3px); filter:brightness(1.1); }
+.social-row a.social-instagram{ background:radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
+.social-row a.social-facebook{ background:#1877F2; }
+.social-row a.social-whatsapp{ background:#25D366; }
+.social-row a.social-threads{ background:#000; }
+.footer-bottom{ border-top:1px solid var(--border-soft); padding:18px 0; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; font-size:12.5px; color:var(--text-faint); }
+.payment-icons{ display:flex; gap:8px; align-items:center; }
+.payment-icons i{ font-size:22px; color:var(--text-faint); }
+
+/* ---- Page hero (inner pages) ---- */
+.page-hero{ padding:36px 0 22px; }
+.breadcrumb{ font-size:12.5px; color:var(--text-faint); display:flex; gap:6px; align-items:center; margin-bottom:10px; }
+.breadcrumb a{ color:var(--text-dim); } .breadcrumb a:hover{ color:var(--accent-2); }
+.page-title{ font-family:var(--font-display); font-size:clamp(24px,3.4vw,36px); font-weight:700; margin:0; }
+
+/* ---- Floating AI assistant button ---- */
+.ai-fab{ position:fixed; top:140px; left:24px; z-index:180; width:58px; height:58px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--deal)); color:#fff; display:flex; align-items:center; justify-content:center; font-size:24px; box-shadow:0 10px 30px rgba(var(--accent-rgb),.45); cursor:pointer; border:none; animation:fabPulse 3s ease-in-out infinite; }
+@keyframes fabPulse{ 0%,100%{transform:scale(1);} 50%{transform:scale(1.06);} }
+.ai-fab .fab-badge{ position:absolute; top:-3px; right:-3px; width:16px; height:16px; background:var(--deal); border-radius:50%; border:2px solid var(--bg); }
+.ai-fab .ui-icon{ width:26px; height:26px; }
+
+/* ---- Chat panel ---- */
+.chat-panel{ position:fixed; bottom:96px; left:24px; z-index:181; width:370px; max-width:90vw; height:min(560px,72vh); background:var(--glass-bg-strong); backdrop-filter:blur(28px) saturate(160%); -webkit-backdrop-filter:blur(28px) saturate(160%); border:1px solid var(--glass-border); border-radius:var(--radius-lg); box-shadow:var(--glass-shadow); display:flex; flex-direction:column; overflow:hidden; transform:translateY(20px) scale(.96); opacity:0; pointer-events:none; transition:all var(--med) var(--ease); }
+.chat-panel.open{ transform:translateY(0) scale(1); opacity:1; pointer-events:auto; }
+.chat-head{ background:linear-gradient(120deg,var(--accent),var(--deal)); color:#fff; padding:16px 18px; display:flex; align-items:center; justify-content:between; gap:10px; }
+.chat-head .ch-info{ flex:1; }
+.chat-head h4{ margin:0; font-family:var(--font-display); font-size:15px; }
+.chat-head span{ font-size:11.5px; opacity:.85; }
+.chat-lang{ background:rgba(255,255,255,.2); border:none; color:#fff; font-size:11.5px; border-radius:var(--radius-pill); padding:5px 10px; font-weight:700; }
+.chat-body{ flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:12px; background:var(--bg); }
+.msg{ max-width:82%; padding:10px 13px; border-radius:14px; font-size:13.5px; line-height:1.55; }
+.msg.bot{ background:var(--surface); border:1px solid var(--border-soft); align-self:flex-start; border-bottom-left-radius:4px; }
+.msg.user{ background:var(--accent); color:#fff; align-self:flex-end; border-bottom-right-radius:4px; }
+.msg-suggestions{ display:flex; flex-wrap:wrap; gap:6px; margin-top:4px; }
+.msg-suggestions button{ background:var(--surface-2); border:1px solid var(--border-soft); color:var(--text-dim); font-size:12px; padding:6px 10px; border-radius:var(--radius-pill); cursor:pointer; }
+.msg-suggestions button:hover{ border-color:var(--accent); color:var(--accent-2); }
+.chat-input-row{ display:flex; gap:8px; padding:12px; border-top:1px solid var(--border-soft); background:var(--surface); }
+.chat-input-row input{ flex:1; background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-pill); padding:10px 16px; color:var(--text); font-size:13.5px; }
+.chat-input-row button{ width:40px; height:40px; border-radius:50%; background:var(--accent); color:#fff; border:none; cursor:pointer; }
+.typing-dots{ display:flex; gap:4px; padding:4px 0; }
+.typing-dots span{ width:6px; height:6px; border-radius:50%; background:var(--text-faint); animation:typingDot 1.2s infinite; }
+.typing-dots span:nth-child(2){ animation-delay:.2s; } .typing-dots span:nth-child(3){ animation-delay:.4s; }
+@keyframes typingDot{ 0%,60%,100%{opacity:.3;} 30%{opacity:1;} }
+
+
+/* ==========================================================================
+   HERO QUOTE — serif pull-quote under the lead paragraph
+   ========================================================================== */
+.hero-quote{
+  font-family:var(--font-display);
+  font-style:italic;
+  font-size:17px;
+  line-height:1.55;
+  color:var(--text-dim);
+  border-left:2px solid var(--deal);
+  padding:2px 0 2px 16px;
+  margin:18px 0 4px;
+  max-width:56ch;
+}
+
+/* ==========================================================================
+   PRODUCT CARD — image + model name ONLY.
+   Brand, specs, price, condition and stock deliberately live on the
+   product-details page; the card is just a doorway to it.
+   ========================================================================== */
+.product-card{ position:relative; overflow:hidden; }
+
+.pc-minimal{
+  padding:16px 16px 18px;
+  text-align:center;
+}
+.pc-minimal .pc-name{
+  font-family:var(--font-display);
+  font-size:16.5px;
+  font-weight:600;
+  line-height:1.35;
+  color:var(--text);
+  white-space:normal;
+  transition:color var(--fast);
+}
+.product-card:hover .pc-name{ color:var(--accent-2); }
+
+/* ---- Category tile: name only ---- */
+.cat-tile h4{ transition:color var(--fast); }
+.cat-tile:hover h4{ color:var(--accent-2); }
+
+
+/* ==========================================================================
+   HERO — featured model name + crossfade when the trending model rotates
+   ========================================================================== */
+
+
+#hero-phone-img{ transition:opacity .26s var(--ease), transform .26s var(--ease); }
+#hero-phone-img.hero-swap{ opacity:0; transform:rotate(-7deg) translateY(10px) scale(.97); }
+
+/* ==========================================================================
+   CHARGING CARDS — model name + the adapter that model actually needs.
+   Wattage comes from js/charging.js, resolved per model, so an iPhone shows
+   20W and a OnePlus shows 100W rather than one hardcoded figure for all.
+   ========================================================================== */
+.charge-card{
+  display:block;
+  background:var(--surface);
+  border:1px solid var(--border-soft);
+  border-radius:var(--radius-lg);
+  padding:18px;
+  transition:transform var(--med) var(--ease), border-color var(--med), box-shadow var(--med);
+}
+.charge-card:hover{
+  transform:translateY(-5px);
+  border-color:var(--accent);
+  box-shadow:0 16px 36px rgba(var(--accent-rgb),.15);
+}
+.cc-name{
+  font-family:var(--font-display); font-size:15.5px; font-weight:600;
+  line-height:1.3; color:var(--text); margin-bottom:10px; min-height:40px;
+}
+.cc-watts{
+  display:inline-flex; align-items:center; gap:7px;
+  font-family:var(--font-ui); font-size:13px; font-weight:700;
+  color:var(--deal);
+  background:var(--deal-soft); border:1px solid var(--deal-soft);
+  padding:6px 12px; border-radius:var(--radius-pill);
+  margin-bottom:12px;
+}
+.cc-row{
+  display:flex; justify-content:space-between; align-items:center;
+  font-family:var(--font-ui); font-size:12px;
+  padding:5px 0; border-bottom:1px solid var(--border-soft);
+}
+.cc-row span{ color:var(--text-faint); }
+.cc-row b{ color:var(--text-dim); font-weight:600; }
+.cc-charger{
+  font-family:var(--font-ui); font-size:12px; font-weight:600;
+  color:var(--accent-2); margin-top:10px; line-height:1.45;
+}
+.cc-note{
+  font-family:var(--font-ui); font-size:11px;
+  color:var(--text-faint); margin-top:6px; line-height:1.45;
+}
+
+/* ---- Charging panel on the product-details page ---- */
+.pd-charge{
+  background:var(--surface-2); border:1px solid var(--border-soft);
+  border-radius:var(--radius-md); padding:16px; margin-bottom:22px;
+}
+.pd-charge-head{
+  display:flex; align-items:center; gap:9px;
+  font-family:var(--font-ui); font-size:15px; color:var(--deal);
+  margin-bottom:12px;
+}
+.pd-charge-rows > div{
+  display:flex; justify-content:space-between; align-items:center; gap:16px;
+  font-family:var(--font-ui); font-size:12.5px;
+  padding:7px 0; border-bottom:1px solid var(--border-soft);
+}
+.pd-charge-rows > div:last-child{ border-bottom:none; }
+.pd-charge-rows span{ color:var(--text-faint); }
+.pd-charge-rows b{ color:var(--text-dim); font-weight:600; text-align:right; }
+.pd-charge-note{
+  font-family:var(--font-ui); font-size:11.5px; color:var(--text-faint);
+  margin:8px 0 0; line-height:1.5;
+}
+
+
+/* ==========================================================================
+   ADMIN — media-only product editor.
+   Product details are pre-filled in the catalog and shown read-only; the
+   only editable inputs are the photo and video.
+   ========================================================================== */
+.pm-toolbar{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+
+.pm-readonly{
+  background:var(--surface-2); border:1px solid var(--border-soft);
+  border-radius:var(--radius-md); padding:14px; margin-bottom:18px;
+}
+.pm-ro-name{
+  font-family:var(--font-display); font-size:16px; font-weight:700;
+  color:var(--text); margin-bottom:10px; line-height:1.3;
+}
+.pm-ro-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:4px 18px; }
+.pm-ro-grid > div{
+  display:flex; justify-content:space-between; gap:10px;
+  font-family:var(--font-ui); font-size:12px;
+  padding:5px 0; border-bottom:1px solid var(--border-soft);
+}
+.pm-ro-grid span{ color:var(--text-faint); }
+.pm-ro-grid b{ color:var(--text-dim); font-weight:600; text-align:right; }
+.pm-ro-specs{ display:flex; flex-wrap:wrap; gap:5px; margin-top:10px; }
+.pm-ro-specs span{
+  font-family:var(--font-ui); font-size:10.5px; font-weight:600;
+  padding:3px 9px; border-radius:var(--radius-pill);
+  background:var(--surface-3); color:var(--text-dim);
+}
+.pm-ro-hint{
+  font-family:var(--font-ui); font-size:11.5px; color:var(--text-faint);
+  margin:10px 0 0; line-height:1.5;
+}
+
+.pm-cur-wrap{
+  margin-top:14px; padding:12px;
+  background:var(--surface-2); border:1px solid var(--border-soft);
+  border-radius:var(--radius-md);
+}
+.pm-cur-title{
+  font-family:var(--font-ui); font-size:10px; font-weight:700;
+  letter-spacing:.14em; text-transform:uppercase;
+  color:var(--accent-2); margin-bottom:9px;
+}
+.pm-cur{
+  display:flex; align-items:center; gap:10px;
+  font-family:var(--font-ui); font-size:12.5px; color:var(--text-dim);
+  padding:6px 0;
+}
+.pm-cur img{ width:40px; height:40px; object-fit:cover; border-radius:8px; }
+.pm-cur i{ font-size:18px; color:var(--accent-2); width:40px; text-align:center; }
+.pm-cur span{ flex:1; }
+
+@media(max-width:640px){
+  .pm-ro-grid{ grid-template-columns:1fr; }
+}
+
+
+/* ==========================================================================
+   WALKTHROUGH — the looping "how it works" clip on the login / register
+   pages. Everything is drawn with DOM + CSS rather than a video file, so it
+   inherits the site palette and adds no download weight.
+
+   Payment outcome colours:
+     green  var(--success)  tick   -> confirmed
+     amber  var(--pending)  hourglass -> awaiting confirmation / refund
+     red    var(--danger)   cross  -> failed
+   ========================================================================== */
+.wt-root{
+  background:var(--surface); border:1px solid var(--border-soft);
+  border-radius:var(--radius-lg); padding:20px;
+}
+.wt-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+.wt-eyebrow{
+  font-family:var(--font-mono); font-size:11px; font-weight:700;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--accent-2);
+}
+.wt-clock{ font-family:var(--font-mono); font-size:11px; color:var(--text-faint); }
+
+/* ---- phone frame ---- */
+.wt-phone{
+  position:relative; width:210px; height:396px; margin:0 auto;
+  background:var(--bg); border:6px solid var(--surface-3);
+  border-radius:30px; box-shadow:var(--shadow-md), 0 0 0 1px var(--border-soft);
+  overflow:hidden;
+}
+.wt-notch{
+  position:absolute; top:0; left:50%; transform:translateX(-50%);
+  width:74px; height:15px; background:var(--surface-3);
+  border-radius:0 0 11px 11px; z-index:3;
+}
+.wt-viewport{ position:absolute; inset:0; padding:26px 13px 13px; overflow:hidden; }
+.wt-viewport.wt-enter{ animation:wtEnter .42s var(--ease); }
+@keyframes wtEnter{ from{ opacity:0; transform:translateX(16px); } to{ opacity:1; transform:none; } }
+
+.wt-screen{ display:flex; flex-direction:column; gap:9px; height:100%; }
+.wt-screen.wt-center{ align-items:center; justify-content:center; text-align:center; }
+.wt-pop{ animation:wtPop .45s var(--ease) both; }
+@keyframes wtPop{ from{ opacity:0; transform:translateY(9px) scale(.96); } to{ opacity:1; transform:none; } }
+
+/* ---- generic placeholder bits ---- */
+.wt-line{ height:7px; border-radius:4px; background:var(--surface-3); }
+.wt-w40{ width:40%; } .wt-w50{ width:50%; } .wt-w60{ width:60%; } .wt-w70{ width:70%; }
+.wt-chiprow, .wt-upi-row{ display:flex; flex-wrap:wrap; gap:5px; justify-content:center; }
+.wt-chip{
+  font-family:var(--font-ui); font-size:9px; font-weight:600;
+  padding:3px 8px; border-radius:var(--radius-pill);
+  background:var(--surface-2); border:1px solid var(--border-soft); color:var(--text-dim);
+}
+
+/* ---- step 1: search + grid ---- */
+.wt-searchbar{
+  display:flex; align-items:center; gap:6px;
+  background:var(--surface-2); border:1px solid var(--border-soft);
+  border-radius:var(--radius-pill); padding:7px 11px;
+  font-family:var(--font-ui); font-size:10px; color:var(--text-dim);
+}
+.wt-searchbar i{ font-size:9px; color:var(--accent-2); }
+.wt-typing::after{ content:'|'; color:var(--accent); animation:wtCaret 1s steps(1) infinite; }
+@keyframes wtCaret{ 50%{ opacity:0; } }
+.wt-grid{ display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+.wt-tile{ background:var(--surface-2); border:1px solid var(--border-soft); border-radius:9px; padding:7px; }
+.wt-tile-img{
+  height:44px; border-radius:6px; margin-bottom:6px;
+  background:linear-gradient(135deg, var(--accent-soft), var(--deal-soft));
+}
+.wt-tile-bar{ height:5px; width:74%; border-radius:3px; background:var(--surface-3); }
+
+/* ---- step 2: product ---- */
+.wt-hero-img{
+  height:118px; border-radius:11px;
+  background:radial-gradient(circle at 50% 45%, var(--accent-soft), transparent 68%), var(--surface-2);
+  border:1px solid var(--border-soft);
+}
+.wt-price{ font-family:var(--font-mono); font-size:16px; font-weight:700; color:var(--text); }
+
+/* ---- step 3: cart ---- */
+.wt-cart-icon{
+  position:relative; width:56px; height:56px; border-radius:16px;
+  background:linear-gradient(135deg,var(--accent),var(--deal));
+  display:flex; align-items:center; justify-content:center;
+  color:#fff; font-size:22px; animation:wtBump .6s var(--ease);
+}
+@keyframes wtBump{ 0%{ transform:scale(.6); opacity:0; } 60%{ transform:scale(1.12); } 100%{ transform:scale(1); opacity:1; } }
+.wt-cart-badge{
+  position:absolute; top:-5px; right:-5px;
+  min-width:19px; height:19px; border-radius:50%;
+  background:var(--deal); color:#fff;
+  font-family:var(--font-ui); font-size:10px; font-weight:800;
+  display:flex; align-items:center; justify-content:center;
+  border:2px solid var(--surface);
+}
+.wt-btn{
+  font-family:var(--font-ui); font-size:10px; font-weight:700; color:#fff;
+  background:var(--accent); padding:8px 14px; border-radius:var(--radius-pill);
+  margin-top:14px;
+}
+
+/* ---- step 4: address ---- */
+.wt-field{
+  background:var(--surface-2); border:1px solid var(--border-soft);
+  border-radius:8px; padding:8px 10px;
+  font-family:var(--font-ui); font-size:9.5px; color:var(--text-faint);
+}
+.wt-note{
+  display:flex; align-items:center; gap:6px;
+  font-family:var(--font-ui); font-size:9px; font-weight:600;
+  color:var(--success); background:var(--success-soft);
+  border-radius:8px; padding:7px 9px; margin-top:4px;
+}
+
+/* ---- step 5: UPI QR ---- */
+.wt-qr{
+  width:104px; height:104px; padding:8px; border-radius:11px;
+  background:#fff; display:grid; grid-template-columns:repeat(6,1fr); gap:2px;
+}
+.wt-qr i{ background:#0b1730; border-radius:1px; animation:wtQr 1.6s ease-in-out infinite; }
+@keyframes wtQr{ 0%,100%{ opacity:.25; } 50%{ opacity:1; } }
+
+/* ---- step 6: verifying ---- */
+.wt-spinner{
+  width:44px; height:44px; border-radius:50%;
+  border:3px solid var(--surface-3); border-top-color:var(--accent);
+  animation:wtSpin .9s linear infinite;
+}
+@keyframes wtSpin{ to{ transform:rotate(360deg); } }
+
+/* ==========================================================================
+   PAYMENT OUTCOME SCENES — green tick, amber hourglass, red cross
+   ========================================================================== */
+.wt-status{ gap:10px; }
+.wt-status-title{ font-family:var(--font-display); font-size:15px; font-weight:700; line-height:1.25; }
+.wt-status-sub{ font-family:var(--font-ui); font-size:9.5px; color:var(--text-faint); line-height:1.45; padding:0 6px; }
+
+.wt-mark{ width:76px; height:76px; display:flex; align-items:center; justify-content:center; }
+.wt-mark svg{ width:76px; height:76px; }
+.wt-mark-ring{
+  fill:none; stroke-width:2.5; stroke-linecap:round;
+  stroke-dasharray:145; stroke-dashoffset:145;
+  animation:wtRing .7s var(--ease) forwards;
+}
+.wt-mark-path{
+  fill:none; stroke-width:4; stroke-linecap:round; stroke-linejoin:round;
+  stroke-dasharray:40; stroke-dashoffset:40;
+  animation:wtPath .45s var(--ease) .55s forwards;
+}
+.wt-mark-path-2{ animation-delay:.75s; }
+@keyframes wtRing{ to{ stroke-dashoffset:0; } }
+@keyframes wtPath{ to{ stroke-dashoffset:0; } }
+
+/* green — confirmed */
+.wt-status-ok .wt-status-title{ color:var(--success); }
+.wt-mark-ok .wt-mark-ring{ stroke:var(--success); }
+.wt-mark-ok .wt-mark-path{ stroke:var(--success); }
+.wt-status-ok{ background:radial-gradient(circle at 50% 38%, var(--success-soft), transparent 62%); }
+
+/* amber — awaiting confirmation / refund */
+.wt-status-wait .wt-status-title{ color:var(--pending); }
+.wt-mark-wait{
+  font-size:38px; color:var(--pending);
+  border:2.5px solid var(--pending); border-radius:50%;
+  animation:wtPop .5s var(--ease) both;
+}
+.wt-mark-wait i{ animation:wtFlip 1.8s ease-in-out infinite; }
+@keyframes wtFlip{ 0%,45%{ transform:rotate(0); } 55%,100%{ transform:rotate(180deg); } }
+.wt-status-wait{ background:radial-gradient(circle at 50% 38%, var(--pending-soft), transparent 62%); }
+
+/* red — failed */
+.wt-status-fail .wt-status-title{ color:var(--danger); }
+.wt-mark-fail .wt-mark-ring{ stroke:var(--danger); }
+.wt-mark-fail .wt-mark-path{ stroke:var(--danger); }
+.wt-status-fail{ background:radial-gradient(circle at 50% 38%, var(--danger-soft), transparent 62%); }
+
+/* ---- caption, dots, progress, legend ---- */
+.wt-caption{ text-align:center; margin-top:14px; min-height:46px; }
+.wt-caption strong{
+  display:block; font-family:var(--font-display); font-size:14px;
+  color:var(--text); margin-bottom:3px;
+}
+.wt-caption span{
+  font-family:var(--font-ui); font-size:11.5px; color:var(--text-faint); line-height:1.5;
+}
+.wt-dots{ display:flex; justify-content:center; gap:6px; margin-top:12px; }
+.wt-dot{
+  width:7px; height:7px; border-radius:50%; padding:0;
+  background:var(--surface-3); border:none; cursor:pointer;
+  transition:background var(--fast), transform var(--fast), width var(--fast);
+}
+.wt-dot:hover{ background:var(--text-faint); }
+.wt-dot.active{ background:var(--accent); width:18px; border-radius:4px; }
+
+.wt-progress{ height:3px; background:var(--surface-2); border-radius:2px; margin-top:12px; overflow:hidden; }
+.wt-progress-bar{ height:100%; width:0; background:linear-gradient(90deg,var(--accent),var(--deal)); border-radius:2px; }
+
+.wt-legend{
+  display:flex; flex-wrap:wrap; justify-content:center; gap:12px; margin-top:14px;
+  font-family:var(--font-ui); font-size:10px; color:var(--text-faint);
+}
+.wt-legend span{ display:inline-flex; align-items:center; gap:5px; }
+.wt-key{ width:9px; height:9px; border-radius:50%; display:inline-block; }
+.wt-key-ok{ background:var(--success); }
+.wt-key-wait{ background:var(--pending); }
+.wt-key-fail{ background:var(--danger); }
+
+/* ---- two-column auth layout: form beside the clip ---- */
+.auth-split{
+  display:grid; grid-template-columns:minmax(0,420px) minmax(0,340px);
+  gap:28px; align-items:start; justify-content:center;
+  max-width:820px; margin:40px auto;
+}
+@media(max-width:900px){
+  .auth-split{ grid-template-columns:1fr; max-width:420px; }
+  .auth-split .wt-root{ order:2; }
+}
+@media (prefers-reduced-motion: reduce){
+  .wt-qr i, .wt-spinner, .wt-mark-wait i{ animation:none !important; }
+}
+
+
+/* ==========================================================================
+   HERO / BRAND-STRIP TEXT — scoped light colours.
+   The body background is now the exact uploaded-image gradient (dark navy
+   at the top, fading to light cyan near the page bottom), left completely
+   unaltered as requested. The hero and brand-strip sections have no card
+   background of their own, so they sit directly on the darkest part of
+   that gradient — this rule ONLY sets text colour there (never touches the
+   background) so headlines stay readable against the dark navy behind them.
+   ========================================================================== */
+.hero, .hero h1, .hero p.lead, .hero-quote,
+.hero-stats .stat b, .hero-stats .stat span,
+.hero-eyebrow, .hero .btn-outline, .brand-chip{
+  color:#eef5fc;
+}
+.hero p.lead{ color:#c7d6ea; }
+.hero-quote{ color:#c7d6ea; border-left-color:var(--deal-2); }
+.hero-eyebrow{ color:#a9bcd6 !important; }
+.hero-stats .stat span{ color:#9fb3d0; }
+.hero .btn-outline{ border-color:#c7d6ea55; }
+.hero .btn-outline:hover{ background:#ffffff14; }
+.brand-chip{ border-color:#ffffff2a; background:#ffffff12; }
+.brand-chip:hover{ background:#ffffff22; border-color:#ffffff55; color:#fff; }
+
+
+/* ---- Fast Delivery card: now a real link out to ST Courier tracking ---- */
+.why-card-link{ text-decoration:none; color:inherit; transition:transform var(--fast) var(--ease), border-color var(--fast); }
+.why-card-link:hover{ transform:translateY(-4px); border-color:var(--accent); }
+.why-track-cta{
+  display:inline-flex; align-items:center; gap:6px;
+  margin-top:12px; font-family:var(--font-ui); font-size:11.5px; font-weight:700;
+  color:var(--accent-2);
+}
+.why-card-link:hover .why-track-cta{ text-decoration:underline; }
+
+
+/* ==========================================================================
+   STORE MOMENT — a real photo from the store owner, paired with a short
+   caption. Sits between the offer banner and the Why Us cards.
+   ========================================================================== */
+.store-moment{
+  display:grid; grid-template-columns:1fr 1fr; gap:0;
+  border-radius:var(--radius-lg); overflow:hidden;
+  border:1px solid var(--border-soft); background:var(--surface);
+}
+.store-moment .portrait-frame{ min-height:260px; }
+.store-moment .portrait-frame img{
+  width:100%; height:100%; min-height:260px;
+}
+.store-moment-caption{
+  padding:32px; display:flex; flex-direction:column; justify-content:center;
+}
+.store-moment-caption h3{
+  font-family:var(--font-display); font-size:26px; margin:0 0 10px;
+}
+.store-moment-caption p.text-dim{ font-size:14.5px; line-height:1.6; margin:0; }
+
+@media(max-width:760px){
+  .store-moment{ grid-template-columns:1fr; }
+  .store-moment img{ min-height:220px; }
+}
+
+/* ---- About page: personal photo banner ---- */
+.about-photo{
+  width:100%; max-height:420px; object-fit:cover;
+  border-radius:var(--radius-lg);
+  margin:28px 0;
+}
+
+
+/* ==========================================================================
+   PORTRAIT-FRAME — soft blurred "glow" backdrop behind a real photo, like a
+   phone's portrait-mode background blur. A blurred, scaled-up duplicate of
+   the same photo (--bg-img) sits behind the sharp image and bleeds past its
+   edges, so the photo feels like it extends softly into the page rather
+   than sitting in a hard rectangle. Used on the homepage store-moment photo
+   and the About page bike photo — NOT on the admin avatar, which stays
+   sharp and clearly readable since it's an identifying profile photo.
+   ========================================================================== */
+.portrait-frame{
+  position:relative;
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden;
+  isolation:isolate;
+}
+.portrait-frame .portrait-blur-bg{
+  position:absolute; inset:-14%;
+  background-size:cover; background-position:center;
+  filter:blur(28px) saturate(1.15) brightness(.85);
+  transform:scale(1.08);
+  z-index:0;
+}
+.portrait-frame::after{
+  /* subtle dark vignette over the blur so it recedes behind the sharp
+     photo instead of competing with it */
+  content:'';
+  position:absolute; inset:0;
+  background:radial-gradient(circle at center, transparent 35%, rgba(0,0,0,.28) 100%);
+  z-index:0;
+}
+.portrait-frame img{
+  position:relative; z-index:1;
+  border-radius:calc(var(--radius-lg) - 4px);
+  box-shadow:0 18px 50px rgba(0,0,0,.35);
+  object-fit:cover;
+}
+
+/* About page: the sharp photo sits inset within the blurred glow, with the
+   glow bleeding a bit further at the edges. */
+.about-photo-wrap.portrait-frame{
+  padding:22px; border-radius:var(--radius-lg);
+  margin:28px 0;
+}
+.about-photo-wrap .about-photo{ margin:0; }
+
+@media (max-width:680px){
+  .portrait-frame .portrait-blur-bg{ filter:blur(18px) saturate(1.1) brightness(.85); }
+}
+
+/* ---- Inline SVG icons (header actions) --------------------------------
+   These replace the CDN-loaded Font Awesome glyphs in the header so the
+   primary navigation icons render even if that CDN is unreachable. Sized
+   to visually match the surrounding FA icons elsewhere on the page. */
+.ui-icon{
+  width:19px; height:19px;
+  display:block;
+  flex-shrink:0;
+}
+.icon-btn .ui-icon{ width:18px; height:18px; }
+.theme-toggle .ui-icon{ width:18px; height:18px; }
+/* Social row (Instagram/Facebook/WhatsApp/Threads) and category tile badge —
+   same inline-SVG fix, sized to match the circle they sit inside. Colour
+   comes from the brand-background rules above (white icon on each brand's
+   own colour circle), so no color override needed here. */
+.social-icon{ width:16px; height:16px; }
+.ct-icon .ui-icon{ width:20px; height:20px; }
+.wa-inline-icon{ width:14px; height:14px; }
+
+/* ==========================================================================
+   HOMEPAGE HEADING COLOUR
+   Requested: red in dark mode, near-black in light mode. Scoped to
+   body.page-home so only the homepage changes — other pages keep the
+   default heading colour. The homepage background is a photo, so a soft
+   text-shadow is added to keep both colours legible over whichever part of
+   the picture sits behind them.
+   ========================================================================== */
+body.page-home .hero h1,
+body.page-home .section-title,
+body.page-home .hero-stats .stat b{
+  color:#0a0a0a;                       /* black in both modes, per request */
+  text-shadow:
+     0  0 2px rgba(255,255,255,.95),
+     1px 1px 0 rgba(255,255,255,.9),
+    -1px 1px 0 rgba(255,255,255,.9),
+     1px -1px 0 rgba(255,255,255,.9),
+    -1px -1px 0 rgba(255,255,255,.9),
+     0 3px 14px rgba(255,255,255,.7);
+}
+/* the two-tone headline word uses a gradient fill, so it needs the
+   gradient swapped rather than just a colour */
+body.page-home .hero h1 .accent-word{
+  background:linear-gradient(90deg,#0a0a0a,#3a3a3a);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+
+/* ==========================================================================
+   HERO FLOATING BADGES — text colour fix
+   These badges ("45W Fast Charging", "1 Year Warranty") sit on a near-white
+   panel (--bg-elevated is #ffffffee in both themes). They are nested inside
+   .hero, which sets a near-white text colour so headings read against the
+   dark photo behind them — so the badge text was inheriting white-on-white
+   and rendering as blank white boxes. They need their own dark text, since
+   their own background is light regardless of the page theme.
+   ========================================================================== */
+.hero-badge-float,
+.hero .hero-badge-float{
+  color:#111827;                      /* dark, readable on the white pill */
+  text-shadow:none;
+}
+.hero-badge-float i{ color:#111827; }
+/* keep the two semantic icon colours that are set inline */
+.hero-badge-float i.fa-bolt{ color:#b45309 !important; }
+.hero-badge-float i.fa-shield-halved{ color:#047857 !important; }
+
+/* ==========================================================================
+   READABILITY ON THE PHOTO BACKGROUND
+   The colour palette is a light/white theme (--text is a dark navy meant to
+   sit on white). Every page now renders over a dark photo background, so
+   any text placed DIRECTLY on that background was dark-on-dark — measured
+   at 1.00:1 contrast, i.e. completely invisible. That is why the page
+   titles and section intros looked "faint".
+
+   The rule below lightens only the text that sits on the page background.
+   Anything inside a white surface (cards, filter panel, tables, modals,
+   the header and footer) is explicitly excluded so it keeps its dark text
+   — those already sit on white and must not be inverted.
+   ========================================================================== */
+.page-title,
+.breadcrumb,
+.breadcrumb a,
+.breadcrumb span,
+.section-title,
+.eyebrow,
+.section-head .text-dim,
+.section > .container > .text-dim,
+.page-head .text-dim,
+.page-head p{
+  color:#f2f6fc;
+  text-shadow:0 2px 10px rgba(0,0,0,.7), 0 1px 3px rgba(0,0,0,.9);
+}
+.breadcrumb a{ color:#cfe0f5; }
+.breadcrumb a:hover{ color:#ffffff; }
+.eyebrow{ color:#ffd9a3; text-shadow:0 2px 8px rgba(0,0,0,.8); }
+
+/* Result counts / small meta lines that also sit on the background */
+.shop-toolbar .text-dim,
+#result-count,
+#sh-count{
+  color:#e3ecf8;
+  text-shadow:0 1px 6px rgba(0,0,0,.75);
+}
+
+/* --- Everything inside a light surface keeps the dark palette text ------- */
+.card, .card *,
+.filter-panel, .filter-panel *,
+.product-card, .product-card *,
+.site-header, .site-header *,
+.site-footer, .site-footer *,
+.modal, .modal *,
+.admin-nav, .admin-nav *,
+.admin-profile-card, .admin-profile-card *,
+table, table *,
+.chat-panel, .chat-panel *{
+  text-shadow:none;
+}
+.card .section-title,
+.card .page-title,
+.card .eyebrow,
+.filter-panel h4,
+.filter-panel .filter-opt{
+  color:var(--text);
+  text-shadow:none;
+}
+.filter-panel .filter-opt{ color:var(--text-dim); }
+
+
+
+/* Admin dashboard actually still sits on the same site-wide photo
+   background as every other page — the dark, no-shadow text this used to
+   force here (based on a since-outdated assumption that admin had no
+   photo background) made the title/breadcrumb nearly invisible against
+   it. Use the same light, shadowed treatment as everywhere else instead. */
+body.page-admin .page-title,
+body.page-admin .breadcrumb,
+body.page-admin .breadcrumb span,
+body.page-admin .section-title{
+  color:#f2f6fc;
+  text-shadow:0 2px 10px rgba(0,0,0,.7), 0 1px 3px rgba(0,0,0,.9);
+}
+body.page-admin .breadcrumb a{ color:#cfe0f5; text-shadow:0 2px 10px rgba(0,0,0,.7), 0 1px 3px rgba(0,0,0,.9); }
+body.page-admin .breadcrumb a:hover{ color:#ffffff; }
+
+/* ==========================================================================
+   PAGE-BACKGROUND TEXT — root-level fix
+   The palette is a light theme (--text is a dark navy intended for white
+   surfaces), but every page renders over a dark photo. Patching individual
+   classes left a long tail of invisible text — empty states, Privacy
+   headings, "Order not found", the announce bar — measured as low as
+   1.13:1. So instead of chasing selectors, the page's DEFAULT text colour
+   is now light, and the dark palette text is explicitly restored inside
+   every light surface (cards, panels, header, footer, modals, tables).
+   ========================================================================== */
+body{ color:#eef4fc; }
+
+/* Bare content sitting straight on the photo */
+main h1, main h2, main h3, main h4, main h5,
+main > .container > p,
+main .section > .container > p,
+.empty-state,
+.empty-state h3,
+.empty-state p,
+.empty-state i{
+  color:#f2f6fc;
+  text-shadow:0 2px 10px rgba(0,0,0,.7), 0 1px 3px rgba(0,0,0,.85);
+}
+main .text-dim{ color:#d3deee; }
+main .text-faint{ color:#b9c7dc; }
+
+/* --- Restore the dark palette inside every light surface ---------------- */
+.card, .card h1, .card h2, .card h3, .card h4, .card h5, .card p, .card span, .card div, .card label, .card li,
+.filter-panel, .filter-panel *,
+.product-card, .product-card *,
+.site-header, .site-header *,
+.site-footer, .site-footer *,
+.modal, .modal *,
+.announce-bar, .announce-bar *,
+.admin-nav, .admin-nav *,
+.admin-profile-card, .admin-profile-card *,
+.chat-panel, .chat-panel *,
+.pm-readonly, .pm-readonly *,
+table, table th, table td,
+input, select, textarea{
+  text-shadow:none;
+}
+.card, .card p, .card span, .card div, .card label, .card li,
+.filter-panel, .filter-panel label,
+.modal, .modal p, .modal label,
+.chat-panel, .chat-panel p,
+table, table td{
+  color:var(--text-dim);
+}
+.card h1, .card h2, .card h3, .card h4, .card h5,
+.filter-panel h4,
+.modal h1, .modal h2, .modal h3,
+.site-header a, .site-footer h4, .site-footer h5, .site-footer a,
+table th{
+  color:var(--text);
+}
+.announce-bar, .announce-bar *{ color:#4a5568; }
+
+/* --- Footer plain text ---------------------------------------------------
+   The footer sits on a 93%-white wash, but its <h5> column headings and the
+   "Get in touch" <li> lines (address / timings / phones / email) are plain
+   text, not links — so they were never covered by the `.footer-grid a` rule
+   and fell back to the page default `body{color:#eef4fc}`. That measured
+   1.01:1 against the white footer, i.e. completely invisible. Restore the
+   dark palette for every text node inside the footer. */
+.site-footer li,
+.site-footer p,
+.site-footer span,
+.site-footer li i{
+  color:var(--text-dim);
+}
+.site-footer h5{ color:var(--text); }
+/* WhatsApp link was #22c55e on white (2.07:1) — darken it so it still reads
+   as "WhatsApp green" but is actually legible. */
+.site-footer a[href*="wa.me"],
+.site-footer a[href*="whatsapp"]{ color:#0b6e2f !important; }
+.footer-bottom, .footer-bottom span, .footer-bottom div{ color:var(--text-dim); }
+.card .text-faint, .modal .text-faint, .filter-panel .text-faint{ color:var(--text-faint); }
+.card .text-dim, .modal .text-dim{ color:var(--text-dim); }
+
+/* Footer now sits on solid dark black (banner photo removed) instead of a
+   white wash, so the dark-navy text restored above would be unreadable —
+   override it back to light/graphite tones, same family as the announce
+   bar just above. Comes after the rules above in the file so it wins on
+   equal specificity. */
+.footer-grid a,
+.footer-about p,
+.site-footer li,
+.site-footer p,
+.site-footer span,
+.site-footer li i{
+  color:#9aa5b1;
+}
+.site-footer h5,
+.site-footer h4,
+.site-footer a:not([href*="wa.me"]):not([href*="whatsapp"]){
+  color:#e2e8f0;
+}
+.footer-bottom, .footer-bottom span, .footer-bottom div{ color:#9aa5b1; }
+.payment-icons i{ color:#9aa5b1; }
+
+/* ---- Footer text over the photo background — bright white with a dark
+   shadow so every line reads clearly no matter what part of the photo
+   sits behind it. WhatsApp stays brand green, the location pin stays red
+   like a map marker, both also shadowed for the same reason. ---- */
+.site-footer h5,
+.site-footer h4,
+.site-footer a:not([href*="wa.me"]):not([href*="whatsapp"]),
+.footer-grid a,
+.footer-about p,
+.site-footer li,
+.site-footer p,
+.site-footer span,
+.footer-bottom, .footer-bottom span, .footer-bottom div{
+  color:#ffffff;
+  text-shadow:0 1px 3px rgba(0,0,0,.9), 0 0 10px rgba(0,0,0,.55);
+}
+.site-footer li i{ color:#ffffff; text-shadow:0 1px 3px rgba(0,0,0,.9); }
+.site-footer li i.fa-location-dot{ color:#ff3b30; }
+.site-footer a[href*="wa.me"],
+.site-footer a[href*="whatsapp"]{
+  color:#25D366 !important;
+  text-shadow:0 1px 3px rgba(0,0,0,.9), 0 0 10px rgba(0,0,0,.55);
+}
+/* The social-row circles (Instagram/Facebook/WhatsApp/Threads) sit on their
+   own brand-colour backgrounds, not the photo directly — the white-text
+   rule above is fine for them (white icon on a colour circle is exactly
+   right), this just guards against the !important chain above ever
+   flattening it back to the plain text colour. */
+.site-footer .social-row a{ color:#fff !important; text-shadow:none !important; }
+
+/* Inputs must keep dark text — they sit on white fields */
+input, select, textarea{ color:var(--text); }
+input::placeholder, textarea::placeholder{ color:var(--text-faint); }
+
+/* Same stale assumption as above: admin still sits on the photo
+   background, so headings and empty-state messages placed directly on the
+   page (not inside a white .card) need light, shadowed text or they're
+   unreadable. Headings that DO live inside a .card are protected right
+   after this, back to the normal dark-on-white palette. */
+body.page-admin{ color:var(--text); }
+body.page-admin main h1, body.page-admin main h2,
+body.page-admin main h3, body.page-admin main h4,
+body.page-admin .empty-state, body.page-admin .empty-state h3{
+  color:#f2f6fc;
+  text-shadow:0 2px 10px rgba(0,0,0,.7), 0 1px 3px rgba(0,0,0,.9);
+}
+body.page-admin .card h1, body.page-admin .card h2,
+body.page-admin .card h3, body.page-admin .card h4,
+body.page-admin .card .empty-state, body.page-admin .card .empty-state h3,
+body.page-admin .modal h1, body.page-admin .modal h2,
+body.page-admin .modal h3, body.page-admin .modal h4{
+  color:var(--text);
+  text-shadow:none;
+}
+body.page-admin main .text-dim{ color:var(--text-dim); }
+body.page-admin main .text-faint{ color:var(--text-faint); }
+
+/* ---- Final contrast pass: three elements the root rule didn't reach ----- */
+
+/* Walkthrough eyebrow sits inside the white .wt-root card, so it needs the
+   DARK accent, not --accent-2 (a light tint that measured 1.63:1 on white). */
+.wt-root .wt-eyebrow{ color:var(--deal); }
+.wt-root .wt-clock{ color:var(--text-faint); }
+
+/* Checkout / payment progress labels sit directly on the photo background. */
+.steps .step .label{
+  color:#dbe6f5;
+  text-shadow:0 1px 6px rgba(0,0,0,.75);
+}
+.steps .step.active .label,
+.steps .step.done .label{ color:#ffffff; }
+
+/* Admin still has the photo behind it too (same fix as above) — keep the
+   light, shadowed label here rather than reverting to dark. */
+body.page-admin .steps .step .label{ color:#dbe6f5; text-shadow:0 1px 6px rgba(0,0,0,.75); }
+body.page-admin .steps .step.active .label,
+body.page-admin .steps .step.done .label{ color:#ffffff; }
+
+/* ==========================================================================
+   SITE-WIDE VISIBILITY PASS  (added after full audit of all 21 pages)
+
+   Root cause recap: the palette is a LIGHT theme (--text is a dark navy for
+   white surfaces), but every page renders over a dark photo, so the page
+   default was set to `body{color:#eef4fc}` and the dark palette was then
+   "restored" inside light surfaces by an explicit selector list. That list
+   missed several components, and a few amber/navy tokens were being used as
+   text on the wrong kind of background. Result: text measured as low as
+   1.0:1 — literally invisible.
+
+   Three groups below:
+     A. light text sitting on a LIGHT surface  -> force dark
+     B. amber --accent-2 (#f0c385) used as TEXT on white -> darker amber ink
+     C. dark text sitting on a DARK surface / the photo -> force light
+   ========================================================================== */
+
+/* ---- A. Light surfaces that were missing from the restore list ---------- */
+.store-moment-caption,
+.store-moment-caption h1, .store-moment-caption h2, .store-moment-caption h3,
+.store-moment-caption h4, .store-moment-caption h5,
+.store-moment-caption p, .store-moment-caption span, .store-moment-caption div,
+.review-card, .review-card p, .review-card span, .review-card div,
+.review-card strong, .review-card small,
+.charge-card, .charge-card p, .charge-card span, .charge-card div, .charge-card strong,
+.why-card, .why-card p, .why-card span, .why-card div, .why-card h4, .why-card h5,
+.filter-panel h5,
+.wt-tile, .wt-tile p, .wt-tile span, .wt-tile div{
+  text-shadow:none;
+}
+.store-moment-caption h3,
+.review-card strong,
+.charge-card h4, .charge-card h5, .charge-card strong,
+.why-card h4, .why-card h5,
+.filter-panel h5{
+  color:var(--text);
+}
+.store-moment-caption p,
+.store-moment-caption p.text-dim,
+.review-card p, .review-card span, .review-card small,
+.charge-card p, .charge-card span, .charge-card div,
+.why-card p, .why-card span{
+  color:var(--text-dim);
+}
+/* The eyebrow label is normally cream-on-photo; inside a white caption panel
+   it needs the dark amber ink instead. */
+.store-moment-caption .eyebrow,
+.review-card .eyebrow,
+.charge-card .eyebrow{
+  color:#9a5f14; text-shadow:none;
+}
+
+/* ---- B. Amber accent used as TEXT on white ----------------------------- */
+/* #f0c385 is a highlight tone meant for dark backgrounds. As body text on a
+   white card it measured 1.63:1. Swap in a dark amber that reads as the same
+   brand colour but is actually legible. */
+.card .text-accent, .modal .text-accent, .filter-panel .text-accent,
+.review-card .text-accent, .charge-card .text-accent,
+.site-footer .text-accent,
+a.text-accent{
+  color:#9a5f14;
+}
+.cc-charger{ color:#9a5f14; }
+.rc-avatar{ color:#8a5311; }
+
+/* ---- C. Dark text stranded on a DARK surface --------------------------- */
+/* Offer banner is a deep navy gradient — its paragraph was --text-dim. */
+.offer-banner p, .offer-banner span, .offer-banner div{ color:#cbd6ea; }
+.offer-banner h3{ color:#ffffff; }
+/* FAQ answers sit straight on the page photo. */
+.faq-a, .faq-a-inner, .faq-a-inner p, .faq-a-inner li{
+  color:#dfe8f6; text-shadow:0 1px 4px rgba(0,0,0,.75);
+}
+/* Outline buttons placed directly on the photo background (Load More, etc.).
+   Buttons inside a light card keep the dark palette. */
+main > .container > .btn-outline,
+main .section > .container > .btn-outline,
+.section > .container > div > .btn-outline,
+#load-more-btn, #sh-load-more{
+  color:#f2f6fc; border-color:#c7d6ea66;
+}
+.card .btn-outline, .modal .btn-outline, .filter-panel .btn-outline,
+.admin-nav .btn-outline{ color:var(--text); }
+/* Bare <strong>/<b> written straight onto the photo (About page copy).
+   These inherit --text (dark navy) from the base <strong> rule while their
+   parent paragraph is light — 1.12:1 on the photo. Any strong/b that is NOT
+   inside a light surface gets the light treatment. */
+main strong, main b{ color:inherit; }
+.card strong, .card b, .modal strong, .modal b,
+.filter-panel strong, .filter-panel b,
+.product-card strong, .product-card b,
+.review-card strong, .review-card b,
+.charge-card strong, .charge-card b,
+.store-moment-caption strong, .store-moment-caption b,
+.site-footer strong, .site-footer b,
+table strong, table b{ color:var(--text); }

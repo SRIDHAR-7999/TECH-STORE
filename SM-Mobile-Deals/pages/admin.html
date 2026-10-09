@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){try{document.documentElement.setAttribute('data-theme', localStorage.getItem('smd_theme') || 'dark');}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard — SM Mobile Deals</title>
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#050812">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dark-mode.css">
+<link rel="stylesheet" href="../css/animations.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<style>
+  .admin-layout{ display:grid; grid-template-columns:220px 1fr; gap:24px; align-items:flex-start; }
+  .admin-sidebar{ display:flex; flex-direction:column; gap:12px; }
+  .admin-nav{ background:var(--surface); border:1px solid var(--border-soft); border-radius:var(--radius-lg); padding:14px; position:sticky; top:calc(var(--header-h)+16px); }
+  .admin-nav button{ display:flex; align-items:center; gap:10px; width:100%; text-align:left; padding:11px 12px; border-radius:var(--radius-sm); border:none; background:none; color:var(--text-dim); font-weight:600; font-size:13.5px; cursor:pointer; margin-bottom:2px; }
+  .admin-nav button.active, .admin-nav button:hover{ background:var(--accent-soft); color:var(--accent-2); }
+  .admin-stats{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px; }
+  .tab-panel{ display:none; } .tab-panel.active{ display:block; }
+  /* Mobile: sidebar becomes full-width, the profile card stays put as its
+     own block (never inside the horizontal-scroll button row below it), and
+     only the nav BUTTONS scroll sideways as a tab strip. */
+  @media(max-width:900px){
+    .admin-layout{ grid-template-columns:1fr; }
+    .admin-stats{ grid-template-columns:repeat(2,1fr); }
+    .admin-sidebar{ position:static; }
+    .admin-profile-card{ margin-bottom:0; }
+    .admin-nav{ position:static; display:flex; overflow-x:auto; gap:6px; }
+    .admin-nav button{ white-space:nowrap; width:auto; }
+  }
+</style>
+</head>
+<body class="page-admin">
+<div id="page-loader">
+  <div class="pl-inner">
+    <div class="pl-mark"><span>S</span><span>M</span></div>
+    <div class="pl-title" id="pl-title" data-text="SM Mobile Deals"></div>
+    <div class="pl-sub">Genuine tech, honest prices.</div>
+    <div class="pl-bar"><div class="pl-bar-fill"></div></div>
+  </div>
+</div>
+<div id="site-header"></div>
+
+<main>
+  <section class="page-hero container">
+    <div class="breadcrumb"><a href="../index.html">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i> <span>Admin</span></div>
+    <h1 class="page-title">Admin Dashboard</h1>
+  </section>
+
+  <section class="section container" style="padding-top:10px;" id="admin-root">
+    <div class="admin-layout">
+      <div class="admin-sidebar">
+        <div class="admin-profile-card">
+          <img src="../assets/personal/admin-avatar.jpg" alt="Sridhar" class="admin-avatar">
+          <div>
+            <strong id="admin-profile-name">Sridhar</strong>
+            <span>Store Admin</span>
+          </div>
+        </div>
+        <nav class="admin-nav">
+          <button class="active" data-tab="overview"><i class="fa-solid fa-gauge"></i> Overview</button>
+        <button data-tab="site-content"><i class="fa-solid fa-sitemap"></i> Site Content</button>
+        <button data-tab="payments"><i class="fa-solid fa-hourglass-half"></i> Pending Payments</button>
+        <button data-tab="refunds"><i class="fa-solid fa-money-bill-transfer"></i> Refunds</button>
+        <button data-tab="orders"><i class="fa-solid fa-receipt"></i> Orders</button>
+        <button data-tab="service"><i class="fa-solid fa-screwdriver-wrench"></i> Service Appointments</button>
+        <button data-tab="products"><i class="fa-solid fa-boxes-stacked"></i> Products</button>
+        <div class="text-faint" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;padding:10px 12px 2px;">Quick panels</div>
+        <button data-quickfilter data-key="sealed-mobiles" data-cat="mobiles" data-cond="sealed"><i class="fa-solid fa-box-open"></i> Sealed Mobiles</button>
+        <button data-quickfilter data-key="sealed-laptops" data-cat="laptops" data-cond="sealed"><i class="fa-solid fa-box-open"></i> Sealed Laptops</button>
+        <button data-quickfilter data-key="cut-mobiles" data-cat="mobiles" data-cond="seal_cut"><i class="fa-solid fa-box"></i> Cut Mobiles</button>
+        <button data-quickfilter data-key="cut-laptops" data-cat="laptops" data-cond="seal_cut"><i class="fa-solid fa-box"></i> Cut Laptops</button>
+        <button data-quickfilter data-key="second-hand-mobiles" data-cat="second-hand-mobiles"><i class="fa-solid fa-mobile-retro"></i> Second Hand Mobiles</button>
+        <button data-quickfilter data-key="second-hand-laptops" data-cat="second-hand-laptops"><i class="fa-solid fa-laptop-code"></i> Second Hand Laptops</button>
+        <button data-quickfilter data-key="accessories" data-cat="accessories"><i class="fa-solid fa-plug-circle-bolt"></i> Accessories</button>
+        <button data-quickfilter data-key="earbuds" data-cat="earbuds"><i class="fa-solid fa-headphones"></i> Audio</button>
+        <button data-quickfilter data-key="watches" data-cat="watches"><i class="fa-solid fa-clock"></i> Smart Watches</button>
+        <button data-quickfilter data-key="mobile-spare-parts" data-cat="mobile-spare-parts"><i class="fa-solid fa-screwdriver-wrench"></i> Mobile Spare Parts</button>
+        <button data-quickfilter data-key="laptop-spare-parts" data-cat="laptop-spare-parts"><i class="fa-solid fa-screwdriver-wrench"></i> Laptop Spare Parts</button>
+        <div style="margin:6px 0;"></div>
+        <button data-tab="categories"><i class="fa-solid fa-tags"></i> Categories</button>
+        <button data-tab="manual-bill"><i class="fa-solid fa-file-invoice-dollar"></i> Generate Bill</button>
+        <button data-tab="invoice-settings"><i class="fa-solid fa-palette"></i> Branding & Invoice</button>
+        <button data-tab="team"><i class="fa-solid fa-user-shield"></i> Admin Team</button>
+        <hr style="border-color:var(--border-soft);margin:10px 0;">
+        <button id="admin-logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+      </nav>
+      </div>
+
+      <div>
+        <div class="tab-panel" id="tab-site-content">
+          <h3 style="font-family:var(--font-display);margin:0 0 6px;">Site Content — where to edit what</h3>
+          <p class="text-dim" style="font-size:13.5px;margin:0 0 20px;">Every page on the site, and exactly which tab in this admin panel controls what's shown on it. Click a button to jump straight there.</p>
+
+          <div class="grid grid-2" style="gap:14px;">
+            <div class="card" style="padding:18px;">
+              <strong style="font-family:var(--font-display);">Homepage</strong>
+              <ul class="text-dim" style="font-size:13px;line-height:2;margin:10px 0 14px;padding-left:18px;">
+                <li>"Shop by category" tile photos → <b>Categories</b></li>
+                <li>"Just Launched" spotlight products (image, price, name) → <b>Products</b></li>
+                <li>Site background photo & logo → <b>Branding &amp; Invoice</b></li>
+                <li>"What customers say" reviews & ratings → managed in the database (ask if you want an in-panel editor for these)</li>
+              </ul>
+              <button class="btn btn-outline btn-sm" data-jump="categories">Categories</button>
+              <button class="btn btn-outline btn-sm" data-jump="products">Products</button>
+              <button class="btn btn-outline btn-sm" data-jump="invoice-settings">Branding</button>
+            </div>
+
+            <div class="card" style="padding:18px;">
+              <strong style="font-family:var(--font-display);">Shop / Category pages</strong>
+              <p class="text-dim" style="font-size:13px;margin:10px 0 14px;">Mobiles, Laptops, Smart Watches, Audio, Accessories, Mobile Spare Parts, Laptop Spare Parts, Second Hand Mobiles, Second Hand Laptops — every product's photo(s), video, price, MRP, stock, specs and description, all in one place.</p>
+              <button class="btn btn-outline btn-sm" data-jump="products">Products</button>
+            </div>
+
+            <div class="card" style="padding:18px;">
+              <strong style="font-family:var(--font-display);">Product details page</strong>
+              <p class="text-dim" style="font-size:13px;margin:10px 0 14px;">Same editor as above — open any product from Products to change its photos, price, specs, or description; changes apply the moment you save.</p>
+              <button class="btn btn-outline btn-sm" data-jump="products">Products</button>
+            </div>
+
+            <div class="card" style="padding:18px;">
+              <strong style="font-family:var(--font-display);">Every page's footer</strong>
+              <p class="text-dim" style="font-size:13px;margin:10px 0 14px;">Background photo and logo are shared across every single page, so one change updates all of them at once.</p>
+              <button class="btn btn-outline btn-sm" data-jump="invoice-settings">Branding</button>
+            </div>
+
+            <div class="card" style="padding:18px;">
+              <strong style="font-family:var(--font-display);">Bills / Invoices</strong>
+              <p class="text-dim" style="font-size:13px;margin:10px 0 14px;">Your signature image and the store seal shown on every generated bill, plus manually generating a counter-sale bill.</p>
+              <button class="btn btn-outline btn-sm" data-jump="invoice-settings">Branding</button>
+              <button class="btn btn-outline btn-sm" data-jump="manual-bill">Generate Bill</button>
+            </div>
+
+            <div class="card" style="padding:18px;">
+              <strong style="font-family:var(--font-display);">Orders, payments &amp; refunds</strong>
+              <p class="text-dim" style="font-size:13px;margin:10px 0 14px;">Confirm payments, process refunds, and track every order's status from placed through delivered.</p>
+              <button class="btn btn-outline btn-sm" data-jump="orders">Orders</button>
+              <button class="btn btn-outline btn-sm" data-jump="payments">Payments</button>
+              <button class="btn btn-outline btn-sm" data-jump="refunds">Refunds</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-panel active" id="tab-overview">
+          <div class="admin-stats" id="stats-grid"></div>
+          <div class="card" style="padding:20px;">
+            <h3 style="font-family:var(--font-display);margin:0 0 14px;">Top Selling Products</h3>
+            <div id="top-products"></div>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="tab-payments">
+          <div class="flex justify-between items-center" style="margin-bottom:16px;">
+            <h3 style="font-family:var(--font-display);margin:0;">Payments Awaiting Confirmation</h3>
+          </div>
+          <div id="pending-list" style="display:flex;flex-direction:column;gap:12px;"></div>
+        </div>
+
+        <div class="tab-panel" id="tab-refunds">
+          <div class="flex justify-between items-center" style="margin-bottom:6px;">
+            <h3 style="font-family:var(--font-display);margin:0;">Cancellations Awaiting Refund</h3>
+          </div>
+          <p class="text-faint" style="font-size:12.5px;margin:0 0 14px;">Customer cancelled a paid order — send the balance (total minus ₹1000 commission) within 7 days, then mark it sent here.</p>
+          <div id="refund-list" style="display:flex;flex-direction:column;gap:12px;"></div>
+        </div>
+
+        <div class="tab-panel" id="tab-orders">
+          <h3 style="font-family:var(--font-display);margin:0 0 14px;">All Orders</h3>
+          <div class="card" style="padding:6px;overflow-x:auto;">
+            <table class="table" id="orders-table" style="min-width:600px;">
+              <thead><tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Status</th><th>Update</th></tr></thead>
+              <tbody id="orders-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="tab-service">
+          <h3 style="font-family:var(--font-display);margin:0 0 6px;">Service Appointments</h3>
+          <p class="text-dim" style="font-size:13.5px;margin:0 0 16px;">Requests for repair/service, with the customer's preferred date and time. Confirm each one and decide whether they should visit the shop or courier the item in.</p>
+          <div id="service-list" style="display:flex;flex-direction:column;gap:12px;"></div>
+        </div>
+
+        <div class="tab-panel" id="tab-products">
+          <div class="flex justify-between items-center" style="margin-bottom:6px;">
+            <h3 style="font-family:var(--font-display);margin:0;">Product Catalog</h3>
+            <button class="btn btn-primary btn-sm" id="add-product-btn"><i class="fa-solid fa-magnifying-glass"></i> Find a model</button>
+            <button class="btn btn-outline btn-sm" id="new-product-btn"><i class="fa-solid fa-plus"></i> New Product</button>
+          </div>
+          <p class="text-faint" style="font-size:12.5px;margin:0 0 14px;">
+            Search or use a Quick panel to find a product, then edit any detail — name, price, stock, specs, photos, videos, and more.
+          </p>
+
+          <div class="pm-toolbar">
+            <div class="input-group" style="flex:1;min-width:220px;">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input class="input" id="pm-search" type="text" placeholder="Search by model or brand — e.g. iPhone 15, Vivo X300">
+            </div>
+            <select class="input" id="pm-filter-cat" style="max-width:210px;">
+              <option value="">All categories</option>
+              <option value="mobiles">Mobiles</option>
+              <option value="laptops">Laptops</option>
+              <option value="watches">Smart Watches</option>
+              <option value="earbuds">Audio</option>
+              <option value="accessories">Accessories</option>
+              <option value="second-hand-mobiles">Second Hand Mobiles</option>
+              <option value="second-hand-laptops">Second Hand Laptops</option>
+              <option value="mobile-spare-parts">Mobile Spare Parts</option>
+              <option value="laptop-spare-parts">Laptop Spare Parts</option>
+            </select>
+            <select class="input" id="pm-filter-media" style="max-width:190px;">
+              <option value="">Any media state</option>
+              <option value="none">Missing media</option>
+              <option value="has">Has media</option>
+            </select>
+            <select class="input" id="pm-filter-cond" style="max-width:190px;">
+              <option value="">Any condition</option>
+              <option value="new">Brand New</option>
+              <option value="sealed">Sealed</option>
+              <option value="seal_cut">Seal Cut</option>
+              <option value="demo">Demo Piece</option>
+              <option value="used">Second Hand</option>
+            </select>
+          </div>
+          <div id="pm-panel-label" class="text-faint" style="font-size:12.5px;font-weight:700;margin:12px 0 -4px;"></div>
+          <div class="text-faint" id="pm-count" style="font-size:12px;margin:10px 0;"></div>
+
+          <div class="card" style="padding:6px;overflow-x:auto;">
+            <table class="table" style="min-width:640px;">
+              <thead><tr><th></th><th>Product</th><th>Media</th><th>Price</th><th>Stock</th><th></th></tr></thead>
+              <tbody id="products-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="tab-categories">
+          <h3 style="font-family:var(--font-display);margin:0 0 14px;">Categories</h3>
+          <div class="grid grid-2" id="cat-grid"></div>
+
+          <h3 style="font-family:var(--font-display);margin:32px 0 6px;">Category Images</h3>
+          <p class="text-dim" style="font-size:13.5px;margin:0 0 16px;">The photo shown behind each "Shop by category" tile on the homepage. Upload one per category to replace it — everyone sees the new photo immediately, no code changes needed.</p>
+          <div id="cat-photo-grid" class="grid grid-2"></div>
+        </div>
+
+        <div class="tab-panel" id="tab-manual-bill">
+          <h3 style="font-family:var(--font-display);margin:0 0 6px;">Generate Bill</h3>
+          <p class="text-dim" style="font-size:13.5px;margin:0 0 20px;">For a walk-in / counter sale that wasn't placed on the website. Search a product to auto-fill its price and specs — the printed bill still carries your signature, the store seal and all store details automatically, exactly like an online order's bill.</p>
+
+          <div class="card" style="padding:20px;max-width:640px;margin-bottom:20px;">
+            <h4 style="font-family:var(--font-display);margin:0 0 12px;">Customer Details</h4>
+            <div class="flex gap-12" style="flex-wrap:wrap;">
+              <div class="field" style="flex:1;min-width:180px;"><label>Name</label><input class="input" id="mb-name" placeholder="Customer name"></div>
+              <div class="field" style="flex:1;min-width:180px;"><label>Phone</label><input class="input" id="mb-phone" placeholder="10-digit mobile"></div>
+            </div>
+            <div class="field"><label>Address <span class="text-faint" style="font-weight:400;">(optional)</span></label><input class="input" id="mb-address" placeholder="Line 1, City, State, Pincode"></div>
+          </div>
+
+          <div class="card" style="padding:20px;max-width:820px;margin-bottom:20px;">
+            <h4 style="font-family:var(--font-display);margin:0 0 12px;">Products</h4>
+            <div style="position:relative;">
+              <input class="input" id="mb-product-search" placeholder="Type a product name to search your catalog…" autocomplete="off">
+              <div id="mb-suggestions" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:20;background:var(--surface);border:1px solid var(--border-soft);border-radius:10px;margin-top:4px;max-height:280px;overflow-y:auto;box-shadow:var(--shadow-lg);"></div>
+            </div>
+            <p class="text-faint" style="font-size:12px;margin:6px 0 16px;">Can't find it? Scroll to the bottom of the results to add a custom line item instead — price and description typed by hand.</p>
+            <table style="width:100%;border-collapse:collapse;font-size:13px;" id="mb-items-table">
+              <thead><tr style="text-align:left;border-bottom:1px solid var(--border-soft);">
+                <th style="padding:8px 6px;">Item</th><th style="padding:8px 6px;width:70px;">Qty</th><th style="padding:8px 6px;width:110px;">Price</th><th style="padding:8px 6px;width:110px;">Total</th><th></th>
+              </tr></thead>
+              <tbody id="mb-items-body"></tbody>
+            </table>
+            <div id="mb-empty" class="text-faint" style="font-size:13px;padding:14px 0;">No items added yet — search above to add the first one.</div>
+            <div class="flex justify-between" style="border-top:1px solid var(--border-soft);margin-top:12px;padding-top:12px;font-weight:700;font-size:15px;">
+              <span>Total</span><span id="mb-grand-total" style="font-family:var(--font-mono);">₹0</span>
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-lg" id="mb-generate-btn"><i class="fa-solid fa-file-invoice"></i> Generate Bill</button>
+        </div>
+
+        <div class="tab-panel" id="tab-invoice-settings">
+          <h3 style="font-family:var(--font-display);margin:0 0 6px;">Branding & Invoice Settings</h3>
+          <p class="text-dim" style="font-size:13.5px;margin:0 0 20px;">Change the site-wide background photo and logo, and manage the signature used on generated bills — all applied instantly across every page, no code changes needed.</p>
+
+          <div class="card" style="padding:20px;max-width:480px;margin-bottom:20px;">
+            <h4 style="font-family:var(--font-display);margin:0 0 6px;">Site Background Photo</h4>
+            <p class="text-dim" style="font-size:12.5px;margin:0 0 14px;">This photo shows behind every page on the site. Upload a new one to replace it everywhere at once.</p>
+            <div class="field">
+              <label>Background Image</label>
+              <input class="input" type="file" id="bg-file" accept="image/*">
+            </div>
+            <div id="bg-preview" style="margin:14px 0;border-radius:10px;overflow:hidden;min-height:100px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;">
+              <span class="text-faint" style="font-size:12.5px;">Loading current background…</span>
+            </div>
+            <button class="btn btn-primary btn-block" id="bg-save"><i class="fa-solid fa-floppy-disk"></i> Save Background</button>
+          </div>
+
+          <div class="card" style="padding:20px;max-width:480px;margin-bottom:20px;">
+            <h4 style="font-family:var(--font-display);margin:0 0 6px;">Logo</h4>
+            <p class="text-dim" style="font-size:12.5px;margin:0 0 14px;">Two versions, since the header logo swaps with the theme — upload a version that reads clearly on a light background and one for dark. Transparent PNG/SVG works best.</p>
+            <div class="flex gap-12" style="flex-wrap:wrap;">
+              <div style="flex:1;min-width:180px;">
+                <div class="field"><label>Logo for Light Theme</label><input class="input" type="file" id="logo-light-file" accept="image/*"></div>
+                <div id="logo-light-preview" style="margin:10px 0;padding:14px;background:#fff;border-radius:10px;text-align:center;min-height:60px;display:flex;align-items:center;justify-content:center;"><span class="text-faint" style="font-size:12px;">Using default logo</span></div>
+              </div>
+              <div style="flex:1;min-width:180px;">
+                <div class="field"><label>Logo for Dark Theme</label><input class="input" type="file" id="logo-dark-file" accept="image/*"></div>
+                <div id="logo-dark-preview" style="margin:10px 0;padding:14px;background:#111;border-radius:10px;text-align:center;min-height:60px;display:flex;align-items:center;justify-content:center;"><span class="text-faint" style="font-size:12px;">Using default logo</span></div>
+              </div>
+            </div>
+            <button class="btn btn-primary btn-block" id="logo-save" style="margin-top:6px;"><i class="fa-solid fa-floppy-disk"></i> Save Logos</button>
+          </div>
+
+          <div class="card" style="padding:20px;max-width:420px;">
+            <h4 style="font-family:var(--font-display);margin:0 0 6px;">Bill Signature</h4>
+            <p class="text-dim" style="font-size:12.5px;margin:0 0 14px;">Upload your signature once — it appears on every generated bill, alongside the store's digital seal, next to "Authorised Signatory".</p>
+            <div class="field">
+              <label>Signature Image</label>
+              <input class="input" type="file" id="inv-signature-file" accept="image/*">
+            </div>
+            <div id="inv-signature-preview" style="margin:14px 0;padding:14px;background:#fff;border-radius:10px;text-align:center;min-height:70px;display:flex;align-items:center;justify-content:center;">
+              <span class="text-faint" style="font-size:12.5px;">No signature uploaded yet.</span>
+            </div>
+            <button class="btn btn-primary btn-block" id="inv-signature-save"><i class="fa-solid fa-floppy-disk"></i> Save Signature</button>
+          </div>
+
+          <div class="card" style="padding:20px;max-width:480px;">
+            <h4 style="font-family:var(--font-display);margin:0 0 6px;"><i class="fa-solid fa-indian-rupee-sign"></i> Razorpay Payment Link</h4>
+            <p class="text-dim" style="font-size:12.5px;margin:0 0 14px;">Paste a Payment Link created from your Razorpay Dashboard (Payment Links → Create). It appears as a "Pay via Razorpay" option on the customer payment page, alongside UPI/GPay/PhonePe. Leave blank to hide it.</p>
+            <div class="field">
+              <label>Razorpay Payment Link URL</label>
+              <input class="input" type="url" id="razorpay-link-input" placeholder="https://rzp.io/l/your-link">
+            </div>
+            <button class="btn btn-primary btn-block" id="razorpay-link-save"><i class="fa-solid fa-floppy-disk"></i> Save Razorpay Link</button>
+            <p class="text-faint" style="font-size:12px;margin:10px 0 0;">This is a static link, so Razorpay does not notify this site automatically when someone pays. After a customer pays and uploads their screenshot (or tells you), confirm the order the same way as any other payment in the <strong>Orders</strong> tab — it's recorded there like every other transaction.</p>
+          </div>
+
+          <div class="card" style="padding:20px;max-width:480px;">
+            <h4 style="font-family:var(--font-display);margin:0 0 6px;"><i class="fa-solid fa-database"></i> Full Catalog Sync</h4>
+            <p class="text-dim" style="font-size:12.5px;margin:0 0 14px;">Push the complete built-in catalog (mobiles, laptops, watches, audio, accessories, second-hand mobiles &amp; laptops) into the connected database in one go. Use this once after connecting a fresh database, or any time the live product count looks lower than expected. Existing rows are updated, not duplicated.</p>
+            <div id="catalog-sync-status" style="margin-bottom:14px;font-size:12.5px;color:var(--text-faint);">Checking current counts…</div>
+            <button class="btn btn-primary btn-block" id="catalog-sync-btn"><i class="fa-solid fa-arrows-rotate"></i> Sync Full Catalog to Database</button>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="tab-team">
+          <h3 style="font-family:var(--font-display);margin:0 0 6px;">My Login</h3>
+          <p class="text-dim" style="font-size:13.5px;margin:0 0 16px;">Change the email and/or password you use to log into this admin panel. Leave a field blank to keep it unchanged.</p>
+          <div class="card" style="padding:20px;max-width:480px;margin-bottom:28px;" id="my-login-card">
+            <div class="field"><label>New Email</label><input class="input" type="email" id="my-login-email" placeholder="Leave blank to keep current email"></div>
+            <div class="field"><label>New Password</label><input class="input" type="password" id="my-login-password" placeholder="Leave blank to keep current password" autocomplete="new-password"></div>
+            <button class="btn btn-primary btn-block" id="my-login-save"><i class="fa-solid fa-key"></i> Update My Login</button>
+            <p class="text-faint" style="font-size:12px;margin:10px 0 0;">Requires Supabase to be connected — this changes your real database login, not just this browser.</p>
+          </div>
+
+          <h3 style="font-family:var(--font-display);margin:0 0 6px;">Admin Team</h3>
+          <p class="text-dim" style="font-size:13.5px;margin:0 0 16px;">Give another registered customer full admin access, or remove it. They must have already created a normal account on the Register page — this only changes their role, it never signs you out or switches your session.</p>
+          <div class="card" style="padding:20px;margin-bottom:20px;" id="team-connect-notice"></div>
+          <div class="card" style="padding:20px;margin-bottom:20px;">
+            <div class="flex gap-12" style="flex-wrap:wrap;align-items:flex-end;">
+              <div class="field" style="flex:1;min-width:220px;margin-bottom:0;"><label>Customer's registered email</label><input class="input" id="team-email-input" type="email" placeholder="someone@example.com"></div>
+              <button class="btn btn-primary" id="team-lookup-btn">Look up</button>
+            </div>
+            <div id="team-lookup-result" style="margin-top:14px;"></div>
+          </div>
+          <h4 style="font-family:var(--font-display);margin:0 0 12px;font-size:15px;">Current Admins</h4>
+          <div id="team-admin-list" style="display:flex;flex-direction:column;gap:10px;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Product edit modal -->
+<div class="modal-overlay" id="customer-detail-modal">
+  <div class="modal" style="max-width:560px;">
+    <div class="modal-head"><h3>Customer Details</h3><button class="modal-close" onclick="UI.closeModal('customer-detail-modal')"><i class="fa-solid fa-xmark"></i></button></div>
+    <div class="modal-body" id="customer-detail-body">
+      <p class="text-faint" style="font-size:13px;">Loading…</p>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="product-modal">
+  <div class="modal">
+    <div style="position:sticky;top:0;z-index:6;background:var(--surface);">
+      <div class="modal-head"><h3 id="pm-title">Add Product</h3><button class="modal-close" onclick="AdminUI.cancelProductEdit(); UI.closeModal('product-modal')"><i class="fa-solid fa-xmark"></i></button></div>
+      <div style="border-top:1px solid var(--border-soft);border-bottom:1px solid var(--border-soft);padding:12px 22px;display:flex;gap:10px;">
+        <button type="button" class="btn btn-primary" style="flex:1;" onclick="document.getElementById('product-form').requestSubmit()"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+        <button type="button" class="btn btn-outline" style="flex:1;" onclick="AdminUI.cancelProductEdit(); UI.closeModal('product-modal')"><i class="fa-solid fa-xmark"></i> Cancel</button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <form id="product-form">
+        <input type="hidden" name="id">
+
+        <!-- Full manual editing: name, brand, category, price, stock, specs
+             (storage/variant/model line-items) and description are now all
+             editable per product — nothing is locked to catalog defaults. -->
+        <div class="field">
+          <label>Product Name</label>
+          <input class="input" name="name" id="pm-name" placeholder="e.g. Apple iPhone 15 Pro Max (256GB, Blue Titanium)">
+        </div>
+        <div class="flex gap-12" style="flex-wrap:wrap;">
+          <div class="field" style="flex:1;min-width:160px;">
+            <label>Brand</label>
+            <input class="input" name="brand" id="pm-brand" placeholder="e.g. Apple">
+          </div>
+          <div class="field" style="flex:1;min-width:160px;">
+            <label>Category</label>
+            <select class="input" name="category" id="pm-category">
+              <option value="mobiles">Mobiles</option>
+              <option value="laptops">Laptops</option>
+              <option value="watches">Smart Watches</option>
+              <option value="earbuds">Audio</option>
+              <option value="accessories">Accessories</option>
+              <option value="second-hand-mobiles">Second Hand Mobiles</option>
+              <option value="second-hand-laptops">Second Hand Laptops</option>
+              <option value="mobile-spare-parts">Mobile Spare Parts</option>
+              <option value="laptop-spare-parts">Laptop Spare Parts</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex gap-12" style="flex-wrap:wrap;">
+          <div class="field" style="flex:1;min-width:120px;">
+            <label>Price (₹)</label>
+            <input class="input" type="number" name="price" id="pm-price" min="0">
+          </div>
+          <div class="field" style="flex:1;min-width:120px;">
+            <label>MRP (₹)</label>
+            <input class="input" type="number" name="mrp" id="pm-mrp" min="0">
+          </div>
+          <div class="field" style="flex:1;min-width:100px;">
+            <label>Stock</label>
+            <input class="input" type="number" name="stock" id="pm-stock" min="0">
+          </div>
+        </div>
+        <div class="field">
+          <label>Specs <span class="text-faint" style="font-weight:400;">(one per line — general spec bullets)</span></label>
+          <textarea class="input" name="specs" id="pm-specs" rows="4" placeholder="6.7&quot; ProMotion OLED&#10;A17 Pro&#10;5000mAh Battery"></textarea>
+        </div>
+
+        <!-- Structured spec fields — each independently editable instead of
+             being buried inside one free-text Specs blob. -->
+        <div class="flex gap-12" style="flex-wrap:wrap;">
+          <div class="field" style="flex:1;min-width:140px;">
+            <label>Model</label>
+            <input class="input" name="modelName" id="pm-model-name" placeholder="e.g. iPhone 15 Pro Max">
+          </div>
+          <div class="field" style="flex:1;min-width:120px;">
+            <label>Storage</label>
+            <input class="input" name="storage" id="pm-storage" placeholder="e.g. 256GB">
+          </div>
+          <div class="field" style="flex:1;min-width:120px;">
+            <label>RAM</label>
+            <input class="input" name="ram" id="pm-ram" placeholder="e.g. 8GB">
+          </div>
+        </div>
+        <div class="flex gap-12" style="flex-wrap:wrap;">
+          <div class="field" style="flex:1;min-width:140px;">
+            <label>Color</label>
+            <input class="input" name="colorName" id="pm-color-name" placeholder="e.g. Blue Titanium">
+          </div>
+          <div class="field" style="flex:1;min-width:140px;">
+            <label>Variant</label>
+            <input class="input" name="variant" id="pm-variant" placeholder="e.g. Global / Indian, Wi-Fi + Cellular">
+          </div>
+        </div>
+        <div class="field">
+          <label>Features <span class="text-faint" style="font-weight:400;">(one per line — highlight bullets shown on the product page)</span></label>
+          <textarea class="input" name="features" id="pm-features" rows="3" placeholder="Face ID&#10;MagSafe compatible&#10;IP68 water resistant"></textarea>
+        </div>
+
+        <div class="field">
+          <label>Custom Fields <span class="text-faint" style="font-weight:400;">(any other label/value spec — add as many as needed)</span></label>
+          <div id="pm-custom-fields" style="display:flex;flex-direction:column;gap:8px;"></div>
+          <button type="button" class="btn btn-outline btn-sm" id="pm-add-custom-field" style="margin-top:8px;"><i class="fa-solid fa-plus"></i> Add custom field</button>
+        </div>
+
+        <div class="field">
+          <label>Description</label>
+          <textarea class="input" name="desc" id="pm-desc" rows="3"></textarea>
+        </div>
+
+        <div class="field">
+          <label>Grade / Condition</label>
+          <select class="input" name="condition" id="pm-condition">
+            <option value="new">Brand New</option>
+            <option value="sealed">Sealed — factory sealed box, unopened</option>
+            <option value="seal_cut">Seal Cut — box opened for inspection only</option>
+            <option value="demo">Demo Piece — used briefly as a store display unit</option>
+            <option value="used">Second Hand — pre-owned, fully inspected</option>
+          </select>
+          <p class="text-faint" style="font-size:11.5px;margin:6px 0 0;">Set this on any product — a mobile, laptop or accessory can be marked Sealed / Seal Cut / Demo, and it will then appear under that grade on the Shop page filter.</p>
+        </div>
+
+        <div class="flex gap-12" style="flex-wrap:wrap;">
+          <div class="field" style="flex:1;min-width:160px;">
+            <label>Warranty Type</label>
+            <select class="input" name="warrantyType" id="pm-warranty-type">
+              <option value="checking">Checking Warranty</option>
+              <option value="non_checking">Non-Checking Warranty</option>
+            </select>
+          </div>
+          <div class="field" style="flex:1;min-width:160px;">
+            <label>Warranty Period</label>
+            <select class="input" name="warrantyPeriod" id="pm-warranty-period">
+              <option value="7_days">7 Days</option>
+              <option value="15_days">15 Days</option>
+              <option value="30_days">30 Days</option>
+              <option value="1_year">1 Year</option>
+            </select>
+            <p class="text-faint" style="font-size:11.5px;margin:6px 0 0;">Sealed items default to 1 Year — pick 7/15/30 days yourself for Second Hand / Seal Cut / Demo units.</p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Product Photos <span class="text-faint" style="font-weight:400;">(up to 10)</span></label>
+          <input class="input" type="file" id="pm-image-file" accept="image/*" multiple style="margin-bottom:8px;">
+          <textarea class="input" name="imageUrls" id="pm-image-url" rows="2" placeholder="...or paste image URLs, one per line"></textarea>
+          <p class="text-faint" style="font-size:11.5px;margin:6px 0 0;">Select multiple files at once, or paste up to 10 links (one per line). The first photo becomes the main listing image.</p>
+        </div>
+
+        <div class="field">
+          <label>Product Videos <span class="text-faint" style="font-weight:400;">(optional, up to 5 clips)</span></label>
+          <input class="input" type="file" id="pm-video-file" accept="video/*" multiple style="margin-bottom:8px;">
+          <textarea class="input" name="videoUrls" id="pm-video-url" rows="2" placeholder="...or paste video URLs, one per line"></textarea>
+          <p class="text-faint" style="font-size:11.5px;margin:6px 0 0;">Short clips (15–30s each) shown on the product page.</p>
+        </div>
+
+        <div class="field">
+          <label>Product URL <span class="text-faint" style="font-weight:400;">(optional)</span></label>
+          <input class="input" name="productUrl" id="pm-product-url" placeholder="https://... official page, review video, etc.">
+          <p class="text-faint" style="font-size:11.5px;margin:6px 0 0;">Shown as a "More info" link on the product page, if filled in.</p>
+        </div>
+
+        <div id="pm-current-media"></div>
+
+        <button class="btn btn-primary btn-block" type="submit">Save Media</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="site-footer"></div>
+
+<script>const ROOT_PREFIX = '../';</script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script defer src="../js/supabase-client.js"></script>
+<script defer src="../js/config.js"></script>
+<script defer src="../js/utils.js"></script>
+<script defer src="../js/specs.js"></script>
+<script defer src="../js/data.js"></script>
+<script defer src="../js/auth.js"></script>
+<script defer src="../js/cart.js"></script>
+<script defer src="../js/notifications.js"></script>
+<script defer src="../js/theme.js"></script>
+<script defer src="../js/cursor.js"></script>
+<script defer src="../js/loader.js"></script>
+<script defer src="../js/search.js"></script>
+<script defer src="../js/orders.js"></script>
+<script defer src="../js/payment.js"></script>
+<script defer src="../js/pincode.js"></script>
+<script defer src="../js/checkout.js"></script>
+<script defer src="../js/profile.js"></script>
+<script defer src="../js/analytics.js"></script>
+<script defer src="../js/admin.js"></script>
+<script defer src="../js/admin-alerts.js"></script>
+<script defer src="../js/chatbot.js"></script>
+<script defer src="../js/reminders.js"></script>
+<script defer src="../js/charging.js"></script>
+<script defer src="../js/inbox.js"></script>
+<script defer src="../js/branding.js"></script>
+<script defer src="../js/image-viewer.js"></script>
+
+<script defer src="../js/celebrate.js"></script>
+<script defer src="../js/ui.js"></script>
+<script defer src="../js/app.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+App.boot('').then(() => {
+  if (Auth.requireAdmin('admin-login.html')){
+
+    const adminUser = Auth.currentUser();
+    if (adminUser?.name) document.getElementById('admin-profile-name').textContent = adminUser.name;
+
+    document.querySelectorAll('.admin-nav button[data-tab]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.admin-nav button[data-tab]').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.admin-nav button[data-quickfilter]').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+        if (btn.dataset.tab === 'products'){
+          document.getElementById('pm-panel-label').textContent = '';
+          document.getElementById('pm-filter-cond').value = '';
+        }
+      });
+    });
+    document.getElementById('admin-logout').addEventListener('click', async () => { await Auth.logout(); window.location.href = '../index.html'; });
+
+    // "Site Content" tab's jump buttons just click the matching sidebar
+    // nav button, so they reuse all the same tab-switching logic above
+    // instead of duplicating it.
+    document.querySelectorAll('#tab-site-content [data-jump]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const navBtn = document.querySelector(`.admin-nav button[data-tab="${btn.dataset.jump}"]`);
+        if (navBtn) navBtn.click();
+      });
+    });
+
+    function renderOverview(){
+      document.getElementById('stats-grid').innerHTML = AdminUI.statsHTML();
+      const { topList } = Analytics.summary();
+      document.getElementById('top-products').innerHTML = topList.length
+        ? topList.map(([name,qty]) => `<div class="flex justify-between" style="padding:8px 0;border-bottom:1px solid var(--border-soft);font-size:13.5px;"><span>${Utils.escapeHtml(name)}</span><span style="font-family:var(--font-mono);">${qty} sold</span></div>`).join('')
+        : `<p class="text-faint" style="font-size:13px;">No sales yet.</p>`;
+    }
+
+    function renderPending(){
+      const list = Orders.pendingConfirmationQueue();
+      const balanceList = Orders.balanceConfirmationQueue();
+      const cards = [...list.map(AdminUI.pendingPaymentCard), ...balanceList.map(AdminUI.balancePaymentCard)];
+      document.getElementById('pending-list').innerHTML = cards.length
+        ? cards.join('')
+        : `<div class="empty-state"><i class="fa-solid fa-circle-check"></i><h3>All caught up</h3><p>No payments waiting for confirmation.</p></div>`;
+    }
+
+    function renderRefunds(){
+      const list = Orders.refundQueue();
+      document.getElementById('refund-list').innerHTML = list.length
+        ? list.map(AdminUI.refundCard).join('')
+        : `<div class="empty-state"><i class="fa-solid fa-circle-check"></i><h3>No refunds pending</h3><p>Nothing owed to customers right now.</p></div>`;
+    }
+
+    function renderOrders(){
+      document.getElementById('orders-tbody').innerHTML = DB.getOrders()
+        .sort((a,b) => new Date(b.createdAt)-new Date(a.createdAt))
+        .map(AdminUI.orderRow).join('') || `<tr><td colspan="5" class="text-faint" style="text-align:center;padding:24px;">No orders yet.</td></tr>`;
+    }
+
+    /* The catalog holds thousands of rows, so the table is filtered by the
+       search box and capped at a page's worth — rendering every row at once
+       makes the tab unusable. */
+    const PM_PAGE = 60;
+    function renderProducts(){
+      const q     = (document.getElementById('pm-search')?.value || '').trim().toLowerCase();
+      const cat   = document.getElementById('pm-filter-cat')?.value || '';
+      const media = document.getElementById('pm-filter-media')?.value || '';
+      const cond  = document.getElementById('pm-filter-cond')?.value || '';
+
+      let list = DB.getProducts();
+      if (cat)   list = list.filter(p => p.category === cat);
+      if (cond)  list = list.filter(p => (p.condition || 'new') === cond);
+      if (media === 'none') list = list.filter(p => !p.imageUrl && !(p.images||[]).length && !p.videoUrl && !(p.videos||[]).length);
+      if (media === 'has')  list = list.filter(p => p.imageUrl || (p.images||[]).length || p.videoUrl || (p.videos||[]).length);
+      if (q){
+        list = list.filter(p =>
+          p.name.toLowerCase().includes(q) || String(p.brand).toLowerCase().includes(q));
+      }
+
+      const shown = list.slice(0, PM_PAGE);
+      document.getElementById('products-tbody').innerHTML =
+        shown.length ? shown.map(AdminUI.productRow).join('')
+                     : `<tr><td colspan="6" style="padding:22px;text-align:center;" class="text-faint">No products match that search.</td></tr>`;
+
+      const withMedia = DB.getProducts().filter(p => p.imageUrl || p.videoUrl).length;
+      const total = DB.getProducts().length;
+      document.getElementById('pm-count').innerHTML =
+        `Showing ${shown.length} of ${list.length} matching · ${total} products in catalog · ` +
+        `<b style="color:var(--accent-2);">${withMedia}</b> have media, ` +
+        `<b style="color:var(--pending);">${total - withMedia}</b> still need a photo` +
+        (list.length > PM_PAGE ? ` · refine the search to see the rest` : '');
+    }
+
+    ['pm-search','pm-filter-cat','pm-filter-media','pm-filter-cond'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener(id === 'pm-search' ? 'input' : 'change', renderProducts);
+    });
+
+    // Quick panels: Sealed Mobiles / Sealed Laptops / Cut Mobiles / Cut
+    // Laptops / Second Hand Mobiles / Second Hand Laptops / Accessories /
+    // Audio / Smart Watches / Spare Parts — each is its own dedicated
+    // control panel, filtered by category AND condition together, so
+    // "Sealed" never mixes mobiles and laptops in one list.
+    const QUICK_LABELS = {
+      'sealed-mobiles':'Sealed Mobiles', 'sealed-laptops':'Sealed Laptops',
+      'cut-mobiles':'Cut Mobiles', 'cut-laptops':'Cut Laptops',
+      'second-hand-mobiles':'Second Hand Mobiles', 'second-hand-laptops':'Second Hand Laptops',
+      accessories:'Accessories', earbuds:'Audio', watches:'Smart Watches',
+      'mobile-spare-parts':'Mobile Spare Parts', 'laptop-spare-parts':'Laptop Spare Parts'
+    };
+    function openQuickPanel(key, cat, cond){
+      document.querySelectorAll('.admin-nav button[data-tab]').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.admin-nav button[data-quickfilter]').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelector(`[data-quickfilter][data-key="${key}"]`)?.classList.add('active');
+      document.getElementById('tab-products').classList.add('active');
+
+      document.getElementById('pm-filter-cat').value  = cat  || '';
+      document.getElementById('pm-filter-cond').value = cond || '';
+      document.getElementById('pm-filter-media').value = '';
+      document.getElementById('pm-search').value = '';
+      document.getElementById('pm-panel-label').textContent = (QUICK_LABELS[key] || key) + ' panel';
+      renderProducts();
+    }
+    document.querySelectorAll('[data-quickfilter]').forEach(btn => {
+      btn.addEventListener('click', () => openQuickPanel(btn.dataset.key, btn.dataset.cat, btn.dataset.cond));
+    });
+    // Exposed so the Categories tab (and "Any other categories" tiles) can
+    // jump straight into a filtered panel even for categories that don't
+    // have a dedicated sidebar button.
+    window.AdminOpenCategoryPanel = (cat) => openQuickPanel(cat, cat, '');
+
+    function renderCategories(){
+      // Every category — including any added later in this tab — gets its
+      // own clickable control panel, so no category is ever left without
+      // one, even if it doesn't have a dedicated sidebar shortcut.
+      document.getElementById('cat-grid').innerHTML = DB.getCategories().map(c => `
+        <div class="card" style="padding:16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="AdminOpenCategoryPanel('${c.id}')">
+          <div><strong style="font-family:var(--font-display);">${c.name}</strong><div class="text-faint" style="font-size:12px;">${DB.getProducts().filter(p=>p.category===c.id).length} products · open panel</div></div>
+          <i class="fa-solid ${c.icon}" style="color:var(--accent-2);font-size:20px;"></i>
+        </div>`).join('');
+    }
+
+    async function renderCategoryPhotos(){
+      const cats = DB.getCategories();
+      const grid = document.getElementById('cat-photo-grid');
+      grid.innerHTML = cats.map(c => `
+        <div class="card" style="padding:16px;">
+          <div class="flex justify-between items-center" style="margin-bottom:10px;">
+            <strong style="font-family:var(--font-display);">${Utils.escapeHtml(c.name)}</strong>
+            <button class="btn btn-outline btn-sm" id="catphoto-remove-${c.id}" style="display:none;" title="Remove — go back to the default photo"><i class="fa-solid fa-rotate-left"></i></button>
+          </div>
+          <div id="catphoto-preview-${c.id}" style="border-radius:10px;overflow:hidden;min-height:90px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;margin-bottom:10px;">
+            <span class="text-faint" style="font-size:12px;">Loading…</span>
+          </div>
+          <div class="field" style="margin-bottom:8px;"><input class="input" type="file" id="catphoto-file-${c.id}" accept="image/*"></div>
+          <button class="btn btn-primary btn-block btn-sm" id="catphoto-save-${c.id}"><i class="fa-solid fa-floppy-disk"></i> Save Photo</button>
+        </div>`).join('');
+
+      cats.forEach(c => {
+        const preview = document.getElementById(`catphoto-preview-${c.id}`);
+        const fileInput = document.getElementById(`catphoto-file-${c.id}`);
+        const saveBtn = document.getElementById(`catphoto-save-${c.id}`);
+        const removeBtn = document.getElementById(`catphoto-remove-${c.id}`);
+        let pendingFile = null;
+
+        async function showCurrent(){
+          const url = await Inbox.getSetting('cat_photo_' + c.id);
+          preview.innerHTML = url
+            ? `<img src="${url}" alt="${Utils.escapeHtml(c.name)}" style="width:100%;height:90px;object-fit:cover;">`
+            : `<span class="text-faint" style="font-size:12px;">Using the default photo</span>`;
+          removeBtn.style.display = url ? '' : 'none';
+        }
+        showCurrent();
+
+        fileInput.addEventListener('change', () => {
+          pendingFile = fileInput.files?.[0] || null;
+          if (pendingFile) preview.innerHTML = `<img src="${URL.createObjectURL(pendingFile)}" style="width:100%;height:90px;object-fit:cover;">`;
+        });
+
+        saveBtn.addEventListener('click', async () => {
+          if (!pendingFile){ Notify.toast('Choose a photo first.', 'error'); return; }
+          saveBtn.disabled = true;
+          saveBtn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Saving…';
+          try{
+            const url = await DB.uploadAsset('categories', pendingFile);
+            const res = await Inbox.setSetting('cat_photo_' + c.id, url);
+            if (!res.ok) throw new Error(res.error || 'Save failed');
+            Notify.toast(`${c.name} photo updated on the homepage.`, 'success');
+            pendingFile = null; fileInput.value = '';
+            await showCurrent();
+          }catch(err){
+            Notify.toast('Could not save photo: ' + (err.message || 'unknown error'), 'error');
+          }
+          saveBtn.disabled = false;
+          saveBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Photo';
+        });
+
+        removeBtn.addEventListener('click', async () => {
+          removeBtn.disabled = true;
+          try{
+            const res = await Inbox.setSetting('cat_photo_' + c.id, null);
+            if (!res.ok) throw new Error(res.error || 'Remove failed');
+            Notify.toast(`${c.name} back to the default photo.`, 'success');
+            await showCurrent();
+          }catch(err){
+            Notify.toast('Could not remove photo: ' + (err.message || 'unknown error'), 'error');
+          }
+          removeBtn.disabled = false;
+        });
+      });
+    }
+
+    async function renderTeam(){
+      const notice = document.getElementById('team-connect-notice');
+      if (!DB.useSupabase()){
+        notice.innerHTML = `<div class="flex items-center gap-8" style="color:var(--pending);"><i class="fa-solid fa-triangle-exclamation"></i> Connect Supabase (see README §2) to manage admin users beyond the built-in demo admin login.</div>`;
+        document.getElementById('team-admin-list').innerHTML = '';
+        return;
+      }
+      notice.innerHTML = `<div class="flex items-center gap-8" style="color:var(--success);"><i class="fa-solid fa-circle-check"></i> Connected to Supabase — changes here take effect immediately.</div>`;
+      const admins = await Auth.listAdmins();
+      document.getElementById('team-admin-list').innerHTML = admins.length ? admins.map(a => `
+        <div class="card" style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center;">
+          <div><strong>${Utils.escapeHtml(a.name||'—')}</strong><div class="text-faint" style="font-size:12.5px;">${Utils.escapeHtml(a.email||'')}</div></div>
+          <button class="btn btn-outline btn-sm" onclick="AdminTeam.demote('${a.id}')"><i class="fa-solid fa-user-minus"></i> Remove admin</button>
+        </div>`).join('') : `<p class="text-faint" style="font-size:13px;">No Supabase-managed admins yet.</p>`;
+    }
+
+    window.AdminTeam = {
+      async lookup(){
+        const email = document.getElementById('team-email-input').value.trim();
+        const resultEl = document.getElementById('team-lookup-result');
+        if (!email){ Notify.toast('Enter an email first.', 'error'); return; }
+        resultEl.innerHTML = `<p class="text-faint" style="font-size:13px;"><i class="fa-solid fa-spinner spin"></i> Looking up…</p>`;
+        const res = await Auth.findByEmail(email);
+        if (!res.ok){ resultEl.innerHTML = `<p style="color:var(--danger);font-size:13px;">${Utils.escapeHtml(res.error)}</p>`; return; }
+        const p = res.profile;
+        const isAlreadyAdmin = p.role === 'admin';
+        resultEl.innerHTML = `
+          <div class="card" style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center;">
+            <div><strong>${Utils.escapeHtml(p.name||'—')}</strong><div class="text-faint" style="font-size:12.5px;">${Utils.escapeHtml(p.email)} · currently ${isAlreadyAdmin?'admin':'customer'}</div></div>
+            ${isAlreadyAdmin
+              ? `<button class="btn btn-outline btn-sm" onclick="AdminTeam.demote('${p.id}')">Remove admin</button>`
+              : `<button class="btn btn-primary btn-sm" onclick="AdminTeam.promote('${p.id}')">Make admin</button>`}
+          </div>`;
+      },
+      async promote(userId){
+        const res = await Auth.setRole(userId, 'admin');
+        if (!res.ok){ Notify.toast(res.error, 'error'); return; }
+        Notify.toast('User promoted to admin.', 'success');
+        document.getElementById('team-lookup-result').innerHTML = '';
+        document.getElementById('team-email-input').value = '';
+        renderTeam();
+      },
+      async demote(userId){
+        if (!window.confirm('Remove admin access for this user?')) return;
+        const res = await Auth.setRole(userId, 'customer');
+        if (!res.ok){ Notify.toast(res.error, 'error'); return; }
+        Notify.toast('Admin access removed.', 'success');
+        renderTeam();
+      }
+    };
+    document.getElementById('team-lookup-btn').addEventListener('click', () => AdminTeam.lookup());
+
+    document.getElementById('my-login-save').addEventListener('click', async () => {
+      const newEmail = document.getElementById('my-login-email').value.trim();
+      const newPassword = document.getElementById('my-login-password').value;
+      if (!newEmail && !newPassword){ Notify.toast('Enter a new email or password first.', 'error'); return; }
+      if (!DB.useSupabase()){ Notify.toast('Connect Supabase first — see README §2.', 'error'); return; }
+      const btn = document.getElementById('my-login-save');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Updating…';
+      try{
+        const patch = {};
+        if (newEmail) patch.email = newEmail;
+        if (newPassword) patch.password = newPassword;
+        const { error } = await supabaseClient.auth.updateUser(patch);
+        if (error) throw error;
+        if (newEmail){
+          await supabaseClient.from('profiles').update({ email:newEmail }).eq('id', Auth.currentUser().id);
+          Notify.toast('Login updated — check your new email inbox to confirm it, then use it next time you log in.', 'success');
+        } else {
+          Notify.toast('Password updated. Use the new one next time you log in.', 'success');
+        }
+        document.getElementById('my-login-email').value = '';
+        document.getElementById('my-login-password').value = '';
+      }catch(err){
+        Notify.toast('Could not update login: ' + (err.message || 'unknown error'), 'error');
+      }
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-key"></i> Update My Login';
+    });
+
+    async function initInvoiceSettings(){
+      // ---- Site background photo ----
+      const bgPreview = document.getElementById('bg-preview');
+      const bgFile = document.getElementById('bg-file');
+      const bgSaveBtn = document.getElementById('bg-save');
+      let pendingBg = null;
+
+      async function showCurrentBg(){
+        const url = await Inbox.getSetting('site_background_url');
+        bgPreview.innerHTML = url
+          ? `<img src="${url}" alt="Current background" style="width:100%;height:120px;object-fit:cover;">`
+          : `<span class="text-faint" style="font-size:12.5px;">Using the default background photo.</span>`;
+      }
+      await showCurrentBg();
+      bgFile.addEventListener('change', () => {
+        pendingBg = bgFile.files?.[0] || null;
+        if (pendingBg) bgPreview.innerHTML = `<img src="${URL.createObjectURL(pendingBg)}" alt="New background preview" style="width:100%;height:120px;object-fit:cover;">`;
+      });
+      bgSaveBtn.addEventListener('click', async () => {
+        if (!pendingBg){ Notify.toast('Choose a background image first.', 'error'); return; }
+        bgSaveBtn.disabled = true;
+        bgSaveBtn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Saving…';
+        try{
+          const url = await DB.uploadAsset('branding', pendingBg);
+          const res = await Inbox.setSetting('site_background_url', url);
+          if (!res.ok) throw new Error(res.error || 'Save failed');
+          Notify.toast('Background updated — now showing on every page.', 'success');
+          pendingBg = null; bgFile.value = '';
+          await showCurrentBg();
+          Branding.applyBackground();
+        }catch(err){
+          Notify.toast('Could not save background: ' + (err.message || 'unknown error'), 'error');
+        }
+        bgSaveBtn.disabled = false;
+        bgSaveBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Background';
+      });
+
+      // ---- Logos (light + dark theme variants) ----
+      const logoLightFile = document.getElementById('logo-light-file');
+      const logoDarkFile = document.getElementById('logo-dark-file');
+      const logoLightPreview = document.getElementById('logo-light-preview');
+      const logoDarkPreview = document.getElementById('logo-dark-preview');
+      const logoSaveBtn = document.getElementById('logo-save');
+      let pendingLogo = { light:null, dark:null };
+
+      async function showCurrentLogos(){
+        const [light, dark] = await Promise.all([Inbox.getSetting('logo_light_url'), Inbox.getSetting('logo_dark_url')]);
+        logoLightPreview.innerHTML = light ? `<img src="${light}" style="max-height:50px;max-width:100%;">` : `<span class="text-faint" style="font-size:12px;">Using default logo</span>`;
+        logoDarkPreview.innerHTML = dark ? `<img src="${dark}" style="max-height:50px;max-width:100%;">` : `<span class="text-faint" style="font-size:12px;">Using default logo</span>`;
+      }
+      await showCurrentLogos();
+      logoLightFile.addEventListener('change', () => {
+        pendingLogo.light = logoLightFile.files?.[0] || null;
+        if (pendingLogo.light) logoLightPreview.innerHTML = `<img src="${URL.createObjectURL(pendingLogo.light)}" style="max-height:50px;max-width:100%;">`;
+      });
+      logoDarkFile.addEventListener('change', () => {
+        pendingLogo.dark = logoDarkFile.files?.[0] || null;
+        if (pendingLogo.dark) logoDarkPreview.innerHTML = `<img src="${URL.createObjectURL(pendingLogo.dark)}" style="max-height:50px;max-width:100%;">`;
+      });
+      logoSaveBtn.addEventListener('click', async () => {
+        if (!pendingLogo.light && !pendingLogo.dark){ Notify.toast('Choose at least one logo file first.', 'error'); return; }
+        logoSaveBtn.disabled = true;
+        logoSaveBtn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Saving…';
+        try{
+          if (pendingLogo.light){
+            const url = await DB.uploadAsset('branding', pendingLogo.light);
+            const res = await Inbox.setSetting('logo_light_url', url);
+            if (!res.ok) throw new Error(res.error || 'Save failed');
+          }
+          if (pendingLogo.dark){
+            const url = await DB.uploadAsset('branding', pendingLogo.dark);
+            const res = await Inbox.setSetting('logo_dark_url', url);
+            if (!res.ok) throw new Error(res.error || 'Save failed');
+          }
+          Notify.toast('Logo updated across the site.', 'success');
+          pendingLogo = { light:null, dark:null };
+          logoLightFile.value = ''; logoDarkFile.value = '';
+          await showCurrentLogos();
+          UI.refreshLogos();
+        }catch(err){
+          Notify.toast('Could not save logo: ' + (err.message || 'unknown error'), 'error');
+        }
+        logoSaveBtn.disabled = false;
+        logoSaveBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Logos';
+      });
+
+      // ---- Bill signature ----
+      const preview = document.getElementById('inv-signature-preview');
+      const fileInput = document.getElementById('inv-signature-file');
+      const saveBtn = document.getElementById('inv-signature-save');
+      let pendingFile = null;
+
+      async function showCurrent(){
+        const url = await Inbox.getSetting('admin_signature_url');
+        preview.innerHTML = url
+          ? `<img src="${url}" alt="Current signature" style="max-height:60px;max-width:220px;">`
+          : `<span class="text-faint" style="font-size:12.5px;">No signature uploaded yet.</span>`;
+      }
+      await showCurrent();
+
+      fileInput.addEventListener('change', () => {
+        pendingFile = fileInput.files?.[0] || null;
+        if (pendingFile) preview.innerHTML = `<img src="${URL.createObjectURL(pendingFile)}" alt="New signature preview" style="max-height:60px;max-width:220px;">`;
+      });
+
+      saveBtn.addEventListener('click', async () => {
+        if (!pendingFile){ Notify.toast('Choose a signature image first.', 'error'); return; }
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Saving…';
+        try{
+          const url = await DB.uploadAsset('signatures', pendingFile);
+          const res = await Inbox.setSetting('admin_signature_url', url);
+          if (!res.ok) throw new Error(res.error || 'Save failed');
+          Notify.toast('Signature saved — it will now appear on every generated bill.', 'success');
+          pendingFile = null;
+          fileInput.value = '';
+          await showCurrent();
+        }catch(err){
+          Notify.toast('Could not save signature: ' + (err.message || 'unknown error'), 'error');
+        }
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Signature';
+      });
+
+      // ---- Razorpay payment link ----
+      const rzpInput = document.getElementById('razorpay-link-input');
+      const rzpSaveBtn = document.getElementById('razorpay-link-save');
+      rzpInput.value = (await Inbox.getSetting('razorpay_payment_link')) || '';
+      rzpSaveBtn.addEventListener('click', async () => {
+        const url = rzpInput.value.trim();
+        if (url && !/^https?:\/\//i.test(url)){ Notify.toast('Enter a full link starting with https://', 'error'); return; }
+        rzpSaveBtn.disabled = true;
+        rzpSaveBtn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Saving…';
+        try{
+          const res = await Inbox.setSetting('razorpay_payment_link', url);
+          if (!res.ok) throw new Error(res.error || 'Save failed');
+          Notify.toast(url ? 'Razorpay link saved — now showing at checkout.' : 'Razorpay link removed.', 'success');
+        }catch(err){
+          Notify.toast('Could not save Razorpay link: ' + (err.message || 'unknown error'), 'error');
+        }
+        rzpSaveBtn.disabled = false;
+        rzpSaveBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Razorpay Link';
+      });
+
+      // ---- Full catalog sync ----
+      const syncStatus = document.getElementById('catalog-sync-status');
+      const syncBtn = document.getElementById('catalog-sync-btn');
+      const localCatalog = DB.getProducts();
+      if (!DB.useSupabase()){
+        syncStatus.textContent = 'Connect Supabase to enable syncing.';
+        syncBtn.disabled = true;
+      } else {
+        try{
+          const { count, error } = await supabaseClient.from('products').select('*', { count: 'exact', head: true });
+          if (error) throw error;
+          syncStatus.textContent = `Database has ${count ?? '?'} products — built-in catalog has ${localCatalog.length}.`;
+        }catch(err){
+          syncStatus.textContent = `Built-in catalog has ${localCatalog.length} products. (Could not read current database count: ${err.message})`;
+        }
+      }
+      syncBtn.addEventListener('click', async () => {
+        const list = DB.getProducts();
+        syncBtn.disabled = true;
+        syncBtn.innerHTML = `<i class="fa-solid fa-spinner spin"></i> Syncing ${list.length} products…`;
+        try{
+          await DB.saveProducts(list);
+          // saveProducts logs Supabase errors to the console but doesn't throw them,
+          // so verify by re-reading the live count rather than trusting a silent success.
+          const { count, error } = await supabaseClient.from('products').select('*', { count: 'exact', head: true });
+          if (error) throw error;
+          syncStatus.textContent = `Database now has ${count ?? '?'} products (catalog has ${list.length}).`;
+          if (count >= list.length){
+            Notify.toast(`Catalog sync complete — ${count} products in the database.`, 'success');
+          } else {
+            Notify.toast(`Sync ran, but only ${count} of ${list.length} products are in the database — click Sync again.`, 'error');
+          }
+        }catch(err){
+          Notify.toast('Could not verify sync: ' + (err.message || 'unknown error'), 'error');
+        }
+        syncBtn.disabled = false;
+        syncBtn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Sync Full Catalog to Database';
+      });
+    }
+    function initManualBillCreator(){
+      const searchInput = document.getElementById('mb-product-search');
+      const suggestionsBox = document.getElementById('mb-suggestions');
+      const itemsBody = document.getElementById('mb-items-body');
+      const emptyMsg = document.getElementById('mb-empty');
+      const grandTotalEl = document.getElementById('mb-grand-total');
+      let items = []; // { id|null, name, price, qty, type, color }
+
+      function renderItems(){
+        itemsBody.innerHTML = items.map((it, i) => `
+          <tr style="border-bottom:1px solid var(--border-soft);">
+            <td style="padding:8px 6px;">${Utils.escapeHtml(it.name)}${it.id ? '' : ' <span class="text-faint" style="font-size:11px;">(custom)</span>'}</td>
+            <td style="padding:8px 6px;"><input class="input" type="number" min="1" value="${it.qty}" style="width:60px;padding:6px 8px;" onchange="ManualBill.setQty(${i}, this.value)"></td>
+            <td style="padding:8px 6px;"><input class="input" type="number" min="0" value="${it.price}" style="width:100px;padding:6px 8px;" onchange="ManualBill.setPrice(${i}, this.value)"></td>
+            <td style="padding:8px 6px;font-family:var(--font-mono);">${Utils.formatINR(it.price * it.qty)}</td>
+            <td style="padding:8px 6px;"><button type="button" class="btn btn-ghost btn-sm" onclick="ManualBill.remove(${i})" style="color:var(--danger,#dc2626);"><i class="fa-solid fa-trash"></i></button></td>
+          </tr>`).join('');
+        emptyMsg.style.display = items.length ? 'none' : 'block';
+        const total = items.reduce((s,it) => s + it.price * it.qty, 0);
+        grandTotalEl.textContent = Utils.formatINR(total);
+      }
+
+      function addProduct(p){
+        const existing = items.find(it => it.id === p.id);
+        if (existing) existing.qty += 1;
+        else items.push({ id:p.id, name:p.name, price:p.price, qty:1, type:p.type, color:p.color });
+        renderItems();
+        searchInput.value = '';
+        suggestionsBox.style.display = 'none';
+      }
+      function addCustom(name){
+        items.push({ id:null, name: name || 'Custom item', price:0, qty:1, type:'accessory', color:'#4c8dff' });
+        renderItems();
+        searchInput.value = '';
+        suggestionsBox.style.display = 'none';
+      }
+
+      searchInput.addEventListener('input', () => {
+        const q = searchInput.value.trim().toLowerCase();
+        if (!q){ suggestionsBox.style.display = 'none'; return; }
+        const matches = DB.getProducts().filter(p => p.name.toLowerCase().includes(q)).slice(0, 8);
+        let html = matches.map(p => `
+          <div class="mb-sugg-item" data-id="${p.id}" style="padding:10px 12px;cursor:pointer;border-bottom:1px solid var(--border-soft);display:flex;justify-content:space-between;gap:10px;">
+            <span>${Utils.escapeHtml(p.name)}</span><span style="font-family:var(--font-mono);color:var(--text-faint);">${Utils.formatINR(p.price)}</span>
+          </div>`).join('');
+        html += `<div class="mb-sugg-custom" style="padding:10px 12px;cursor:pointer;color:var(--accent-2);font-size:12.5px;">+ Add "${Utils.escapeHtml(searchInput.value.trim())}" as a custom item</div>`;
+        suggestionsBox.innerHTML = html;
+        suggestionsBox.style.display = 'block';
+        suggestionsBox.querySelectorAll('.mb-sugg-item').forEach(el => {
+          el.addEventListener('click', () => {
+            const p = DB.getProducts().find(pp => pp.id === el.dataset.id);
+            if (p) addProduct(p);
+          });
+        });
+        suggestionsBox.querySelector('.mb-sugg-custom').addEventListener('click', () => addCustom(searchInput.value.trim()));
+      });
+      document.addEventListener('click', (e) => {
+        if (!suggestionsBox.contains(e.target) && e.target !== searchInput) suggestionsBox.style.display = 'none';
+      });
+
+      window.ManualBill = {
+        setQty: (i, v) => { items[i].qty = Math.max(1, parseInt(v) || 1); renderItems(); },
+        setPrice: (i, v) => { items[i].price = Math.max(0, parseFloat(v) || 0); renderItems(); },
+        remove: (i) => { items.splice(i, 1); renderItems(); }
+      };
+
+      document.getElementById('mb-generate-btn').addEventListener('click', async () => {
+        const name = document.getElementById('mb-name').value.trim();
+        if (!name){ Notify.toast("Enter the customer's name first.", 'error'); return; }
+        if (!items.length){ Notify.toast('Add at least one product to the bill.', 'error'); return; }
+
+        const btn = document.getElementById('mb-generate-btn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Generating…';
+
+        const subtotal = items.reduce((s,it) => s + it.price * it.qty, 0);
+        const order = {
+          id: Utils.orderId(),
+          userId: null, // counter sale — not tied to a website account
+          items: items.map(it => ({ id:it.id, name:it.name, price:it.price, qty:it.qty, type:it.type, color:it.color })),
+          address: { name, phone: document.getElementById('mb-phone').value.trim(), line1: document.getElementById('mb-address').value.trim(), city:'', state:'', pincode:'' },
+          paymentMethod: 'cod', // in-person / counter sale
+          totals: { subtotal, discount:0, deliveryFee:0, cardSurcharge:0, total: subtotal },
+          amountDueNow: subtotal,
+          deliveryEstimate: 'Collected in-store',
+          paymentStatus: 'confirmed',
+          orderStatus: 'confirmed',
+          screenshot: null,
+          timeline: [
+            { status:'placed', at:new Date().toISOString(), note:'Manual bill — counter sale' },
+            { status:'confirmed', at:new Date().toISOString() }
+          ],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        };
+        try{
+          await DB.saveOrder(order);
+          Notify.toast('Bill generated.', 'success');
+          window.location.href = `invoice.html?order=${order.id}`;
+        }catch(err){
+          Notify.toast('Could not generate the bill: ' + (err.message || 'unknown error'), 'error');
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa-solid fa-file-invoice"></i> Generate Bill';
+        }
+      });
+    }
+    initManualBillCreator();
+
+    initInvoiceSettings();
+
+    async function renderServiceAppointments(){
+      const list = document.getElementById('service-list');
+      if (!DB.useSupabase()){
+        list.innerHTML = '<p class="text-faint" style="font-size:13px;">Connect Supabase to see service requests.</p>';
+        return;
+      }
+      list.innerHTML = '<p class="text-faint" style="font-size:13px;">Loading…</p>';
+      try{
+        const { data, error } = await supabaseClient.from('service_appointments').select('*').order('created_at', { ascending:false });
+        if (error) throw error;
+        if (!data || !data.length){
+          list.innerHTML = '<div class="empty-state"><i class="fa-solid fa-calendar-check"></i><h3>No requests yet</h3><p>New service appointment requests will show up here.</p></div>';
+          return;
+        }
+        const STATUS_COLOR = { pending:'var(--pending,#d97706)', confirmed:'var(--success,#16a34a)', rejected:'var(--danger,#dc2626)', completed:'var(--text-dim)' };
+        list.innerHTML = data.map(a => `
+          <div class="card" style="padding:16px;" id="svc-card-${a.id}">
+            <div class="flex justify-between items-start" style="flex-wrap:wrap;gap:8px;">
+              <div>
+                <strong>${Utils.escapeHtml(a.name)}</strong> · <span class="text-faint" style="font-size:12.5px;">${Utils.escapeHtml(a.phone)}${a.email ? ' · ' + Utils.escapeHtml(a.email) : ''}</span>
+                <div style="font-size:13px;margin-top:4px;">${Utils.escapeHtml(a.device_type || '')} — ${Utils.escapeHtml(a.issue_description)}</div>
+                <div class="text-faint" style="font-size:12.5px;margin-top:4px;"><i class="fa-solid fa-calendar"></i> ${Utils.escapeHtml(a.preferred_date)} at ${Utils.escapeHtml(a.preferred_time)} · Wants: ${a.service_mode === 'shop_visit' ? 'Shop visit' : a.service_mode === 'courier' ? 'Courier' : 'Not decided'}</div>
+              </div>
+              <span class="badge" style="background:${STATUS_COLOR[a.status]}22;color:${STATUS_COLOR[a.status]};">${a.status}</span>
+            </div>
+            <div class="flex gap-8" style="margin-top:12px;flex-wrap:wrap;">
+              <select class="input" style="max-width:200px;" id="svc-mode-${a.id}">
+                <option value="not_decided" ${a.service_mode==='not_decided'?'selected':''}>Not decided</option>
+                <option value="shop_visit" ${a.service_mode==='shop_visit'?'selected':''}>Ask them to visit shop</option>
+                <option value="courier" ${a.service_mode==='courier'?'selected':''}>Ask them to courier it</option>
+              </select>
+              <button class="btn btn-primary btn-sm" onclick="AdminService.update('${a.id}','confirmed')">Confirm</button>
+              <button class="btn btn-outline btn-sm" onclick="AdminService.update('${a.id}','completed')">Mark completed</button>
+              <button class="btn btn-outline btn-sm" style="color:var(--danger,#dc2626);" onclick="AdminService.update('${a.id}','rejected')">Reject</button>
+            </div>
+          </div>`).join('');
+      }catch(err){
+        list.innerHTML = `<p class="text-faint" style="font-size:13px;">Could not load: ${Utils.escapeHtml(err.message)}</p>`;
+      }
+    }
+    window.AdminService = {
+      async update(id, status){
+        const modeSelect = document.getElementById(`svc-mode-${id}`);
+        const patch = { status };
+        if (modeSelect) patch.service_mode = modeSelect.value;
+        try{
+          const { error } = await supabaseClient.from('service_appointments').update(patch).eq('id', id);
+          if (error) throw error;
+          Notify.toast('Updated.', 'success');
+          renderServiceAppointments();
+        }catch(err){
+          Notify.toast('Could not update: ' + err.message, 'error');
+        }
+      }
+    };
+
+    async function renderAll(){ await Orders.refresh(); renderOverview(); renderPending(); renderRefunds(); renderOrders(); renderProducts(); renderCategories(); renderCategoryPhotos(); renderTeam(); renderServiceAppointments(); }
+    document.addEventListener('admin:refresh', renderAll);
+    renderAll();
+
+    // Customer Details — opened by clicking a "New customer registered" /
+    // "Customer logged in" notification, which links here with
+    // ?customer=<userId>. Shows the customer's profile, their orders, and
+    // their wishlist (synced from Supabase, not just their own browser).
+    async function openCustomerDetail(userId){
+      const body = document.getElementById('customer-detail-body');
+      body.innerHTML = '<p class="text-faint" style="font-size:13px;">Loading…</p>';
+      UI.openModal('customer-detail-modal');
+      if (!DB.useSupabase()){
+        body.innerHTML = '<p class="text-faint" style="font-size:13px;">Connect Supabase to view customer details.</p>';
+        return;
+      }
+      try{
+        const [{ data: profile }, ordersRes, wishItems] = await Promise.all([
+          supabaseClient.from('profiles').select('*').eq('id', userId).single(),
+          supabaseClient.from('orders').select('*').eq('user_id', userId).order('created_at', { ascending:false }),
+          Wishlist.detailedForUser(userId)
+        ]);
+        if (!profile){ body.innerHTML = '<p class="text-faint" style="font-size:13px;">Customer not found.</p>'; return; }
+        const orders = ordersRes.data || [];
+        const wishHTML = wishItems.length
+          ? `<div style="display:flex;flex-direction:column;gap:8px;">${wishItems.map(p => `
+              <a href="product-details.html?id=${p.id}" class="flex items-center gap-8" style="text-decoration:none;color:inherit;padding:8px;border:1px solid var(--border-soft);border-radius:10px;">
+                <img src="${p.imageUrl || Utils.deviceImage(p.type,p.color)}" style="width:40px;height:40px;object-fit:cover;border-radius:8px;background:var(--surface-2);">
+                <div style="flex:1;"><div style="font-weight:600;font-size:13px;">${Utils.escapeHtml(p.name)}</div><div class="text-faint" style="font-size:12px;">${Utils.formatINR(p.price)}</div></div>
+              </a>`).join('')}</div>`
+          : `<p class="text-faint" style="font-size:12.5px;">No items in wishlist.</p>`;
+        const ordersHTML = orders.length
+          ? `<div style="display:flex;flex-direction:column;gap:8px;">${orders.map(o => `
+              <div class="flex justify-between items-center" style="padding:8px;border:1px solid var(--border-soft);border-radius:10px;font-size:13px;">
+                <span>#${Utils.escapeHtml(o.id)} · ${Utils.formatDate(o.created_at)}</span>
+                <span style="font-family:var(--font-mono);font-weight:700;">${Utils.formatINR(o.total || 0)}</span>
+              </div>`).join('')}</div>`
+          : `<p class="text-faint" style="font-size:12.5px;">No orders yet.</p>`;
+        body.innerHTML = `
+          <div style="margin-bottom:18px;">
+            <strong style="font-family:var(--font-display);font-size:16px;">${Utils.escapeHtml(profile.name || 'Customer')}</strong>
+            <p class="text-faint" style="font-size:13px;margin:4px 0 0;">${Utils.escapeHtml(profile.email || '')}${profile.phone ? ' · ' + Utils.escapeHtml(profile.phone) : ''}</p>
+            ${profile.address ? `<p class="text-faint" style="font-size:12.5px;margin:4px 0 0;">${Utils.escapeHtml([profile.address, profile.city, profile.state, profile.pincode].filter(Boolean).join(', '))}</p>` : ''}
+          </div>
+          <h4 style="font-family:var(--font-display);margin:0 0 10px;font-size:14px;">Wishlist (${wishItems.length})</h4>
+          ${wishHTML}
+          <h4 style="font-family:var(--font-display);margin:20px 0 10px;font-size:14px;">Orders (${orders.length})</h4>
+          ${ordersHTML}`;
+      }catch(err){
+        body.innerHTML = `<p class="text-faint" style="font-size:13px;">Could not load: ${Utils.escapeHtml(err.message)}</p>`;
+      }
+    }
+    const customerParam = new URLSearchParams(window.location.search).get('customer');
+    if (customerParam) openCustomerDetail(customerParam);
+
+    const tabParam = new URLSearchParams(window.location.search).get('tab');
+    if (tabParam){
+      const navBtn = document.querySelector(`.admin-nav button[data-tab="${tabParam}"]`);
+      if (navBtn) navBtn.click();
+    }
+
+    // Product modal
+    /* The catalog is already populated, so there is no blank "create product"
+       flow any more. This button focuses the product search instead, so the
+       model that needs a photo can be found quickly. */
+    const addBtn = document.getElementById('add-product-btn');
+    if (addBtn){
+      addBtn.addEventListener('click', () => {
+        const box = document.getElementById('pm-search');
+        if (box){ box.focus(); box.scrollIntoView({ block:'center', behavior:'smooth' }); }
+      });
+    }
+
+    // Create an entirely new product (any variant/model not already in the
+    // catalog) — opens blank in the same edit modal used for existing rows.
+    let pendingNewProductId = null;
+    window.AdminUI = window.AdminUI || {};
+    AdminUI.cancelProductEdit = function(){
+      if (!pendingNewProductId) return;
+      const list = DB.getProducts().filter(p => p.id !== pendingNewProductId);
+      DB.write(DB.KEYS.products, list);
+      pendingNewProductId = null;
+      renderProducts();
+    };
+    const newBtn = document.getElementById('new-product-btn');
+    if (newBtn){
+      newBtn.addEventListener('click', async () => {
+        const id = 'custom-' + Date.now().toString(36);
+        const blank = {
+          id, name:'New Product', brand:'', category:'mobiles', type:'phone',
+          price:0, mrp:0, stock:0, rating:0, reviews:0, color:'#4c8dff',
+          specs:[], desc:'', condition:'new', imageUrl:null, videoUrl:null,
+          images:[], videos:[], productUrl:null, isPreOrder:false, availDate:null,
+          storage:'', ram:'', modelName:'', colorName:'', variant:'', features:[], customFields:[]
+        };
+        const list = DB.getProducts();
+        list.push(blank);
+        DB.write(DB.KEYS.products, list); // local only for now — real save happens on form submit
+        pendingNewProductId = id;
+        document.dispatchEvent(new CustomEvent('admin:edit-product', { detail:{ id } }));
+      });
+    }
+
+    // Custom Fields repeater — any label/value spec not covered by the
+    // named fields above (Storage/RAM/Model/Color/Variant). Stored as
+    // product.customFields = [{label, value}, ...].
+    const customFieldsBox = document.getElementById('pm-custom-fields');
+    function renderCustomFields(list){
+      customFieldsBox.innerHTML = (list.length ? list : []).map((f, i) => `
+        <div class="flex gap-8" data-custom-row="${i}">
+          <input class="input" style="flex:1;" placeholder="Label — e.g. IMEI, Battery Health" data-custom-label value="${Utils.escapeHtml(f.label || '')}">
+          <input class="input" style="flex:1;" placeholder="Value" data-custom-value value="${Utils.escapeHtml(f.value || '')}">
+          <button type="button" class="btn btn-ghost btn-sm" data-custom-remove title="Remove"><i class="fa-solid fa-xmark"></i></button>
+        </div>`).join('');
+      customFieldsBox.querySelectorAll('[data-custom-remove]').forEach(btn => {
+        btn.addEventListener('click', () => btn.closest('[data-custom-row]').remove());
+      });
+    }
+    function collectCustomFields(){
+      return Array.from(customFieldsBox.querySelectorAll('[data-custom-row]')).map(row => ({
+        label: row.querySelector('[data-custom-label]').value.trim(),
+        value: row.querySelector('[data-custom-value]').value.trim()
+      })).filter(f => f.label || f.value);
+    }
+    document.getElementById('pm-add-custom-field').addEventListener('click', () => {
+      const row = document.createElement('div');
+      row.className = 'flex gap-8';
+      row.dataset.customRow = customFieldsBox.children.length;
+      row.innerHTML = `
+        <input class="input" style="flex:1;" placeholder="Label — e.g. IMEI, Battery Health" data-custom-label>
+        <input class="input" style="flex:1;" placeholder="Value" data-custom-value>
+        <button type="button" class="btn btn-ghost btn-sm" data-custom-remove title="Remove"><i class="fa-solid fa-xmark"></i></button>`;
+      row.querySelector('[data-custom-remove]').addEventListener('click', () => row.remove());
+      customFieldsBox.appendChild(row);
+    });
+
+    document.addEventListener('admin:edit-product', (e) => {
+      const p = DB.getProduct(e.detail.id);
+      if (!p) return;
+      const f = document.getElementById('product-form');
+      document.getElementById('pm-title').textContent = 'Edit product';
+
+      f.id.value = p.id;
+      f.name.value = p.name || '';
+      f.brand.value = p.brand || '';
+      f.category.value = p.category || 'mobiles';
+      f.price.value = p.price || 0;
+      f.mrp.value = p.mrp || 0;
+      f.stock.value = p.stock || 0;
+      f.specs.value = (p.specs || []).join('\n');
+      f.desc.value = p.desc || '';
+      f.modelName.value = p.modelName || '';
+      f.storage.value = p.storage || '';
+      f.ram.value = p.ram || '';
+      f.colorName.value = p.colorName || '';
+      f.variant.value = p.variant || '';
+      f.features.value = (p.features || []).join('\n');
+      renderCustomFields(p.customFields || []);
+      f.warrantyType.value = p.warrantyType || 'checking';
+      f.warrantyPeriod.value = p.warrantyPeriod || (p.condition === 'sealed' ? '1_year' : '7_days');
+      const existingImages = (p.images && p.images.length) ? p.images : (p.imageUrl ? [p.imageUrl] : []);
+      const existingVideos = (p.videos && p.videos.length) ? p.videos : (p.videoUrl ? [p.videoUrl] : []);
+      f.imageUrls.value = existingImages.join('\n');
+      f.condition.value = p.condition || 'new';
+      f.videoUrls.value = existingVideos.join('\n');
+      f.productUrl.value = p.productUrl || '';
+      document.getElementById('pm-image-file').value = '';
+      document.getElementById('pm-video-file').value = '';
+
+      // Show whatever media is currently attached, with a way to clear each item.
+      const cur = document.getElementById('pm-current-media');
+      function renderCurrentMedia(){
+        const imgs = f.imageUrls.value.split('\n').map(s=>s.trim()).filter(Boolean);
+        const vids = f.videoUrls.value.split('\n').map(s=>s.trim()).filter(Boolean);
+        const bits = [];
+        imgs.forEach((url,i) => bits.push(`<div class="pm-cur"><img src="${Utils.escapeHtml(url)}" alt="photo ${i+1}"><span>Photo ${i+1}</span><button type="button" class="btn btn-ghost btn-sm" data-clear-img="${i}">Remove</button></div>`));
+        vids.forEach((url,i) => bits.push(`<div class="pm-cur"><i class="fa-solid fa-film"></i><span>Video ${i+1}</span><button type="button" class="btn btn-ghost btn-sm" data-clear-vid="${i}">Remove</button></div>`));
+        cur.innerHTML = bits.length
+          ? `<div class="pm-cur-wrap"><div class="pm-cur-title">Currently attached (${imgs.length}/10 photos, ${vids.length}/5 videos)</div>${bits.join('')}</div>`
+          : `<p class="text-faint" style="font-size:12px;margin:10px 0 0;">No photo or video attached yet — the placeholder icon is being shown on the site.</p>`;
+        cur.querySelectorAll('[data-clear-img]').forEach(btn => btn.addEventListener('click', () => {
+          const idx = Number(btn.dataset.clearImg);
+          f.imageUrls.value = imgs.filter((_,i)=>i!==idx).join('\n');
+          renderCurrentMedia();
+        }));
+        cur.querySelectorAll('[data-clear-vid]').forEach(btn => btn.addEventListener('click', () => {
+          const idx = Number(btn.dataset.clearVid);
+          f.videoUrls.value = vids.filter((_,i)=>i!==idx).join('\n');
+          renderCurrentMedia();
+        }));
+      }
+      renderCurrentMedia();
+
+      // Sealed items default to 1-year warranty — still overridable by hand.
+      document.getElementById('pm-condition').onchange = (e) => {
+        if (e.target.value === 'sealed') f.warrantyPeriod.value = '1_year';
+      };
+
+      UI.openModal('product-modal');
+    });
+
+    document.getElementById('product-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Saving…';
+      const fd = new FormData(e.target);
+      const id = fd.get('id');
+      const products = DB.getProducts();
+      const idx = products.findIndex(p => p.id === id);
+
+      if (idx === -1){
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Save Media';
+        Notify.toast('That product no longer exists.', 'error');
+        return;
+      }
+
+      // Every field here is now editable — name, brand, category, price,
+      // stock, specs (storage/model/variant lines) and description, plus
+      // media. Anything left blank falls back to the existing value.
+      const imageFiles = Array.from(document.getElementById('pm-image-file').files || []);
+      const videoFiles = Array.from(document.getElementById('pm-video-file').files || []);
+      const pastedImages = (fd.get('imageUrls') || '').split('\n').map(s=>s.trim()).filter(Boolean);
+      const pastedVideos = (fd.get('videoUrls') || '').split('\n').map(s=>s.trim()).filter(Boolean);
+      const productUrl = (fd.get('productUrl') || '').trim() || null;
+      const specs = (fd.get('specs') || '').split('\n').map(s=>s.trim()).filter(Boolean);
+      const features = (fd.get('features') || '').split('\n').map(s=>s.trim()).filter(Boolean);
+      const customFields = collectCustomFields();
+
+      try{
+        const uploadedImages = [];
+        for (const file of imageFiles) uploadedImages.push(await DB.uploadAsset('products', file));
+        const uploadedVideos = [];
+        for (const file of videoFiles) uploadedVideos.push(await DB.uploadAsset('products', file));
+
+        const images = [...pastedImages, ...uploadedImages].slice(0, 10);
+        const videos = [...pastedVideos, ...uploadedVideos].slice(0, 5);
+
+        const condition = fd.get('condition') || products[idx].condition || 'new';
+        products[idx] = {
+          ...products[idx],
+          name: (fd.get('name') || '').trim() || products[idx].name,
+          brand: (fd.get('brand') || '').trim() || products[idx].brand,
+          category: fd.get('category') || products[idx].category,
+          price: Number(fd.get('price')) || products[idx].price,
+          mrp: Number(fd.get('mrp')) || products[idx].mrp,
+          stock: fd.get('stock') !== null && fd.get('stock') !== '' ? Number(fd.get('stock')) : products[idx].stock,
+          specs: specs.length ? specs : products[idx].specs,
+          desc: (fd.get('desc') || '').trim() || products[idx].desc,
+          modelName: (fd.get('modelName') || '').trim(),
+          storage: (fd.get('storage') || '').trim(),
+          ram: (fd.get('ram') || '').trim(),
+          colorName: (fd.get('colorName') || '').trim(),
+          variant: (fd.get('variant') || '').trim(),
+          features,
+          customFields,
+          warrantyType: fd.get('warrantyType') || products[idx].warrantyType || 'checking',
+          warrantyPeriod: fd.get('warrantyPeriod') || products[idx].warrantyPeriod || '7_days',
+          images, videos, productUrl, condition,
+          imageUrl: images[0] || null,   // kept in sync for older card/list code
+          videoUrl: videos[0] || null
+        };
+      }catch(err){
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Save Media';
+        Notify.toast('Upload failed: ' + (err.message || 'unknown error'), 'error');
+        return;
+      }
+
+      const res = await DB.saveProduct(products[idx]);
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = 'Save Media';
+      if (!res.ok){
+        Notify.toast('Saved locally, but Supabase update failed: ' + res.error, 'error');
+        return;
+      }
+      pendingNewProductId = null;
+      UI.closeModal('product-modal');
+      Notify.toast('Saved ' + products[idx].name, 'success');
+      renderProducts(); renderOverview();
+    });
+  }
+});
+});
+</script>
+</body>
+</html>

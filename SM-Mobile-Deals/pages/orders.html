@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){try{document.documentElement.setAttribute('data-theme', localStorage.getItem('smd_theme') || 'dark');}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Orders — SM Mobile Deals</title>
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#050812">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dark-mode.css">
+<link rel="stylesheet" href="../css/animations.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<style>
+  .order-card{ padding:18px 20px; margin-bottom:14px; }
+  .order-head{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px; }
+  .order-items-mini{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+  .order-items-mini img{ width:44px; height:44px; object-fit:contain; background:var(--surface-2); border-radius:8px; padding:5px; }
+</style>
+</head>
+<body>
+<div id="page-loader">
+  <div class="pl-inner">
+    <div class="pl-mark"><span>S</span><span>M</span></div>
+    <div class="pl-title" id="pl-title" data-text="SM Mobile Deals"></div>
+    <div class="pl-sub">Genuine tech, honest prices.</div>
+    <div class="pl-bar"><div class="pl-bar-fill"></div></div>
+  </div>
+</div>
+<div id="site-header"></div>
+
+<main>
+  <section class="page-hero container">
+    <div class="breadcrumb"><a href="../index.html">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i> <span>My Orders</span></div>
+    <h1 class="page-title">My Orders</h1>
+  </section>
+  <section class="section container" style="padding-top:10px;max-width:820px;" id="orders-root"></section>
+</main>
+
+<div id="site-footer"></div>
+
+<script>const ROOT_PREFIX = '../';</script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script defer src="../js/supabase-client.js"></script>
+<script defer src="../js/config.js"></script>
+<script defer src="../js/utils.js"></script>
+<script defer src="../js/specs.js"></script>
+<script defer src="../js/data.js"></script>
+<script defer src="../js/auth.js"></script>
+<script defer src="../js/cart.js"></script>
+<script defer src="../js/notifications.js"></script>
+<script defer src="../js/theme.js"></script>
+<script defer src="../js/cursor.js"></script>
+<script defer src="../js/loader.js"></script>
+<script defer src="../js/search.js"></script>
+<script defer src="../js/orders.js"></script>
+<script defer src="../js/payment.js"></script>
+<script defer src="../js/pincode.js"></script>
+<script defer src="../js/checkout.js"></script>
+<script defer src="../js/profile.js"></script>
+<script defer src="../js/analytics.js"></script>
+<script defer src="../js/admin.js"></script>
+<script defer src="../js/chatbot.js"></script>
+<script defer src="../js/reminders.js"></script>
+<script defer src="../js/inbox.js"></script>
+<script defer src="../js/branding.js"></script>
+
+<script defer src="../js/celebrate.js"></script>
+<script defer src="../js/ui.js"></script>
+<script defer src="../js/app.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+App.boot('shop').then(async () => {
+  await Orders.refresh();
+  const root = document.getElementById('orders-root');
+
+  function renderOrders(){
+  if (!Auth.isLoggedIn()){
+    root.innerHTML = `<div class="empty-state"><i class="fa-solid fa-user-lock"></i><h3>Please log in</h3><p>Log in to view your order history.</p><a href="login.html" class="btn btn-primary" style="margin-top:14px;">Login</a></div>`;
+  } else {
+    const user = Auth.currentUser();
+    const orders = user.role === 'admin' ? DB.getOrders() : Orders.forUser(user.id);
+    if (!orders.length){
+      root.innerHTML = `<div class="empty-state"><i class="fa-solid fa-receipt"></i><h3>No orders yet</h3><p>Your placed orders will show up here.</p><a href="products.html" class="btn btn-primary" style="margin-top:14px;">Start Shopping</a></div>`;
+    } else {
+      root.innerHTML = orders.map(o => {
+        const meta = Orders.STATUS_META[Orders.displayStatus(o)];
+        return `
+        <div class="card order-card">
+          <div class="order-head">
+            <div><strong style="font-family:var(--font-mono);">${o.id}</strong><div class="text-faint" style="font-size:12px;">${Utils.formatDate(o.createdAt)}</div></div>
+            <span class="badge ${meta.badge}"><i class="fa-solid ${meta.icon}"></i> ${meta.label}</span>
+          </div>
+          <div class="order-items-mini">${o.items.map(i => `<img src="${Utils.deviceImage(i.type,i.color)}" title="${Utils.escapeHtml(i.name)} × ${i.qty}">`).join('')}</div>
+          <div class="flex justify-between items-center">
+            <span class="text-dim" style="font-size:13.5px;">${o.items.length} item(s) · <span style="font-family:var(--font-mono);color:var(--text);">${Utils.formatINR(o.totals.total)}</span></span>
+            <div class="flex gap-8">
+              ${o.paymentStatus==='awaiting_payment' ? `<a href="payment.html?order=${o.id}" class="btn btn-deal btn-sm">Pay Now</a>` : ''}
+              ${(o.paymentMethod==='advance' && o.balanceStatus==='due') ? `<a href="payment.html?order=${o.id}" class="btn btn-deal btn-sm"><i class="fa-solid fa-hand-holding-dollar"></i> Pay Balance</a>` : ''}
+              ${(o.paymentStatus==='confirmed' || user.role==='admin') ? `<a href="invoice.html?order=${o.id}" class="btn btn-outline btn-sm"><i class="fa-solid fa-file-invoice"></i> ${user.role==='admin' ? 'Generate Bill' : 'Bill'}</a>` : ''}
+              <a href="tracking.html?order=${o.id}" class="btn btn-outline btn-sm">Track</a>
+              ${(user.role!=='admin' && Orders.canCancel(o)) ? `<button type="button" class="btn btn-outline btn-sm btn-cancel-order" data-order-id="${o.id}" style="color:var(--danger,#dc2626);border-color:var(--danger,#dc2626);">Cancel</button>` : ''}
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+  }
+  }
+
+  renderOrders();
+
+  root.addEventListener('click', async (e) => {
+    const btn = e.target.closest('.btn-cancel-order');
+    if (!btn) return;
+    const orderId = btn.dataset.orderId;
+    if (!confirm(`Cancel order ${orderId}? This can't be undone.`)) return;
+    btn.disabled = true; btn.textContent = 'Cancelling…';
+    const res = await Orders.cancelOrder(orderId, Auth.currentUser().id);
+    if (res.ok){
+      Notify.toast('Order cancelled.', 'success');
+      renderOrders();
+    } else {
+      Notify.toast(res.error || 'Could not cancel this order.', 'error');
+      btn.disabled = false; btn.textContent = 'Cancel';
+    }
+  });
+});
+});
+</script>
+</body>
+</html>

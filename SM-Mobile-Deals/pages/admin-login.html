@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){try{document.documentElement.setAttribute('data-theme', localStorage.getItem('smd_theme') || 'dark');}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login — SM Mobile Deals</title>
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#050812">
+<meta name="robots" content="noindex, nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dark-mode.css">
+<link rel="stylesheet" href="../css/animations.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<style>
+  .auth-wrap{ max-width:420px; margin:60px auto; }
+  .auth-card{ padding:32px; border-top:3px solid var(--accent); }
+</style>
+</head>
+<body>
+<div id="page-loader">
+  <div class="pl-inner">
+    <div class="pl-mark"><span>S</span><span>M</span></div>
+    <div class="pl-title" id="pl-title" data-text="SM Mobile Deals"></div>
+    <div class="pl-sub">Genuine tech, honest prices.</div>
+    <div class="pl-bar"><div class="pl-bar-fill"></div></div>
+  </div>
+</div>
+<div id="site-header"></div>
+
+<main>
+  <section class="container auth-wrap">
+    <div class="card auth-card">
+      <div style="text-align:center;margin-bottom:20px;">
+        <div data-logo-slot style="width:56px;height:56px;margin:0 auto 12px;">
+          <img class="logo-img" alt="SM Mobile Deals" style="display:none;width:100%;height:100%;object-fit:contain;">
+          <div class="logo-fallback" style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,var(--accent),#7a5cff);display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;"><i class="fa-solid fa-user-shield"></i></div>
+        </div>
+        <h1 style="font-family:var(--font-display);font-size:22px;margin:0 0 4px;">Admin Portal</h1>
+        <p class="text-dim" style="font-size:13.5px;margin:0;">Store management — authorized staff only</p>
+      </div>
+      <form id="admin-login-form">
+        <div id="admin-login-error" style="display:none;background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;border-radius:10px;padding:10px 14px;font-size:13px;margin-bottom:14px;"></div>
+        <div class="field"><label>Admin Email</label><input class="input" name="email" type="email" required autocomplete="username"></div>
+        <div class="field"><label>Password</label><input class="input" name="password" type="password" required autocomplete="current-password"></div>
+        <button class="btn btn-primary btn-block btn-lg" type="submit" disabled id="admin-login-submit-btn"><i class="fa-solid fa-shield-halved"></i> Enter Control Panel</button>
+      </form>
+      <p class="text-faint" style="font-size:12px;text-align:center;margin-top:16px;">Not an admin? <a href="login.html" class="text-accent">Go to customer login</a></p>
+    </div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+
+<script>const ROOT_PREFIX = '../';</script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script defer src="../js/supabase-client.js"></script>
+<script defer src="../js/config.js"></script>
+<script defer src="../js/utils.js"></script>
+<script defer src="../js/specs.js"></script>
+<script defer src="../js/data.js"></script>
+<script defer src="../js/auth.js"></script>
+<script defer src="../js/cart.js"></script>
+<script defer src="../js/notifications.js"></script>
+<script defer src="../js/theme.js"></script>
+<script defer src="../js/cursor.js"></script>
+<script defer src="../js/loader.js"></script>
+<script defer src="../js/search.js"></script>
+<script defer src="../js/orders.js"></script>
+<script defer src="../js/payment.js"></script>
+<script defer src="../js/pincode.js"></script>
+<script defer src="../js/checkout.js"></script>
+<script defer src="../js/profile.js"></script>
+<script defer src="../js/analytics.js"></script>
+<script defer src="../js/admin.js"></script>
+<script defer src="../js/chatbot.js"></script>
+<script defer src="../js/reminders.js"></script>
+<script defer src="../js/inbox.js"></script>
+<script defer src="../js/branding.js"></script>
+
+<script defer src="../js/celebrate.js"></script>
+<script defer src="../js/ui.js"></script>
+<script defer src="../js/app.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+App.boot('').then(() => {
+  document.getElementById('admin-login-submit-btn').disabled = false;
+  // If already logged in as admin, skip straight past this form
+  if (Auth.isLoggedIn() && Auth.isAdmin()){ window.location.href = 'admin.html'; return; }
+
+  document.getElementById('admin-login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const errorBox = document.getElementById('admin-login-error');
+    errorBox.style.display = 'none';
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Checking…';
+    const fd = new FormData(e.target);
+    const result = await Auth.login({ email: fd.get('email'), password: fd.get('password') });
+    if (!result.ok || result.user.role !== 'admin'){
+      errorBox.textContent = result.ok ? 'This account does not have admin access.' : 'Incorrect username or password. Please check and try again.';
+      errorBox.style.display = 'block';
+      Notify.toast(result.ok ? 'This account does not have admin access.' : result.error, 'error');
+      if (result.ok) await Auth.logout(); // signed in as a plain customer by mistake — sign back out
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-shield-halved"></i> Enter Control Panel';
+      return;
+    }
+    Notify.toast('Welcome back, admin.', 'success');
+    setTimeout(() => { window.location.href = 'admin.html'; }, 500);
+  });
+});
+});
+</script>
+</body>
+</html>

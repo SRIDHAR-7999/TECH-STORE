@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){try{document.documentElement.setAttribute('data-theme', localStorage.getItem('smd_theme') || 'dark');}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment — SM Mobile Deals</title>
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#050812">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dark-mode.css">
+<link rel="stylesheet" href="../css/animations.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<style>
+  .pay-layout{ display:grid; grid-template-columns:1fr 340px; gap:28px; align-items:flex-start; }
+  .qr-card{ text-align:center; padding:28px; }
+  .qr-card img{ width:230px; height:230px; object-fit:contain; border-radius:16px; border:1px solid var(--border-soft); background:#fff; padding:10px; margin:0 auto 16px; }
+  .app-links{ display:flex; gap:10px; justify-content:center; margin:16px 0; flex-wrap:wrap; }
+  .app-links a{ display:flex; align-items:center; gap:8px; padding:10px 16px; border-radius:var(--radius-pill); background:var(--surface-2); border:1px solid var(--border-soft); font-size:13px; font-weight:700; }
+  .upi-id-box{ display:flex; align-items:center; justify-content:center; gap:10px; background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:10px 16px; font-family:var(--font-mono); font-weight:700; margin:14px auto; width:fit-content; }
+  .upload-zone{ border:2px dashed var(--border); border-radius:var(--radius-lg); padding:30px; text-align:center; cursor:pointer; transition:all var(--fast); }
+  .upload-zone:hover, .upload-zone.drag{ border-color:var(--accent); background:var(--accent-soft); }
+  .upload-preview{ max-width:180px; border-radius:12px; margin:14px auto 0; border:1px solid var(--border-soft); }
+  @media(max-width:860px){ .pay-layout{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div id="page-loader">
+  <div class="pl-inner">
+    <div class="pl-mark"><span>S</span><span>M</span></div>
+    <div class="pl-title" id="pl-title" data-text="SM Mobile Deals"></div>
+    <div class="pl-sub">Genuine tech, honest prices.</div>
+    <div class="pl-bar"><div class="pl-bar-fill"></div></div>
+  </div>
+</div>
+<div id="site-header"></div>
+
+<main>
+  <section class="page-hero container">
+    <div class="breadcrumb"><a href="../index.html">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i> <span>Payment</span></div>
+    <h1 class="page-title">Complete Your Payment</h1>
+    <div class="steps" style="margin-top:16px;">
+      <div class="step done"><span class="num">1</span><span class="label">Cart</span></div><div class="step-line"></div>
+      <div class="step done"><span class="num">2</span><span class="label">Address</span></div><div class="step-line"></div>
+      <div class="step active"><span class="num">3</span><span class="label">Pay</span></div><div class="step-line"></div>
+      <div class="step"><span class="num">4</span><span class="label">Confirmed</span></div>
+    </div>
+  </section>
+
+  <section class="section container" style="padding-top:10px;" id="pay-root"></section>
+</main>
+
+<div id="site-footer"></div>
+
+<script>const ROOT_PREFIX = '../';</script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script defer src="../js/supabase-client.js"></script>
+<script defer src="../js/config.js"></script>
+<script defer src="../js/utils.js"></script>
+<script defer src="../js/specs.js"></script>
+<script defer src="../js/data.js"></script>
+<script defer src="../js/auth.js"></script>
+<script defer src="../js/cart.js"></script>
+<script defer src="../js/notifications.js"></script>
+<script defer src="../js/theme.js"></script>
+<script defer src="../js/cursor.js"></script>
+<script defer src="../js/loader.js"></script>
+<script defer src="../js/search.js"></script>
+<script defer src="../js/orders.js"></script>
+<script defer src="../js/vendor/qrcode-generator.js"></script>
+<script defer src="../js/qr-render.js"></script>
+<script defer src="../js/payment.js"></script>
+<script defer src="../js/pincode.js"></script>
+<script defer src="../js/checkout.js"></script>
+<script defer src="../js/profile.js"></script>
+<script defer src="../js/analytics.js"></script>
+<script defer src="../js/admin.js"></script>
+<script defer src="../js/chatbot.js"></script>
+<script defer src="../js/reminders.js"></script>
+<script defer src="../js/inbox.js"></script>
+<script defer src="../js/branding.js"></script>
+
+<script defer src="../js/celebrate.js"></script>
+<script defer src="../js/ui.js"></script>
+<script defer src="../js/app.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+// If the in-browser canvas QR fails to draw for any reason (vendor script
+// didn't load, unexpected error, etc.), swap in a QR generated by a public
+// image API instead of leaving a blank white box — better a QR that depends
+// on network than no QR at all.
+function fallbackToImageQr(wrap, imgUrl){
+  if (!wrap) return;
+  wrap.innerHTML = `<img src="${imgUrl}" width="260" height="260" alt="UPI payment QR code" style="display:block;">`;
+}
+
+function renderBalanceCollector(order){
+  const root = document.getElementById('pay-root');
+  const balance = order.totals.balanceAmount;
+
+  if (order.balanceStatus === 'pending_confirmation'){
+    root.innerHTML = `
+      <div class="pay-layout" style="grid-template-columns:1fr;max-width:520px;margin:0 auto;">
+        <div class="card" style="padding:24px;text-align:center;">
+          <div class="pending-ring" style="margin:0 auto 14px;"><i class="fa-solid fa-hourglass-half"></i></div>
+          <h3 style="font-family:var(--font-display);margin:0 0 8px;">Balance payment received</h3>
+          <p class="text-dim">Your balance of ${Utils.formatINR(balance)} for order ${order.id} is awaiting admin confirmation. Dispatch timing (today vs tomorrow) is set the moment it's confirmed.</p>
+        </div>
+      </div>`;
+    return;
+  }
+
+  root.innerHTML = `
+    <div class="pay-layout">
+      <div>
+        <div class="card qr-card">
+          <p class="eyebrow" style="margin-bottom:10px;">Balance due — advance already paid</p>
+          <div style="font-family:var(--font-mono);font-size:36px;font-weight:700;margin-bottom:10px;">${Utils.formatINR(balance)}</div>
+          <p class="text-dim" style="font-size:13px;background:var(--danger-soft,#fef2f2);color:var(--danger,#dc2626);padding:10px 14px;border-radius:10px;margin-bottom:16px;"><i class="fa-solid fa-clock"></i> Pay before 6:00 PM today for same-day courier dispatch. Balance paid after 6:00 PM ships the next day.</p>
+          <div id="qr-blink-wrap" style="display:inline-block;background:#fff;padding:14px;border-radius:12px;"><canvas id="qr-canvas" width="260" height="260" style="display:block;"></canvas></div>
+          <p class="text-dim" style="font-size:13.5px;">Scan with any UPI app — the balance amount is filled in automatically.</p>
+          <div class="upi-id-box"><i class="fa-solid fa-at"></i> ${SITE_CONFIG.upiId} <button onclick="navigator.clipboard?.writeText('${SITE_CONFIG.upiId}');Notify.toast('UPI ID copied','success');" style="background:none;border:none;color:var(--accent-2);cursor:pointer;"><i class="fa-regular fa-copy"></i></button></div>
+        </div>
+
+        <div class="card" style="padding:24px;margin-top:20px;">
+          <h3 style="font-family:var(--font-display);margin:0 0 6px;">Upload Balance Payment Screenshot</h3>
+          <p class="text-dim" style="font-size:13.5px;margin:0 0 16px;">After paying the balance, upload the screenshot here — our team verifies it and confirms dispatch timing.</p>
+          <div class="upload-zone" id="bal-upload-zone">
+            <i class="fa-solid fa-cloud-arrow-up" style="font-size:30px;color:var(--accent-2);"></i>
+            <p style="margin:10px 0 0;font-weight:600;">Click to upload or drag & drop</p>
+            <p class="text-faint" style="font-size:12px;margin:4px 0 0;">PNG or JPG, up to 5MB</p>
+            <img id="bal-upload-preview" class="upload-preview" style="display:none;">
+          </div>
+          <input type="file" id="bal-file-input" accept="image/*" style="display:none;">
+          <button class="btn btn-primary btn-block btn-lg" id="bal-submit-btn" style="margin-top:18px;" disabled>
+            <i class="fa-solid fa-paper-plane"></i> I've Paid the Balance — Submit
+          </button>
+        </div>
+      </div>
+
+      <div class="card" style="padding:22px;">
+        <h3 style="font-family:var(--font-display);margin:0 0 14px;">Order ${order.id}</h3>
+        ${order.items.map(i => `<div class="flex justify-between" style="font-size:13px;padding:5px 0;"><span>${Utils.escapeHtml(i.name)} × ${i.qty}</span><span style="font-family:var(--font-mono);">${Utils.formatINR(i.price*i.qty)}</span></div>`).join('')}
+        <div class="flex justify-between" style="font-size:13px;padding-top:8px;color:var(--success);"><span>Advance already paid</span><span style="font-family:var(--font-mono);">${Utils.formatINR(order.totals.advanceAmount)}</span></div>
+        <div class="flex justify-between" style="border-top:1px solid var(--border-soft);margin-top:10px;padding-top:10px;font-weight:700;"><span>Balance due</span><span style="font-family:var(--font-mono);">${Utils.formatINR(balance)}</span></div>
+      </div>
+    </div>`;
+
+  {
+    const okDrawn = QRRender.draw(document.getElementById('qr-canvas'), Payment.upiLink(balance, order.id));
+    if (!okDrawn) fallbackToImageQr(document.getElementById('qr-blink-wrap'), Payment.dynamicQrImageUrl(balance, order.id));
+  }
+  QRRender.blinkLoop(document.getElementById('qr-blink-wrap'));
+
+  const zone = document.getElementById('bal-upload-zone');
+  const input = document.getElementById('bal-file-input');
+  let selectedFile = null;
+  zone.addEventListener('click', () => input.click());
+  ['dragover'].forEach(ev => zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.add('drag'); }));
+  ['dragleave','drop'].forEach(ev => zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.remove('drag'); }));
+  zone.addEventListener('drop', e => { if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); });
+  input.addEventListener('change', e => { if (e.target.files[0]) handleFile(e.target.files[0]); });
+
+  function handleFile(file){
+    if (!file.type.startsWith('image/')){ Notify.toast('Please upload an image file.', 'error'); return; }
+    selectedFile = file;
+    const preview = document.getElementById('bal-upload-preview');
+    preview.src = URL.createObjectURL(file); preview.style.display = 'block';
+    document.getElementById('bal-submit-btn').disabled = false;
+  }
+
+  document.getElementById('bal-submit-btn').addEventListener('click', async (e) => {
+    if (!selectedFile){ Notify.toast('Please upload your balance payment screenshot first.', 'error'); return; }
+    const btn = e.target.closest('button');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Submitting…';
+    const result = await Payment.markBalanceAwaitingConfirmation(order.id, selectedFile);
+    if (!result.ok){
+      Notify.toast(result.error || 'Something went wrong, please try again.', 'error');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> I\'ve Paid the Balance — Submit';
+      return;
+    }
+    Notify.toast('Balance payment submitted — awaiting confirmation.', 'success');
+    renderBalanceCollector(result.order);
+  });
+}
+
+App.boot('shop').then(async () => {
+  const orderId = Utils.qs('order');
+  const order = Orders.byId(orderId);
+  const razorpayLink = (typeof Inbox !== 'undefined') ? await Inbox.getSetting('razorpay_payment_link') : null;
+
+  if (!order){
+    document.getElementById('pay-root').innerHTML = `<div class="empty-state"><i class="fa-solid fa-circle-exclamation"></i><h3>Order not found</h3><p><a href="../index.html" class="text-accent">Go back home</a></p></div>`;
+  } else if (order.paymentMethod === 'advance' && order.paymentStatus === 'confirmed' && (order.balanceStatus === 'due' || order.balanceStatus === 'pending_confirmation')){
+    renderBalanceCollector(order);
+  } else if (order.paymentStatus === 'confirmed' || order.paymentStatus === 'pending_confirmation'){
+    window.location.href = 'order-success.html?order=' + order.id;
+  } else {
+    const amount = order.amountDueNow ?? order.totals.total;
+
+
+    document.getElementById('pay-root').innerHTML = `
+      <div class="pay-layout">
+        <div>
+          <div class="card qr-card">
+            <p class="eyebrow" style="margin-bottom:14px;">${order.paymentMethod === 'cod' ? 'Advance to pay now' : order.paymentMethod === 'advance' ? 'Booking amount to pay now' : 'Amount to pay'}</p>
+            ${order.paymentMethod === 'advance' ? `<p class="text-dim" style="font-size:12.5px;background:var(--danger-soft,#fef2f2);color:var(--danger,#dc2626);padding:10px 14px;border-radius:10px;margin-bottom:14px;"><i class="fa-solid fa-triangle-exclamation"></i> ${SITE_CONFIG.advanceDisclaimer}</p>` : ''}
+            <div style="font-family:var(--font-mono);font-size:36px;font-weight:700;margin-bottom:18px;">${Utils.formatINR(amount)}</div>
+            <div id="qr-blink-wrap" style="display:inline-block;background:#fff;padding:14px;border-radius:12px;"><canvas id="qr-canvas" width="260" height="260" style="display:block;"></canvas></div>
+            <p class="text-dim" style="font-size:13.5px;">Scan with any UPI app — the amount is filled in automatically.</p>
+            <div class="upi-id-box"><i class="fa-solid fa-at"></i> ${SITE_CONFIG.upiId} <button onclick="copyUpi()" style="background:none;border:none;color:var(--accent-2);cursor:pointer;"><i class="fa-regular fa-copy"></i></button></div>
+            <div class="app-links">
+              <a href="${Payment.appPayLink('gpay', amount, order.id)}" data-app="gpay"><i class="fa-brands fa-google-pay" style="color:#4285f4;"></i> GPay</a>
+              <a href="${Payment.appPayLink('phonepe', amount, order.id)}" data-app="phonepe"><i class="fa-solid fa-mobile-screen" style="color:#5f259f;"></i> PhonePe</a>
+              <a href="${Payment.appPayLink('paytm', amount, order.id)}" data-app="paytm"><i class="fa-solid fa-wallet" style="color:#00baf2;"></i> Paytm</a>
+              <a href="${Payment.paypalLink(amount)}" target="_blank" rel="noopener" data-app="paypal"><i class="fa-brands fa-paypal" style="color:#0070ba;"></i> PayPal</a>
+              ${razorpayLink ? `<a href="${razorpayLink}" target="_blank" rel="noopener" data-app="razorpay"><i class="fa-solid fa-bolt" style="color:#0c2451;"></i> Razorpay</a>` : ''}
+            </div>
+            <p class="text-faint" style="font-size:12px;">On your phone, tapping GPay, PhonePe or Paytm opens that exact app with the amount pre-filled (install the app first — these are direct app links, not a generic picker). On a computer, tapping them instead highlights the QR code above so you can scan it with your phone. PayPal opens its own payment page on any device. Card payment carries a 2% surcharge, already included in your total if selected at checkout.</p>
+          </div>
+
+          <div class="card" style="padding:24px;margin-top:20px;">
+            <h3 style="font-family:var(--font-display);margin:0 0 6px;">Upload Payment Screenshot</h3>
+            <p class="text-dim" style="font-size:13.5px;margin:0 0 16px;">After paying, upload a screenshot of the successful transaction. Our team verifies it and confirms your order — you'll see the status update on the next page.</p>
+            <div class="upload-zone" id="upload-zone">
+              <i class="fa-solid fa-cloud-arrow-up" style="font-size:30px;color:var(--accent-2);"></i>
+              <p style="margin:10px 0 0;font-weight:600;">Click to upload or drag & drop</p>
+              <p class="text-faint" style="font-size:12px;margin:4px 0 0;">PNG or JPG, up to 5MB</p>
+              <img id="upload-preview" class="upload-preview" style="display:none;">
+            </div>
+            <input type="file" id="file-input" accept="image/*" style="display:none;">
+            <button class="btn btn-primary btn-block btn-lg" id="submit-payment-btn" style="margin-top:18px;" disabled>
+              <i class="fa-solid fa-paper-plane"></i> I've Paid — Submit for Confirmation
+            </button>
+          </div>
+        </div>
+
+        <div class="card" style="padding:22px;">
+          <h3 style="font-family:var(--font-display);margin:0 0 14px;">Order ${order.id}</h3>
+          ${order.items.map(i => `<div class="flex justify-between" style="font-size:13px;padding:5px 0;"><span>${Utils.escapeHtml(i.name)} × ${i.qty}</span><span style="font-family:var(--font-mono);">${Utils.formatINR(i.price*i.qty)}</span></div>`).join('')}
+          <div class="flex justify-between" style="border-top:1px solid var(--border-soft);margin-top:10px;padding-top:10px;font-weight:700;"><span>Order Total</span><span style="font-family:var(--font-mono);">${Utils.formatINR(order.totals.total)}</span></div>
+          ${order.paymentMethod === 'cod' ? `
+            <div class="flex justify-between" style="font-size:13px;padding-top:8px;color:var(--accent-2);"><span>Pay online now</span><span style="font-family:var(--font-mono);">${Utils.formatINR(order.totals.advanceAmount)}</span></div>
+            <div class="flex justify-between text-faint" style="font-size:13px;"><span>Cash on delivery</span><span style="font-family:var(--font-mono);">${Utils.formatINR(order.totals.codAmount)}</span></div>
+          ` : ''}
+          <p class="text-faint" style="font-size:12px;margin-top:14px;"><i class="fa-solid fa-shield-halved"></i> Your order is reserved for 24 hours pending confirmation.</p>
+        </div>
+      </div>`;
+
+    {
+      const okDrawn = QRRender.draw(document.getElementById('qr-canvas'), Payment.upiLink(amount, order.id));
+      if (!okDrawn) fallbackToImageQr(document.getElementById('qr-blink-wrap'), Payment.dynamicQrImageUrl(amount, order.id));
+    }
+    QRRender.blinkLoop(document.getElementById('qr-blink-wrap'));
+
+    wireAppLinks();
+    function wireAppLinks(){
+      const mobile = Utils.isMobileDevice();
+      const LABEL = { gpay:'Google Pay', phonepe:'PhonePe', paytm:'Paytm', paypal:'PayPal' };
+      document.querySelectorAll('.app-links a[data-app]').forEach(a => {
+        const app = a.dataset.app;
+        if (app === 'paypal') return; // paypal.me already opens the right flow on any device — leave untouched
+
+        if (!mobile){
+          // Desktop/laptop: GPay, PhonePe and Paytm have no web login/payment
+          // flow to send a browser to — their "official flow" here is
+          // scanning the QR with the phone, so point the customer at it
+          // instead of firing a dead custom-URI-scheme click.
+          a.addEventListener('click', (e) => {
+            e.preventDefault();
+            Notify.toast(`${LABEL[app]} doesn't have a payment page on a computer — scan the QR code above with the ${LABEL[app]} app on your phone.`, 'info', 5000);
+            const qr = document.getElementById('qr-blink-wrap');
+            qr?.scrollIntoView({ behavior:'smooth', block:'center' });
+            qr?.animate([{ outline:'3px solid var(--accent-2)', outlineOffset:'4px' }, { outline:'3px solid transparent', outlineOffset:'4px' }], { duration:900, iterations:3 });
+          });
+          return;
+        }
+
+        // Mobile: let the OS try to hand off to the app's own URI scheme
+        // directly (that's the actual "open the app" requirement). If the
+        // app isn't installed, most mobile browsers just silently stay on
+        // this page with no error — so if we're still visible a couple of
+        // seconds after the tap, tell the customer instead of leaving them
+        // guessing, and point them at the QR/generic-UPI fallback.
+        a.addEventListener('click', () => {
+          const firedAt = Date.now();
+          const check = () => {
+            if (document.visibilityState === 'visible' && Date.now() - firedAt > 1500){
+              Notify.toast(`Couldn't open ${LABEL[app]} — make sure it's installed, or scan the QR code above with any UPI app instead.`, 'info', 5000);
+            }
+          };
+          setTimeout(check, 1800);
+        });
+      });
+    }
+
+    const zone = document.getElementById('upload-zone');
+    const input = document.getElementById('file-input');
+    let selectedFile = null;
+    zone.addEventListener('click', () => input.click());
+    ['dragover'].forEach(ev => zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.add('drag'); }));
+    ['dragleave','drop'].forEach(ev => zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.remove('drag'); }));
+    zone.addEventListener('drop', e => { if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); });
+    input.addEventListener('change', e => { if (e.target.files[0]) handleFile(e.target.files[0]); });
+
+    function handleFile(file){
+      if (!file.type.startsWith('image/')){ Notify.toast('Please upload an image file.', 'error'); return; }
+      selectedFile = file;
+      const preview = document.getElementById('upload-preview');
+      preview.src = URL.createObjectURL(file); preview.style.display = 'block';
+      document.getElementById('submit-payment-btn').disabled = false;
+    }
+
+    document.getElementById('submit-payment-btn').addEventListener('click', async (e) => {
+      if (!selectedFile){ Notify.toast('Please upload your payment screenshot first.', 'error'); return; }
+      const btn = e.target.closest('button');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Submitting…';
+      const result = await Payment.markAwaitingConfirmation(order.id, selectedFile);
+      if (!result.ok){
+        Notify.toast(result.error || 'Something went wrong, please try again.', 'error');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> I\'ve Paid — Submit for Confirmation';
+        return;
+      }
+      window.location.href = 'order-success.html?order=' + order.id;
+    });
+
+    window.copyUpi = () => { navigator.clipboard?.writeText(SITE_CONFIG.upiId); Notify.toast('UPI ID copied', 'success'); };
+  }
+});
+});
+</script>
+</body>
+</html>

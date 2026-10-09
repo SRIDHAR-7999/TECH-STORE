@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){try{document.documentElement.setAttribute('data-theme', localStorage.getItem('smd_theme') || 'dark');}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Account — SM Mobile Deals</title>
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#050812">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dark-mode.css">
+<link rel="stylesheet" href="../css/animations.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<style>
+  .auth-wrap{ max-width:420px; margin:40px auto; }
+  .auth-card{ padding:32px; }
+</style>
+</head>
+<body>
+<div id="page-loader">
+  <div class="pl-inner">
+    <div class="pl-mark"><span>S</span><span>M</span></div>
+    <div class="pl-title" id="pl-title" data-text="SM Mobile Deals"></div>
+    <div class="pl-sub">Genuine tech, honest prices.</div>
+    <div class="pl-bar"><div class="pl-bar-fill"></div></div>
+  </div>
+</div>
+<div id="site-header"></div>
+
+<main>
+  <section class="container auth-split">
+    <div class="card auth-card">
+      <div style="text-align:center;margin-bottom:20px;">
+        <div data-logo-slot style="width:56px;height:56px;margin:0 auto 12px;">
+          <img class="logo-img" alt="SM Mobile Deals" style="display:none;width:100%;height:100%;object-fit:contain;">
+          <div class="logo-fallback" style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--deal));display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;"><i class="fa-solid fa-bolt"></i></div>
+        </div>
+        <h1 style="font-family:var(--font-display);font-size:22px;margin:0 0 4px;">Create your account</h1>
+        <p class="text-dim" style="font-size:13.5px;margin:0;">Track orders, save your wishlist & checkout faster</p>
+      </div>
+      <form id="register-form">
+        <div id="register-error" style="display:none;background:#fee2e2;border:1px solid #fca5a5;color:#991b1b;border-radius:10px;padding:10px 14px;font-size:13px;margin-bottom:14px;"></div>
+        <div class="field"><label>Full Name</label><input class="input" name="name" required></div>
+        <div class="field"><label>Email</label><input class="input" name="email" type="email" required></div>
+        <div class="field"><label>Phone Number</label><input class="input" name="phone" type="tel" required></div>
+        <div class="field"><label>Password</label><input class="input" name="password" type="password" minlength="6" required><span class="text-faint" style="font-size:11.5px;">At least 6 characters</span></div>
+
+        <h4 style="font-family:var(--font-display);font-size:14px;margin:18px 0 10px;color:var(--text-dim);">Delivery Address <span class="text-faint" style="font-weight:400;">(so we can show accurate delivery times)</span></h4>
+        <div class="field"><label>Pincode</label>
+          <input class="input" name="pincode" id="reg-pincode" pattern="[0-9]{6}" maxlength="6" placeholder="6-digit PIN code">
+          <span id="reg-pincode-status" class="text-faint" style="font-size:11.5px;"></span>
+        </div>
+        <div class="field"><label>Address Line</label><input class="input" name="address" placeholder="Door No, Street, Area"></div>
+        <div class="field" style="display:flex;gap:12px;">
+          <div style="flex:1;"><label>City / District</label><input class="input" name="city" id="reg-city"></div>
+          <div style="flex:1;"><label>State</label><input class="input" name="state" id="reg-state" readonly placeholder="Auto-filled from PIN"></div>
+        </div>
+
+        <button class="btn btn-primary btn-block btn-lg" type="submit" disabled id="register-submit-btn"><i class="fa-solid fa-user-plus"></i> Create Account</button>
+      </form>
+      <p class="text-faint" style="font-size:11.5px;text-align:center;margin-top:10px;">Address is optional at signup — you can also add it later at checkout.</p>
+      <p class="text-dim" style="text-align:center;margin-top:16px;font-size:13.5px;">Already have an account? <a href="login.html" class="text-accent">Login</a></p>
+    </div>
+
+    <!-- Looping clip showing the whole flow: search -> cart -> pay ->
+         confirmed (green) / awaiting (amber) / failed (red) -->
+    <div id="walkthrough"></div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+
+<script>const ROOT_PREFIX = '../';</script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script defer src="../js/supabase-client.js"></script>
+<script defer src="../js/config.js"></script>
+<script defer src="../js/utils.js"></script>
+<script defer src="../js/specs.js"></script>
+<script defer src="../js/data.js"></script>
+<script defer src="../js/auth.js"></script>
+<script defer src="../js/cart.js"></script>
+<script defer src="../js/notifications.js"></script>
+<script defer src="../js/theme.js"></script>
+<script defer src="../js/cursor.js"></script>
+<script defer src="../js/loader.js"></script>
+<script defer src="../js/search.js"></script>
+<script defer src="../js/orders.js"></script>
+<script defer src="../js/payment.js"></script>
+<script defer src="../js/pincode.js"></script>
+<script defer src="../js/checkout.js"></script>
+<script defer src="../js/profile.js"></script>
+<script defer src="../js/analytics.js"></script>
+<script defer src="../js/admin.js"></script>
+<script defer src="../js/chatbot.js"></script>
+<script defer src="../js/reminders.js"></script>
+<script defer src="../js/walkthrough.js"></script>
+<script defer src="../js/inbox.js"></script>
+<script defer src="../js/branding.js"></script>
+
+<script defer src="../js/celebrate.js"></script>
+<script defer src="../js/ui.js"></script>
+<script defer src="../js/app.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+App.boot('').then(() => {
+  Walkthrough.mount(document.getElementById('walkthrough'));
+  document.getElementById('register-submit-btn').disabled = false;
+  document.getElementById('reg-pincode').addEventListener('input', Utils.debounce(async (e) => {
+    const pin = e.target.value.trim();
+    const statusEl = document.getElementById('reg-pincode-status');
+    if (pin.length !== 6){ statusEl.textContent = ''; return; }
+    statusEl.textContent = 'Looking up…'; statusEl.style.color = 'var(--text-faint)';
+    const result = await Pincode.lookup(pin);
+    if (!result.ok){ statusEl.textContent = result.error; statusEl.style.color = 'var(--danger)'; return; }
+    document.getElementById('reg-city').value = result.district;
+    document.getElementById('reg-state').value = result.state;
+    statusEl.textContent = `✓ ${result.area}, ${result.district}, ${result.state}`;
+    statusEl.style.color = 'var(--success)';
+  }, 500));
+
+  document.getElementById('register-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const errorBox = document.getElementById('register-error');
+    errorBox.style.display = 'none';
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Creating account…';
+    // Safety net: if anything unexpected hangs (slow network, an unhandled
+    // error somewhere), don't leave the button stuck disabled forever with
+    // no feedback — that looked exactly like "nothing happens when I click
+    // Create Account".
+    const resetBtn = () => { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Create Account'; };
+    const stuckTimer = setTimeout(() => {
+      errorBox.textContent = 'This is taking too long — check your connection and try again.';
+      errorBox.style.display = 'block';
+      resetBtn();
+    }, 15000);
+    const fd = new FormData(e.target);
+    let result;
+    try{
+      result = await Auth.register({
+        name: fd.get('name'), email: fd.get('email'), phone: fd.get('phone'), password: fd.get('password'),
+        address: fd.get('address'), city: fd.get('city'), state: fd.get('state'), pincode: fd.get('pincode')
+      });
+    }catch(err){
+      clearTimeout(stuckTimer);
+      errorBox.textContent = 'Something went wrong: ' + (err.message || 'please try again.');
+      errorBox.style.display = 'block';
+      resetBtn();
+      return;
+    }
+    clearTimeout(stuckTimer);
+    if (!result.ok){
+      errorBox.textContent = result.error || 'Could not create your account. Please try again.';
+      errorBox.style.display = 'block';
+      Notify.toast(result.error, 'error');
+      resetBtn();
+      return;
+    }
+    if (result.needsEmailConfirmation){
+      Notify.toast('Account created — check your email and click the confirmation link, then log in.', 'success', 6000);
+      setTimeout(() => { window.location.href = 'login.html'; }, 1200);
+      return;
+    }
+    Notify.toast(`Account created — welcome, ${result.user.name}!`, 'success');
+    setTimeout(() => { window.location.href = 'profile.html'; }, 600);
+  });
+});
+});
+</script>
+</body>
+</html>

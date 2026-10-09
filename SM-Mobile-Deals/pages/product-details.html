@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){try{document.documentElement.setAttribute('data-theme', localStorage.getItem('smd_theme') || 'dark');}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Details — SM Mobile Deals</title>
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#050812">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dark-mode.css">
+<link rel="stylesheet" href="../css/animations.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<style>
+  .pd-layout{ display:grid; grid-template-columns:1fr 1fr; gap:44px; }
+  .pd-media{ position:sticky; top:calc(var(--header-h) + 16px); background:var(--surface); border:1px solid var(--border-soft); border-radius:var(--radius-lg); aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; }
+  .pd-media img{ width:60%; filter:drop-shadow(0 30px 40px rgba(0,0,0,.35)); animation:heroFloat 5s ease-in-out infinite; }
+  .qty-box{ display:flex; align-items:center; border:1px solid var(--border); border-radius:var(--radius-pill); overflow:hidden; width:fit-content; }
+  .qty-box button{ width:38px; height:38px; background:var(--surface-2); border:none; color:var(--text); font-size:16px; cursor:pointer; }
+  .qty-box span{ width:40px; text-align:center; font-family:var(--font-mono); font-weight:700; }
+  @media(max-width:860px){ .pd-layout{ grid-template-columns:1fr; } .pd-media{ position:static; } }
+</style>
+</head>
+<body>
+<div id="page-loader">
+  <div class="pl-inner">
+    <div class="pl-mark"><span>S</span><span>M</span></div>
+    <div class="pl-title" id="pl-title" data-text="SM Mobile Deals"></div>
+    <div class="pl-sub">Genuine tech, honest prices.</div>
+    <div class="pl-bar"><div class="pl-bar-fill"></div></div>
+  </div>
+</div>
+<div id="site-header"></div>
+
+<main>
+  <section class="page-hero container">
+    <div class="breadcrumb"><a href="../index.html">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i> <a href="products.html">Shop</a> <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i> <span id="crumb-name">Product</span></div>
+  </section>
+
+  <section class="section container" id="pd-root" style="padding-top:6px;"></section>
+
+  <section class="section container" id="related-section" style="display:none;">
+    <div class="section-head"><div><p class="eyebrow">You may also like</p><h2 class="section-title">Related products</h2></div></div>
+    <div class="grid grid-products" id="related-grid"></div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+
+<script>const ROOT_PREFIX = '../';</script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script defer src="../js/supabase-client.js"></script>
+<script defer src="../js/config.js"></script>
+<script defer src="../js/utils.js"></script>
+<script defer src="../js/specs.js"></script>
+<script defer src="../js/data.js"></script>
+<script defer src="../js/auth.js"></script>
+<script defer src="../js/cart.js"></script>
+<script defer src="../js/notifications.js"></script>
+<script defer src="../js/theme.js"></script>
+<script defer src="../js/cursor.js"></script>
+<script defer src="../js/loader.js"></script>
+<script defer src="../js/search.js"></script>
+<script defer src="../js/orders.js"></script>
+<script defer src="../js/payment.js"></script>
+<script defer src="../js/pincode.js"></script>
+<script defer src="../js/checkout.js"></script>
+<script defer src="../js/profile.js"></script>
+<script defer src="../js/analytics.js"></script>
+<script defer src="../js/admin.js"></script>
+<script defer src="../js/chatbot.js"></script>
+<script defer src="../js/reminders.js"></script>
+<script defer src="../js/charging.js"></script>
+<script defer src="../js/inbox.js"></script>
+<script defer src="../js/branding.js"></script>
+
+<script defer src="../js/celebrate.js"></script>
+<script defer src="../js/ui.js"></script>
+<script defer src="../js/app.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+App.boot('shop').then(() => {
+  const id = Utils.qs('id');
+  const p = DB.getProduct(id);
+  let qty = 1;
+
+  if (!p){
+    document.getElementById('pd-root').innerHTML = `<div class="empty-state"><i class="fa-solid fa-circle-exclamation"></i><h3>Product not found</h3><p>It may have been removed. <a href="products.html" class="text-accent">Browse all products</a></p></div>`;
+  } else {
+    document.title = p.name + ' — SM Mobile Deals';
+    document.getElementById('crumb-name').textContent = p.name;
+    const discount = Math.round((1 - p.price/p.mrp) * 100);
+    const condMeta = DB.CONDITION_META[p.condition];
+    const showCondition = condMeta && p.condition !== 'new';
+
+    const gallery = (p.images && p.images.length ? p.images : (p.imageUrl ? [p.imageUrl] : [])).map(Utils.assetSrc);
+
+    document.getElementById('pd-root').innerHTML = `
+      <div class="pd-layout">
+        <div>
+          <div class="pd-media" id="pd-main-media">${
+            gallery.length
+              ? `<img src="${gallery[0]}" alt="${Utils.escapeHtml(p.name)}" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius-lg);">`
+              : p.videoUrl
+                ? `<video src="${Utils.assetSrc(p.videoUrl)}" autoplay loop muted playsinline controls style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius-lg);"></video>`
+                : `<img src="${Utils.deviceImage(p.type,p.color)}" alt="${Utils.escapeHtml(p.name)}">`
+          }</div>
+          ${gallery.length > 1 ? `
+          <div class="pd-thumbs" style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+            ${gallery.map((src,i)=>`<button type="button" onclick="document.querySelector('#pd-main-media img,#pd-main-media video').outerHTML='<img src=\\'${src}\\' alt=\\'${Utils.escapeHtml(p.name)}\\' style=\\'width:100%;height:100%;object-fit:cover;border-radius:var(--radius-lg);\\'>'" style="width:56px;height:56px;padding:0;border-radius:10px;overflow:hidden;border:1px solid var(--border-soft);cursor:pointer;background:var(--surface-2);"><img src="${src}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;"></button>`).join('')}
+          </div>` : ''}
+          ${(gallery.length && p.videoUrl) ? `<video src="${Utils.assetSrc(p.videoUrl)}" controls style="width:100%;border-radius:var(--radius-lg);margin-top:12px;border:1px solid var(--border-soft);"></video>` : ''}
+        </div>
+        <div>
+          <div class="flex items-center gap-8" style="margin-bottom:6px;">
+            <div class="pc-brand" style="font-size:12px;">${p.brand}</div>
+            ${showCondition ? `<span class="badge ${condMeta.badge}">${condMeta.label}</span>` : ''}
+          </div>
+          <h1 style="font-family:var(--font-display);font-size:28px;margin:6px 0 10px;">${Utils.escapeHtml(p.name)}</h1>
+          <div class="flex items-center gap-8" style="margin-bottom:16px;">${UI.stars(p.rating)} <span class="text-faint" style="font-size:13px;">${p.reviews ? p.rating + ' (' + p.reviews + ' reviews)' : 'Not yet released'}</span> ${UI.stockBadge(p)}</div>
+          ${p.isPreOrder ? `<p class="text-dim" style="background:var(--accent-soft);padding:10px 14px;border-radius:10px;font-size:13.5px;margin-bottom:16px;"><i class="fa-solid fa-circle-info"></i> ${Utils.escapeHtml(p.availDate || 'Coming soon')} — pre-book now, no payment charged until it ships.</p>` : ''}
+          <div class="flex items-center gap-12" style="margin-bottom:18px;">
+            <span style="font-family:var(--font-mono);font-size:30px;font-weight:700;">${Utils.formatINR(p.price)}</span>
+            ${p.mrp>p.price?`<span class="pc-price-old" style="font-size:16px;">${Utils.formatINR(p.mrp)}</span><span class="badge badge-deal">-${discount}%</span>`:''}
+          </div>
+          <p class="text-dim" style="line-height:1.7;margin-bottom:20px;">${Auth.isLoggedIn() ? Utils.escapeHtml(p.desc) : ''}</p>
+          ${(() => {
+            if (!Auth.isLoggedIn()) return '';
+            // Structured fields (Model/Storage/RAM/Color/Variant) are shown
+            // as labelled chips first, then the general spec bullets,
+            // Features, and any admin-added Custom Fields — so everything
+            // entered in the admin panel actually reaches the shopper.
+            const labelled = [
+              ['Model', p.modelName], ['Storage', p.storage], ['RAM', p.ram],
+              ['Color', p.colorName], ['Variant', p.variant]
+            ].filter(([,v]) => v);
+            const chips = [
+              ...labelled.map(([k,v]) => `<span><strong>${Utils.escapeHtml(k)}:</strong> ${Utils.escapeHtml(v)}</span>`),
+              ...(p.specs||[]).map(s => `<span>${Utils.escapeHtml(s)}</span>`),
+              ...(p.features||[]).map(s => `<span>${Utils.escapeHtml(s)}</span>`),
+              ...(p.customFields||[]).filter(f=>f.label||f.value).map(f => `<span><strong>${Utils.escapeHtml(f.label)}:</strong> ${Utils.escapeHtml(f.value)}</span>`)
+            ];
+            return `<div class="pc-specs" style="margin-bottom:22px;">${chips.join('')}</div>`;
+          })()}
+
+          ${(() => {
+            if (!p.warrantyPeriod) return '';
+            const PERIOD_LABEL = { '7_days':'7 Days', '15_days':'15 Days', '30_days':'30 Days', '1_year':'1 Year' };
+            const typeLabel = p.warrantyType === 'non_checking' ? 'Non-Checking Warranty' : 'Checking Warranty';
+            return `
+            <div class="pd-charge" style="margin-top:12px;">
+              <div class="pd-charge-head">
+                <i class="fa-solid fa-shield-halved"></i>
+                <strong>${typeLabel} — ${PERIOD_LABEL[p.warrantyPeriod] || p.warrantyPeriod}</strong>
+              </div>
+            </div>`;
+          })()}
+
+          ${(() => {
+            /* Charging panel — the wattage is resolved for THIS model, so an
+               iPhone shows its real 20-27W rather than a blanket 100W. */
+            const c = Charging.forProduct(p);
+            if (!c) return '';
+            return `
+            <div class="pd-charge">
+              <div class="pd-charge-head">
+                <i class="fa-solid fa-bolt"></i>
+                <strong>${c.label}</strong>
+              </div>
+              <div class="pd-charge-rows">
+                <div><span>Charging port</span><b>${c.port}</b></div>
+                <div><span>In the box</span><b>${c.inBox ? 'Charger included' : 'No charger included'}</b></div>
+                <div><span>Recommended adapter</span><b>${Utils.escapeHtml(c.charger)}</b></div>
+              </div>
+              ${c.note ? `<p class="pd-charge-note">${Utils.escapeHtml(c.note)}</p>` : ''}
+              <p class="pd-charge-note">Peak wired speed for the Indian retail variant; real-world charging is slower once the battery is warm or past ~80%.</p>
+            </div>`;
+          })()}
+
+          ${Auth.isLoggedIn() ? `
+          <div class="flex items-center gap-16" style="margin-bottom:20px;">
+            <div class="qty-box">
+              <button onclick="changeQty(-1)">−</button><span id="qty-display">1</span><button onclick="changeQty(1)">+</button>
+            </div>
+            <button class="btn btn-ghost btn-icon" id="wish-btn" aria-label="Wishlist"><i class="fa-solid fa-heart"></i></button>
+            <button class="btn btn-ghost btn-icon" id="compare-btn" aria-label="Compare"><i class="fa-solid fa-scale-balanced"></i></button>
+          </div>
+
+          <div class="flex gap-12" style="margin-bottom:24px;flex-wrap:wrap;">
+            ${p.isPreOrder ? `
+              <button class="btn btn-primary btn-lg" onclick="preBookAction()"><i class="fa-solid fa-clock"></i> Pre-Book Now</button>
+            ` : `
+              <button class="btn btn-outline btn-lg" onclick="addToCartAction()" ${p.stock<=0?'disabled':''}><i class="fa-solid fa-cart-plus"></i> Add to Cart</button>
+              <button class="btn btn-primary btn-lg" onclick="buyNowAction()" ${p.stock<=0?'disabled':''}><i class="fa-solid fa-bolt"></i> Buy Now</button>
+            `}
+          </div>
+          ` : `
+          <div class="card" style="padding:22px;text-align:center;margin-bottom:22px;background:var(--accent-soft);border-color:var(--accent);">
+            <i class="fa-solid fa-lock" style="font-size:22px;color:var(--accent-2);margin-bottom:10px;"></i>
+            <h3 style="font-family:var(--font-display);margin:0 0 8px;font-size:17px;">Login to see full specs & buy</h3>
+            <p class="text-dim" style="font-size:13.5px;margin:0 0 16px;">Create a free account to view detailed specifications, product photos and purchase this item.</p>
+            <div class="flex gap-12" style="justify-content:center;flex-wrap:wrap;">
+              <a href="register.html" class="btn btn-primary">Register Now</a>
+              <a href="login.html" class="btn btn-outline">I already have an account</a>
+            </div>
+          </div>
+          `}
+
+          <div class="card" style="padding:16px;display:flex;gap:14px;flex-wrap:wrap;">
+            <div class="flex items-center gap-8" style="font-size:13px;"><i class="fa-solid fa-truck" style="color:var(--accent-2);"></i> 1-day delivery in Coimbatore district</div>
+            <div class="flex items-center gap-8" style="font-size:13px;"><i class="fa-solid fa-shield-halved" style="color:var(--accent-2);"></i> Manufacturer warranty</div>
+            <div class="flex items-center gap-8" style="font-size:13px;"><i class="fa-solid fa-qrcode" style="color:var(--accent-2);"></i> UPI / Card accepted</div>
+          </div>
+          ${p.productUrl ? `<a href="${Utils.escapeHtml(p.productUrl)}" target="_blank" rel="noopener" class="flex items-center gap-8" style="margin-top:14px;font-size:13px;color:var(--accent-2);"><i class="fa-solid fa-arrow-up-right-from-square"></i> More info</a>` : ''}
+        </div>
+      </div>`;
+
+    function refreshWishBtn(){ document.getElementById('wish-btn')?.classList.toggle('active', Wishlist.has(p.id)); }
+    function refreshCompareBtn(){ document.getElementById('compare-btn')?.classList.toggle('active', Compare.has(p.id)); }
+
+    if (Auth.isLoggedIn()){
+      document.getElementById('wish-btn').addEventListener('click', () => {
+        const active = Wishlist.toggle(p.id);
+        Notify.toast(active?'Added to wishlist':'Removed from wishlist', active?'success':'info');
+        refreshWishBtn();
+      });
+      document.getElementById('compare-btn').addEventListener('click', () => {
+        Compare.toggle(p.id);
+        Notify.toast(Compare.has(p.id)?'Added to compare':'Removed from compare', 'info');
+        refreshCompareBtn();
+      });
+      refreshWishBtn(); refreshCompareBtn();
+    }
+
+    window.changeQty = (d) => { qty = Math.max(1, qty+d); document.getElementById('qty-display').textContent = qty; };
+    window.addToCartAction = () => { Cart.add(p.id, qty); Notify.toast('Added to cart', 'success'); };
+    window.buyNowAction = () => { Cart.add(p.id, qty); window.location.href = 'checkout.html'; };
+    window.preBookAction = () => {
+      DB.logEvent('pre_book_interest', { productId: p.id, name: p.name });
+      Notify.toast(`Thanks! We've noted your interest in ${p.name} — we'll reach out on WhatsApp when it's available to order.`, 'success', 5000);
+    };
+
+    // Related products — one card per MODEL (not per storage/colour variant),
+    // and models that actually have photos are shown first so the strip is
+    // never a row of blank placeholders.
+    const currentModel = Utils.modelSlug(p);
+    const pool = DB.getProducts().filter(x => x.id !== p.id && Utils.modelSlug(x) !== currentModel);
+
+    function pickUnique(list, limit, seen){
+      const out = [];
+      for (const item of list){
+        const key = Utils.modelSlug(item) || item.id;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        out.push(item);
+        if (out.length >= limit) break;
+      }
+      return out;
+    }
+
+    const seen = new Set();
+    const sameCatWithPhoto = pool.filter(x => x.category === p.category && Utils.hasRealPhoto(x));
+    const sameBrandWithPhoto = pool.filter(x => x.brand === p.brand && Utils.hasRealPhoto(x));
+    const anyWithPhoto = pool.filter(x => Utils.hasRealPhoto(x));
+    const sameCatAny = pool.filter(x => x.category === p.category);
+
+    let related = pickUnique(sameCatWithPhoto, 4, seen);
+    if (related.length < 4) related = related.concat(pickUnique(sameBrandWithPhoto, 4 - related.length, seen));
+    if (related.length < 4) related = related.concat(pickUnique(anyWithPhoto, 4 - related.length, seen));
+    if (related.length < 4) related = related.concat(pickUnique(sameCatAny, 4 - related.length, seen));
+    // Final catch-all: whatever's left in the whole catalog, no filters at
+    // all. This guarantees the strip is never blank as long as any other
+    // product exists in the store.
+    if (related.length < 4) related = related.concat(pickUnique(pool, 4 - related.length, seen));
+    // Absolute last resort: if the store somehow has fewer than 4 other
+    // products, just show every other product there is (even 1-3 is
+    // better than an empty section).
+    if (!related.length && pool.length) related = pool.slice(0, 4);
+
+    if (related.length){
+      document.getElementById('related-section').style.display = 'block';
+      document.getElementById('related-grid').innerHTML = related.map(UI.productCardHTML).join('');
+    } else {
+      // No other products exist in the catalog at all — hide the section
+      // rather than show an empty grid.
+      document.getElementById('related-section').style.display = 'none';
+    }
+  }
+});
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){try{document.documentElement.setAttribute('data-theme', localStorage.getItem('smd_theme') || 'dark');}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book a Service Appointment — SM Mobile Deals</title>
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#050812">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dark-mode.css">
+<link rel="stylesheet" href="../css/animations.css">
+<link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+<div id="page-loader">
+  <div class="pl-inner">
+    <div class="pl-mark"><span>S</span><span>M</span></div>
+    <div class="pl-title" id="pl-title" data-text="SM Mobile Deals"></div>
+    <div class="pl-sub">Genuine tech, honest prices.</div>
+    <div class="pl-bar"><div class="pl-bar-fill"></div></div>
+  </div>
+</div>
+<div id="site-header"></div>
+
+<main>
+  <section class="page-hero container">
+    <div class="breadcrumb"><a href="../index.html">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i> <span>Book a Service</span></div>
+    <h1 class="page-title">Book a Service Appointment</h1>
+    <p class="text-dim" style="margin:10px 0 0;max-width:600px;">Repair, checkup, or setup help — pick a date and time that works for you. We'll confirm your appointment and let you know whether to bring it in or courier it to us.</p>
+  </section>
+
+  <section class="section container" style="max-width:640px;padding-top:10px;">
+    <div id="svc-success" class="empty-state" style="display:none;">
+      <i class="fa-solid fa-circle-check" style="color:var(--success,#16a34a);"></i>
+      <h3>Appointment requested</h3>
+      <p>We've got your request — our team will check it and confirm your slot. You'll be told whether to visit the shop or courier the item in.</p>
+      <a href="../index.html" class="btn btn-primary" style="margin-top:14px;">Back to Home</a>
+    </div>
+
+    <form id="svc-form" class="card" style="padding:24px;">
+      <div class="field"><label>Your Name</label><input class="input" name="name" required></div>
+      <div class="flex gap-12" style="flex-wrap:wrap;">
+        <div class="field" style="flex:1;min-width:180px;"><label>Phone</label><input class="input" name="phone" type="tel" required placeholder="10-digit mobile"></div>
+        <div class="field" style="flex:1;min-width:180px;"><label>Email <span class="text-faint" style="font-weight:400;">(optional)</span></label><input class="input" name="email" type="email"></div>
+      </div>
+      <div class="field">
+        <label>Device / Product Type</label>
+        <select class="input" name="deviceType">
+          <option value="Mobile">Mobile</option>
+          <option value="Laptop">Laptop</option>
+          <option value="Smart Watch">Smart Watch</option>
+          <option value="Audio / Earbuds">Audio / Earbuds</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>What's the issue? / What service do you need?</label>
+        <textarea class="input" name="issue" rows="4" required placeholder="e.g. Screen replacement, battery draining fast, software setup…"></textarea>
+      </div>
+      <div class="flex gap-12" style="flex-wrap:wrap;">
+        <div class="field" style="flex:1;min-width:180px;"><label>Preferred Date</label><input class="input" name="date" type="date" required></div>
+        <div class="field" style="flex:1;min-width:180px;"><label>Preferred Time</label><input class="input" name="time" type="time" required></div>
+      </div>
+      <div class="field">
+        <label>How would you like to do this? <span class="text-faint" style="font-weight:400;">(we'll confirm which works best)</span></label>
+        <select class="input" name="mode">
+          <option value="not_decided">Not sure — let the store decide</option>
+          <option value="shop_visit">I'll visit the shop</option>
+          <option value="courier">I'll courier/parcel it in</option>
+        </select>
+      </div>
+      <button class="btn btn-primary btn-block btn-lg" type="submit"><i class="fa-solid fa-calendar-check"></i> Request Appointment</button>
+      <p class="text-faint" style="font-size:12px;text-align:center;margin:12px 0 0;">Prefer to talk first? <a href="contact.html" class="text-accent">Contact us</a> or use the chat assistant.</p>
+    </form>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+
+<script>const ROOT_PREFIX = '../';</script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script defer src="../js/supabase-client.js"></script>
+<script defer src="../js/config.js"></script>
+<script defer src="../js/utils.js"></script>
+<script defer src="../js/specs.js"></script>
+<script defer src="../js/data.js"></script>
+<script defer src="../js/auth.js"></script>
+<script defer src="../js/cart.js"></script>
+<script defer src="../js/notifications.js"></script>
+<script defer src="../js/theme.js"></script>
+<script defer src="../js/cursor.js"></script>
+<script defer src="../js/loader.js"></script>
+<script defer src="../js/search.js"></script>
+<script defer src="../js/orders.js"></script>
+<script defer src="../js/payment.js"></script>
+<script defer src="../js/pincode.js"></script>
+<script defer src="../js/checkout.js"></script>
+<script defer src="../js/profile.js"></script>
+<script defer src="../js/analytics.js"></script>
+<script defer src="../js/admin.js"></script>
+<script defer src="../js/chatbot.js"></script>
+<script defer src="../js/reminders.js"></script>
+<script defer src="../js/inbox.js"></script>
+<script defer src="../js/branding.js"></script>
+
+<script defer src="../js/celebrate.js"></script>
+<script defer src="../js/ui.js"></script>
+<script defer src="../js/app.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+App.boot('service').then(() => {
+  const form = document.getElementById('svc-form');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = form.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Sending…';
+    const fd = new FormData(form);
+    const u = (typeof Auth !== 'undefined' && Auth.isLoggedIn()) ? Auth.currentUser() : null;
+    const appt = {
+      id: Utils.uid('SVC'),
+      user_id: (u && u.id !== 'admin') ? u.id : null,
+      name: fd.get('name'),
+      phone: fd.get('phone'),
+      email: fd.get('email') || (u ? u.email : null),
+      issue_description: fd.get('issue'),
+      device_type: fd.get('deviceType'),
+      preferred_date: fd.get('date'),
+      preferred_time: fd.get('time'),
+      service_mode: fd.get('mode'),
+      status: 'pending'
+    };
+    try{
+      if (DB.useSupabase()){
+        const { error } = await supabaseClient.from('service_appointments').insert(appt);
+        if (error) throw error;
+        if (typeof Inbox !== 'undefined'){
+          Inbox.sendToAdmin(
+            'New service appointment request',
+            `${appt.name} (${appt.phone}) wants a service appointment on ${appt.preferred_date} at ${appt.preferred_time} — ${appt.issue_description}`,
+            'admin.html?tab=service'
+          );
+        }
+      }
+      form.style.display = 'none';
+      document.getElementById('svc-success').style.display = 'block';
+    }catch(err){
+      Notify.toast('Could not send request: ' + (err.message || 'try again'), 'error');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-calendar-check"></i> Request Appointment';
+    }
+  });
+});
+});
+</script>
+</body>
+</html>

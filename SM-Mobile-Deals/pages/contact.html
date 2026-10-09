@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){try{document.documentElement.setAttribute('data-theme', localStorage.getItem('smd_theme') || 'dark');}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Us — SM Mobile Deals</title>
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#050812">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dark-mode.css">
+<link rel="stylesheet" href="../css/animations.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<style>
+  .contact-layout{ display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+  .social-card{ text-align:center; padding:20px; }
+  .social-card img{ width:120px; height:120px; object-fit:contain; border-radius:14px; border:1px solid var(--border-soft); background:#fff; padding:8px; margin:0 auto 12px; }
+  @media(max-width:860px){ .contact-layout{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div id="page-loader">
+  <div class="pl-inner">
+    <div class="pl-mark"><span>S</span><span>M</span></div>
+    <div class="pl-title" id="pl-title" data-text="SM Mobile Deals"></div>
+    <div class="pl-sub">Genuine tech, honest prices.</div>
+    <div class="pl-bar"><div class="pl-bar-fill"></div></div>
+  </div>
+</div>
+<div id="site-header"></div>
+
+<main>
+  <section class="page-hero container">
+    <div class="breadcrumb"><a href="../index.html">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i> <span>Contact</span></div>
+    <h1 class="page-title">Contact Us</h1>
+  </section>
+
+  <section class="section container">
+    <div class="contact-layout">
+      <div class="card" style="padding:26px;">
+        <h3 style="font-family:var(--font-display);margin:0 0 16px;">Send us a message</h3>
+        <form id="contact-form">
+          <div class="field"><label>Your Name</label><input class="input" name="name" required></div>
+          <div class="field"><label>Phone / Email</label><input class="input" name="contact" required></div>
+          <div class="field"><label>Message</label><textarea class="input" name="message" rows="4" required></textarea></div>
+          <button class="btn btn-primary btn-block" type="submit"><i class="fa-solid fa-paper-plane"></i> Send Message</button>
+        </form>
+        <div style="margin-top:22px;border-top:1px solid var(--border-soft);padding-top:18px;">
+          <div class="flex items-center gap-8" style="font-size:14px;margin-bottom:10px;"><i class="fa-solid fa-location-dot" style="color:var(--accent-2);width:18px;"></i> <span id="c-address"></span></div>
+          <div class="flex items-center gap-8" style="font-size:14px;margin-bottom:10px;"><i class="fa-solid fa-clock" style="color:var(--accent-2);width:18px;"></i> <span id="c-timings"></span></div>
+          <div class="flex items-center gap-8" style="font-size:14px;margin-bottom:10px;"><i class="fa-solid fa-phone" style="color:var(--accent-2);width:18px;"></i> <span id="c-phones"></span></div>
+          <div class="flex items-center gap-8" style="font-size:14px;"><i class="fa-solid fa-envelope" style="color:var(--accent-2);width:18px;"></i> <span id="c-email"></span></div>
+        </div>
+      </div>
+
+      <div>
+        <h3 style="font-family:var(--font-display);margin:0 0 16px;">Find & follow us</h3>
+        <div class="grid grid-2" id="social-cards"></div>
+
+        <h3 id="pay-directly" style="font-family:var(--font-display);margin:26px 0 16px;scroll-margin-top:calc(var(--header-h) + 16px);">Pay us directly</h3>
+        <div class="card social-card" style="margin-bottom:14px;">
+          <img id="pay-qr-img" alt="Scan to pay via UPI">
+          <div style="font-weight:700;">Scan with any UPI app</div>
+          <div class="flex items-center gap-8" style="justify-content:center;font-family:var(--font-mono);font-weight:700;margin-top:6px;font-size:13px;">
+            <span id="pay-upi-id"></span>
+            <button onclick="copyUpiId()" style="background:none;border:none;color:var(--accent-2);cursor:pointer;"><i class="fa-regular fa-copy"></i></button>
+          </div>
+        </div>
+        <div class="grid" id="payment-cards" style="grid-template-columns:repeat(3,1fr);gap:12px;"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+
+<script>const ROOT_PREFIX = '../';</script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script defer src="../js/supabase-client.js"></script>
+<script defer src="../js/config.js"></script>
+<script defer src="../js/utils.js"></script>
+<script defer src="../js/specs.js"></script>
+<script defer src="../js/data.js"></script>
+<script defer src="../js/auth.js"></script>
+<script defer src="../js/cart.js"></script>
+<script defer src="../js/notifications.js"></script>
+<script defer src="../js/theme.js"></script>
+<script defer src="../js/cursor.js"></script>
+<script defer src="../js/loader.js"></script>
+<script defer src="../js/search.js"></script>
+<script defer src="../js/orders.js"></script>
+<script defer src="../js/payment.js"></script>
+<script defer src="../js/pincode.js"></script>
+<script defer src="../js/checkout.js"></script>
+<script defer src="../js/profile.js"></script>
+<script defer src="../js/analytics.js"></script>
+<script defer src="../js/admin.js"></script>
+<script defer src="../js/chatbot.js"></script>
+<script defer src="../js/reminders.js"></script>
+<script defer src="../js/inbox.js"></script>
+<script defer src="../js/branding.js"></script>
+
+<script defer src="../js/celebrate.js"></script>
+<script defer src="../js/ui.js"></script>
+<script defer src="../js/app.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+App.boot('contact').then(() => {
+  document.getElementById('c-address').textContent = SITE_CONFIG.address;
+  document.getElementById('c-timings').textContent = SITE_CONFIG.timings;
+  document.getElementById('c-phones').textContent = SITE_CONFIG.phones.join('  /  ');
+  document.getElementById('c-email').textContent = SITE_CONFIG.email;
+
+  const s = SITE_CONFIG.social;
+  /* Only a neutral action label is shown under each icon — never the
+     account username. The store owner asked that their personal handles
+     (Instagram / Facebook / Threads) not be printed on the site; tapping
+     the card still opens the correct page directly. */
+  const cards = [
+    { name:'Instagram', icon:'fa-instagram', color:'#E1306C', url:s.instagram.url, qr:s.instagram.qr, action:'Follow us' },
+    { name:'WhatsApp', icon:'fa-whatsapp', color:'#25D366', url:s.whatsapp.url, qr:s.whatsapp.qr, action:'Chat with us' },
+    { name:'Threads', icon:'fa-threads', color:'#eee', url:s.threads.url, qr:s.threads.qr, action:'Follow us' }
+  ].filter(c => c.url);
+  if (s.facebook.url) cards.push({ name:'Facebook', icon:'fa-facebook-f', color:'#1877F2', url:s.facebook.url, qr:s.facebook.qr, action:'Visit our page' });
+
+  document.getElementById('social-cards').innerHTML = cards.map(c => `
+    <a href="${c.url}" target="_blank" rel="noopener noreferrer" class="card social-card reveal">
+      ${c.qr ? `<img src="${UI.link(c.qr)}" alt="${c.name} QR">` : `<div style="width:120px;height:120px;border-radius:14px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;"><i class="fa-brands ${c.icon}" style="font-size:38px;color:${c.color};"></i></div>`}
+      <div class="flex items-center gap-8" style="justify-content:center;font-weight:700;"><i class="fa-brands ${c.icon}" style="color:${c.color};"></i> ${c.name}</div>
+      <div class="text-faint" style="font-size:12px;margin-top:2px;">${c.action}</div>
+    </a>`).join('');
+
+  document.getElementById('contact-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    DB.logEvent('contact_message', Object.fromEntries(new FormData(e.target).entries()));
+    Notify.toast('Message sent! We\'ll get back to you soon — or WhatsApp us for an instant reply.', 'success');
+    e.target.reset();
+  });
+
+  // ---- Payment section ----
+  document.getElementById('pay-qr-img').src = UI.link(SITE_CONFIG.upiQrImage);
+  document.getElementById('pay-upi-id').textContent = SITE_CONFIG.upiId;
+  window.copyUpiId = () => { navigator.clipboard?.writeText(SITE_CONFIG.upiId); Notify.toast('UPI ID copied', 'success'); };
+
+  // Generic UPI intent (no amount) — customer enters the amount themselves in their app
+  const genericUpiLink = `upi://pay?${new URLSearchParams({ pa: SITE_CONFIG.upiId, pn: SITE_CONFIG.upiPayeeName, cu: 'INR' })}`;
+  const paymentApps = [
+    { name:'GPay', icon:'fa-brands fa-google-pay', color:'#4285F4' },
+    { name:'PhonePe', icon:'fa-solid fa-mobile-screen', color:'#5F259F' },
+    { name:'Paytm', icon:'fa-solid fa-wallet', color:'#00BAF2' }
+  ];
+  document.getElementById('payment-cards').innerHTML = paymentApps.map(p => `
+    <a href="${genericUpiLink}" class="card social-card reveal" style="padding:16px;">
+      <div style="width:56px;height:56px;border-radius:14px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
+        <i class="${p.icon}" style="font-size:24px;color:${p.color};"></i>
+      </div>
+      <div style="font-weight:700;font-size:13px;">${p.name}</div>
+    </a>`).join('');
+
+  // Re-run scroll-reveal AFTER the sections above inject their own
+  // ".reveal" elements (social QR cards, payment app cards). App.boot()
+  // already called Loader.initReveal() once, but that ran before these
+  // cards existed, so they'd stay invisible without this second pass.
+  Loader.initReveal();
+});
+});
+</script>
+</body>
+</html>
